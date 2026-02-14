@@ -1,0 +1,49 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# Editors/IDE
+.vscode/
+.idea/
+
+# Env files
+.env
+.env.*
+.python-version
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# Virtual envs
+.venv/
+venv/
+backend/.venv/
+
+# Node / Frontend
+node_modules/
+dist/
+build/
+coverage/
+*.log
+miniprogram/miniprogram_npm/
+cloudfunctions/**/node_modules/
+cloudfunctions/**/.venv/
+
+# Project outputs
+exports/
+backend/tts_cache/
+
+# WeChat DevTools private config
+miniprogram/project.private.config.json
+
+# Audio files (generated, not source)
+*.mp3
+*.wav

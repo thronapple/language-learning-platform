@@ -1,0 +1,6 @@
+.mask { position: fixed; left:0; top:0; right:0; bottom:0; z-index:9999; }
+.backdrop { position:absolute; left:0; top:0; right:0; bottom:0; background: rgba(0,0,0,0.5); }
+.dialog { position:absolute; left: 20rpx; right: 20rpx; top: 25%; background:#fff; border-radius: 12rpx; padding: 24rpx; z-index:10000; }
+.title { font-weight: 600; margin-bottom: 8px; }
+.body { color:#666; margin-bottom: 12px; }
+.actions { display:flex; gap: 12px; justify-content:flex-end; }

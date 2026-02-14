@@ -1,0 +1,38 @@
+{
+  "_comment": "CloudBase security rules - minimal MVP",
+  "rules": {
+    "content": {
+      ".read": true,
+      ".write": false
+    },
+    "users": {
+      ".read": "auth != null && auth.openid == query.openid",
+      ".write": "auth != null && auth.openid == data.openid"
+    },
+    "progress": {
+      ".read": "auth != null && auth.openid == query.user_id",
+      ".write": "auth != null && auth.openid == data.user_id"
+    },
+    "vocab": {
+      ".read": "auth != null && auth.openid == query.user_id",
+      ".write": "auth != null && auth.openid == data.user_id"
+    },
+    "plans": {
+      ".read": "auth != null && auth.openid == query.user_id",
+      ".write": "auth != null && auth.openid == data.user_id"
+    },
+    "orders": {
+      ".read": "false",
+      ".write": "auth != null && auth.openid == data.user_id && data.status == 'intent'"
+    },
+    "events": {
+      ".read": false,
+      ".write": "auth != null && auth.openid == data.user_id"
+    },
+    "wishlists": {
+      ".read": false,
+      ".write": true
+    }
+  }
+}
+

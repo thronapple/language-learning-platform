@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "学习",
+  "usingComponents": {
+    "ad-interstitial": "/components/ad-interstitial/ad-interstitial"
+  }
+}

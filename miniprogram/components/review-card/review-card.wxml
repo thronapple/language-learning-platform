@@ -1,0 +1,11 @@
+<view class="card">
+  <view class="word">{{word}}</view>
+  <view class="meaning">{{meaning}}</view>
+  <view class="ops">
+    <button size="mini" bindtap="again">again</button>
+    <button size="mini" bindtap="hard">hard</button>
+    <button size="mini" bindtap="good">good</button>
+    <button size="mini" bindtap="easy">easy</button>
+  </view>
+</view>
+

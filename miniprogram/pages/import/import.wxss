@@ -1,0 +1,2 @@
+textarea { background: #fff; min-height: 200rpx; padding: 12rpx; border-radius: 6rpx; }
+.hint { color: #888; margin-top: 12rpx; font-size: 24rpx; }

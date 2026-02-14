@@ -1,0 +1,46 @@
+<view class="assessment-intro">
+  <view class="header">
+    <image class="icon" src="/images/assessment-icon.png" mode="aspectFit"/>
+    <text class="title">快速评估您的语言水平</text>
+    <text class="subtitle">10道题 · 预计10分钟</text>
+  </view>
+
+  <view class="features">
+    <view class="feature-item">
+      <view class="feature-icon">
+        <text class="icon-text">🎯</text>
+      </view>
+      <view class="feature-content">
+        <text class="feature-title">精准定位当前水平</text>
+        <text class="feature-desc">自适应测试,准确评估A1-C2等级</text>
+      </view>
+    </view>
+
+    <view class="feature-item">
+      <view class="feature-icon">
+        <text class="icon-text">📊</text>
+      </view>
+      <view class="feature-content">
+        <text class="feature-title">识别薄弱环节</text>
+        <text class="feature-desc">分析听说读写各维度表现</text>
+      </view>
+    </view>
+
+    <view class="feature-item">
+      <view class="feature-icon">
+        <text class="icon-text">🎓</text>
+      </view>
+      <view class="feature-content">
+        <text class="feature-title">定制学习计划</text>
+        <text class="feature-desc">根据评估结果生成专属计划</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="actions">
+    <button class="start-btn" type="primary" bindtap="startAssessment">
+      开始评估
+    </button>
+    <text class="skip-text" bindtap="skipAssessment">暂时跳过</text>
+  </view>
+</view>

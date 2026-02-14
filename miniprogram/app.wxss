@@ -1,0 +1,268 @@
+/**
+ * 全局样式
+ * 引入设计系统tokens和通用组件样式
+ */
+
+/* 引入设计系统变量 */
+@import './styles/design-tokens.wxss';
+
+/* ========== 布局容器 ========== */
+.container {
+  padding: var(--space-8);
+  min-height: 100vh;
+}
+
+.container-fluid {
+  min-height: 100vh;
+}
+
+/* 卡片容器 */
+.card {
+  background: var(--bg-primary);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: var(--space-8);
+  margin-bottom: var(--space-6);
+}
+
+.card-interactive {
+  transition: all var(--duration-base) var(--ease-out);
+}
+
+.card-interactive:active {
+  transform: translateY(4rpx);
+  box-shadow: var(--shadow-sm);
+}
+
+/* ========== 按钮增强样式 ========== */
+
+/* 主按钮 */
+button.btn-primary,
+.btn-primary {
+  background: var(--gradient-primary);
+  color: var(--text-inverse);
+  border: none;
+  border-radius: var(--radius-full);
+  padding: var(--space-5) var(--space-8);
+  font-size: var(--font-base);
+  font-weight: var(--font-semibold);
+  box-shadow: var(--shadow-md);
+  transition: all var(--duration-fast) var(--ease-out);
+  position: relative;
+  overflow: hidden;
+}
+
+button.btn-primary::after,
+.btn-primary::after {
+  border: none;
+}
+
+button.btn-primary:active,
+.btn-primary:active {
+  transform: scale(0.98);
+  box-shadow: var(--shadow-sm);
+}
+
+/* 次要按钮 */
+button.btn-secondary,
+.btn-secondary {
+  background: var(--bg-primary);
+  color: #667eea;
+  border: 2rpx solid #667eea;
+  border-radius: var(--radius-full);
+  padding: var(--space-5) var(--space-8);
+  font-size: var(--font-base);
+  font-weight: var(--font-medium);
+  transition: all var(--duration-fast) var(--ease-out);
+}
+
+button.btn-secondary::after,
+.btn-secondary::after {
+  border: none;
+}
+
+button.btn-secondary:active,
+.btn-secondary:active {
+  transform: scale(0.98);
+  background: var(--primary-50);
+}
+
+/* 幽灵按钮 */
+button.btn-ghost,
+.btn-ghost {
+  background: transparent;
+  color: var(--text-secondary);
+  border: 2rpx solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: var(--space-4) var(--space-6);
+  font-size: var(--font-sm);
+  transition: all var(--duration-fast) var(--ease-out);
+}
+
+button.btn-ghost::after,
+.btn-ghost::after {
+  border: none;
+}
+
+/* 禁用状态 */
+button[disabled],
+.btn-disabled {
+  opacity: 0.5;
+  transform: none !important;
+}
+
+/* ========== 标题样式 ========== */
+.title-large {
+  font-size: var(--font-2xl);
+  font-weight: var(--font-bold);
+  color: var(--text-primary);
+  line-height: var(--leading-tight);
+}
+
+.title-medium {
+  font-size: var(--font-xl);
+  font-weight: var(--font-semibold);
+  color: var(--text-primary);
+  line-height: var(--leading-snug);
+}
+
+.title-small {
+  font-size: var(--font-lg);
+  font-weight: var(--font-medium);
+  color: var(--text-primary);
+  line-height: var(--leading-normal);
+}
+
+/* ========== 徽章和标签 ========== */
+.badge {
+  display: inline-block;
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-full);
+  font-size: var(--font-xs);
+  font-weight: var(--font-semibold);
+  line-height: 1;
+}
+
+.badge-primary {
+  background: var(--primary-100);
+  color: var(--primary-700);
+}
+
+.badge-success {
+  background: var(--success-light);
+  color: var(--success-dark);
+}
+
+.badge-warning {
+  background: var(--warning-light);
+  color: var(--warning-dark);
+}
+
+.badge-error {
+  background: var(--error-light);
+  color: var(--error-dark);
+}
+
+/* ========== 分割线 ========== */
+.divider {
+  height: 2rpx;
+  background: var(--border-light);
+  margin: var(--space-6) 0;
+}
+
+.divider-dashed {
+  height: 0;
+  border-top: 2rpx dashed var(--border-light);
+  margin: var(--space-6) 0;
+}
+
+/* ========== 空状态 ========== */
+.empty-state {
+  padding: var(--space-16) var(--space-8);
+  text-align: center;
+}
+
+.empty-icon {
+  font-size: 80rpx;
+  margin-bottom: var(--space-4);
+  opacity: 0.5;
+}
+
+.empty-text {
+  font-size: var(--font-base);
+  color: var(--text-tertiary);
+}
+
+/* ========== 渐变背景 ========== */
+.bg-gradient-primary {
+  background: var(--gradient-primary);
+}
+
+.bg-gradient-warm {
+  background: var(--gradient-warm);
+}
+
+.bg-gradient-cool {
+  background: var(--gradient-cool);
+}
+
+/* ========== 动画效果 ========== */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(100rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.fade-in {
+  animation: fadeIn var(--duration-base) var(--ease-out);
+}
+
+.slide-in-up {
+  animation: slideInUp var(--duration-base) var(--ease-out);
+}
+
+/* ========== 兼容旧样式（保持向后兼容）========== */
+view.nav-btn.primary {
+  background: var(--gradient-primary) !important;
+  color: var(--text-inverse) !important;
+}
+
+view.nav-btn.finish {
+  background: var(--gradient-success) !important;
+  color: var(--text-inverse) !important;
+}
+

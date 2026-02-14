@@ -1,0 +1,55 @@
+<!--
+  骨架屏组件
+  用于页面加载时的占位显示
+-->
+
+<view class="skeleton {{type}}">
+  <!-- 卡片骨架 -->
+  <view wx:if="{{type === 'card'}}" class="skeleton-card">
+    <view class="skeleton-header">
+      <view class="skeleton-avatar"></view>
+      <view class="skeleton-lines">
+        <view class="skeleton-line" style="width: 60%;"></view>
+        <view class="skeleton-line" style="width: 40%;"></view>
+      </view>
+    </view>
+    <view class="skeleton-content">
+      <view class="skeleton-line"></view>
+      <view class="skeleton-line"></view>
+      <view class="skeleton-line" style="width: 80%;"></view>
+    </view>
+  </view>
+
+  <!-- 列表骨架 -->
+  <view wx:if="{{type === 'list'}}" class="skeleton-list">
+    <view wx:for="{{rows}}" wx:key="index" class="skeleton-list-item">
+      <view class="skeleton-avatar"></view>
+      <view class="skeleton-content">
+        <view class="skeleton-line" style="width: 70%;"></view>
+        <view class="skeleton-line" style="width: 50%;"></view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 文章骨架 -->
+  <view wx:if="{{type === 'article'}}" class="skeleton-article">
+    <view class="skeleton-title"></view>
+    <view class="skeleton-paragraph">
+      <view class="skeleton-line"></view>
+      <view class="skeleton-line"></view>
+      <view class="skeleton-line"></view>
+      <view class="skeleton-line" style="width: 60%;"></view>
+    </view>
+    <view class="skeleton-image"></view>
+    <view class="skeleton-paragraph">
+      <view class="skeleton-line"></view>
+      <view class="skeleton-line"></view>
+      <view class="skeleton-line" style="width: 75%;"></view>
+    </view>
+  </view>
+
+  <!-- 自定义骨架 -->
+  <view wx:if="{{type === 'custom'}}" class="skeleton-custom">
+    <slot></slot>
+  </view>
+</view>

@@ -1,0 +1,16 @@
+<view class="container">
+  <view class="toolbar">
+    <switch checked="{{onlyDue}}" bindchange="toggleDue" />
+    <text class="hint">仅看今日复习</text>
+  </view>
+  <view class="search">
+    <input placeholder="输入单词（可搜索）" bindinput="onInput" />
+    <button size="mini" bindtap="add">添加</button>
+  </view>
+  <block wx:for="{{items}}" wx:key="word">
+    <view class="row">
+      <review-card data-word="{{item.word}}" word="{{item.word}}" meaning="{{item.meaning}}" bind:rate="onRate" />
+      <button class="remove" size="mini" data-word="{{item.word}}" bindtap="remove">移除</button>
+    </view>
+  </block>
+</view>

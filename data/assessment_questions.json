@@ -1,0 +1,208 @@
+[
+  {
+    "_id": "q_vocab_a1_001",
+    "type": "vocabulary",
+    "level": "A1",
+    "difficulty": 0.15,
+    "scenario_id": null,
+    "skill_tested": "basic_greetings",
+    "content": {
+      "question": "How do you greet someone in the morning?",
+      "question_zh": "早上如何问候别人?",
+      "options": ["Good night", "Good morning", "Good afternoon", "Goodbye"],
+      "correct_index": 1,
+      "explanation": "'Good morning' is the correct greeting for morning time.",
+      "explanation_zh": "'Good morning'是早上的正确问候语。"
+    },
+    "metadata": {
+      "usage_count": 0,
+      "avg_accuracy": 0.0,
+      "avg_time_spent": 0,
+      "last_calibrated": "2025-10-03T00:00:00Z"
+    },
+    "is_active": true,
+    "created_at": "2025-10-03T00:00:00Z"
+  },
+  {
+    "_id": "q_vocab_a1_002",
+    "type": "vocabulary",
+    "level": "A1",
+    "difficulty": 0.18,
+    "scenario_id": null,
+    "skill_tested": "basic_vocabulary",
+    "content": {
+      "question": "What is the opposite of 'big'?",
+      "question_zh": "'大'的反义词是什么?",
+      "options": ["Small", "Tall", "Long", "Wide"],
+      "correct_index": 0,
+      "explanation": "'Small' is the opposite of 'big'.",
+      "explanation_zh": "'Small'是'big'的反义词。"
+    },
+    "metadata": {"usage_count": 0, "avg_accuracy": 0.0, "avg_time_spent": 0, "last_calibrated": "2025-10-03T00:00:00Z"},
+    "is_active": true,
+    "created_at": "2025-10-03T00:00:00Z"
+  },
+  {
+    "_id": "q_vocab_a1_003",
+    "type": "vocabulary",
+    "level": "A1",
+    "difficulty": 0.2,
+    "scenario_id": null,
+    "skill_tested": "numbers",
+    "content": {
+      "question": "What comes after 'nine'?",
+      "question_zh": "'九'后面是什么?",
+      "options": ["Eight", "Ten", "Eleven", "Seven"],
+      "correct_index": 1,
+      "explanation": "Ten comes after nine.",
+      "explanation_zh": "九后面是十。"
+    },
+    "metadata": {"usage_count": 0, "avg_accuracy": 0.0, "avg_time_spent": 0, "last_calibrated": "2025-10-03T00:00:00Z"},
+    "is_active": true,
+    "created_at": "2025-10-03T00:00:00Z"
+  },
+  {
+    "_id": "q_listen_a1_001",
+    "type": "listening",
+    "level": "A1",
+    "difficulty": 0.22,
+    "scenario_id": "scenario_greetings",
+    "skill_tested": "basic_listening",
+    "content": {
+      "audio_url": "https://example.com/audio/q_listen_a1_001.mp3",
+      "duration": 8,
+      "transcript": "Hello, my name is John.",
+      "question": "What is the speaker's name?",
+      "question_zh": "说话者的名字是什么?",
+      "options": ["Tom", "John", "Mary", "David"],
+      "correct_index": 1,
+      "explanation": "The speaker says 'my name is John'.",
+      "explanation_zh": "说话者说'我的名字是John'。"
+    },
+    "metadata": {"usage_count": 0, "avg_accuracy": 0.0, "avg_time_spent": 0, "last_calibrated": "2025-10-03T00:00:00Z"},
+    "is_active": true,
+    "created_at": "2025-10-03T00:00:00Z"
+  },
+  {
+    "_id": "q_listen_a1_002",
+    "type": "listening",
+    "level": "A1",
+    "difficulty": 0.25,
+    "scenario_id": null,
+    "skill_tested": "basic_listening",
+    "content": {
+      "audio_url": "https://example.com/audio/q_listen_a1_002.mp3",
+      "duration": 10,
+      "transcript": "The cat is on the table.",
+      "question": "Where is the cat?",
+      "question_zh": "猫在哪里?",
+      "options": ["Under the table", "On the table", "Next to the table", "Behind the table"],
+      "correct_index": 1,
+      "explanation": "The speaker says 'The cat is on the table'.",
+      "explanation_zh": "说话者说'猫在桌子上'。"
+    },
+    "metadata": {"usage_count": 0, "avg_accuracy": 0.0, "avg_time_spent": 0, "last_calibrated": "2025-10-03T00:00:00Z"},
+    "is_active": true,
+    "created_at": "2025-10-03T00:00:00Z"
+  },
+  {
+    "_id": "q_read_a1_001",
+    "type": "reading",
+    "level": "A1",
+    "difficulty": 0.28,
+    "scenario_id": null,
+    "skill_tested": "basic_comprehension",
+    "content": {
+      "passage": "This is a book. The book is red.",
+      "question": "What color is the book?",
+      "question_zh": "书是什么颜色?",
+      "options": ["Blue", "Red", "Green", "Yellow"],
+      "correct_index": 1,
+      "explanation": "The passage states 'The book is red'.",
+      "explanation_zh": "文章说'书是红色的'。"
+    },
+    "metadata": {"usage_count": 0, "avg_accuracy": 0.0, "avg_time_spent": 0, "last_calibrated": "2025-10-03T00:00:00Z"},
+    "is_active": true,
+    "created_at": "2025-10-03T00:00:00Z"
+  },
+  {
+    "_id": "q_read_a1_002",
+    "type": "reading",
+    "level": "A1",
+    "difficulty": 0.3,
+    "scenario_id": null,
+    "skill_tested": "basic_comprehension",
+    "content": {
+      "passage": "I have two dogs. Their names are Max and Bella.",
+      "question": "How many dogs does the speaker have?",
+      "question_zh": "说话者有几只狗?",
+      "options": ["One", "Two", "Three", "Four"],
+      "correct_index": 1,
+      "explanation": "The passage says 'I have two dogs'.",
+      "explanation_zh": "文章说'我有两只狗'。"
+    },
+    "metadata": {"usage_count": 0, "avg_accuracy": 0.0, "avg_time_spent": 0, "last_calibrated": "2025-10-03T00:00:00Z"},
+    "is_active": true,
+    "created_at": "2025-10-03T00:00:00Z"
+  },
+  {
+    "_id": "q_vocab_a1_004",
+    "type": "vocabulary",
+    "level": "A1",
+    "difficulty": 0.19,
+    "scenario_id": null,
+    "skill_tested": "basic_vocabulary",
+    "content": {
+      "question": "What do you use to write?",
+      "question_zh": "你用什么写字?",
+      "options": ["Pen", "Cup", "Chair", "Door"],
+      "correct_index": 0,
+      "explanation": "A pen is used for writing.",
+      "explanation_zh": "钢笔用来写字。"
+    },
+    "metadata": {"usage_count": 0, "avg_accuracy": 0.0, "avg_time_spent": 0, "last_calibrated": "2025-10-03T00:00:00Z"},
+    "is_active": true,
+    "created_at": "2025-10-03T00:00:00Z"
+  },
+  {
+    "_id": "q_vocab_a1_005",
+    "type": "vocabulary",
+    "level": "A1",
+    "difficulty": 0.21,
+    "scenario_id": null,
+    "skill_tested": "colors",
+    "content": {
+      "question": "The sky is usually ___.",
+      "question_zh": "天空通常是___。",
+      "options": ["blue", "red", "black", "green"],
+      "correct_index": 0,
+      "explanation": "The sky is typically blue during the day.",
+      "explanation_zh": "白天天空通常是蓝色的。"
+    },
+    "metadata": {"usage_count": 0, "avg_accuracy": 0.0, "avg_time_spent": 0, "last_calibrated": "2025-10-03T00:00:00Z"},
+    "is_active": true,
+    "created_at": "2025-10-03T00:00:00Z"
+  },
+  {
+    "_id": "q_listen_a1_003",
+    "type": "listening",
+    "level": "A1",
+    "difficulty": 0.26,
+    "scenario_id": null,
+    "skill_tested": "time_understanding",
+    "content": {
+      "audio_url": "https://example.com/audio/q_listen_a1_003.mp3",
+      "duration": 7,
+      "transcript": "It is three o'clock.",
+      "question": "What time is it?",
+      "question_zh": "现在几点?",
+      "options": ["Two o'clock", "Three o'clock", "Four o'clock", "Five o'clock"],
+      "correct_index": 1,
+      "explanation": "The speaker says 'It is three o'clock'.",
+      "explanation_zh": "说话者说'现在是三点'。"
+    },
+    "metadata": {"usage_count": 0, "avg_accuracy": 0.0, "avg_time_spent": 0, "last_calibrated": "2025-10-03T00:00:00Z"},
+    "is_active": true,
+    "created_at": "2025-10-03T00:00:00Z"
+  }
+]

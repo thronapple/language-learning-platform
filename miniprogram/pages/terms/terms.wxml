@@ -1,0 +1,9 @@
+<scroll-view class="container" scroll-y="true">
+  <view class="section">
+    <view class="title">用户协议（简版）</view>
+    <view class="text">
+      本服务仅用于个人学习。请勿上传或分发受版权保护的内容。您在使用过程中应遵守法律法规与平台规则。
+      如有意见与建议，可在“我的-反馈”中联系我们。
+    </view>
+  </view>
+</scroll-view>

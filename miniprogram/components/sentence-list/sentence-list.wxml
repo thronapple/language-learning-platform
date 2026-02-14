@@ -1,0 +1,6 @@
+<scroll-view class="sentences" scroll-y="true">
+  <block wx:for="{{segments}}" wx:key="index">
+    <view class="sentence {{index === activeIndex ? 'active' : ''}}">{{item}}</view>
+  </block>
+</scroll-view>
+

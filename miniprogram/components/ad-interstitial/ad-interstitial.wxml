@@ -1,0 +1,12 @@
+<view wx:if="{{visible}}" class="mask">
+  <view class="dialog">
+    <view class="title">精选推荐</view>
+    <view class="body">这里是插屏广告占位（{{slot}}）</view>
+    <view class="actions">
+      <button size="mini" type="primary" bindtap="onClick">了解</button>
+      <button size="mini" bindtap="close">关闭</button>
+    </view>
+  </view>
+  <view class="backdrop" bindtap="close"></view>
+  
+</view>

@@ -1,0 +1,850 @@
+[
+  {
+    "id": "airport-checkin-001",
+    "scenario_id": "airport-basics",
+    "sub_scenario_id": "airport-checkin",
+    "order": 1,
+    "title_en": "Check-in at Airport Counter",
+    "title_zh": "机场柜台办理值机",
+    "level": "A2",
+    "sentences": [
+      {
+        "order": 1,
+        "speaker": "Staff",
+        "text_en": "Good morning! May I see your passport and ticket, please?",
+        "text_zh": "早上好！请出示您的护照和机票好吗？",
+        "audio_url": "https://example.com/audio/airport-checkin-001-01.mp3",
+        "phonetic": "/ɡʊd ˈmɔːrnɪŋ! meɪ aɪ siː jʊər ˈpɑːspɔːrt ənd ˈtɪkɪt, pliːz?/",
+        "key_words": ["passport", "ticket"],
+        "grammar_points": ["modal_verb_may", "polite_request"]
+      },
+      {
+        "order": 2,
+        "speaker": "Passenger",
+        "text_en": "Here you are.",
+        "text_zh": "给您。",
+        "audio_url": "https://example.com/audio/airport-checkin-001-02.mp3",
+        "phonetic": "/hɪər juː ɑːr/",
+        "key_words": [],
+        "grammar_points": ["common_phrase"]
+      },
+      {
+        "order": 3,
+        "speaker": "Staff",
+        "text_en": "Thank you. Are you checking any baggage today?",
+        "text_zh": "谢谢。您今天有行李需要托运吗？",
+        "audio_url": "https://example.com/audio/airport-checkin-001-03.mp3",
+        "phonetic": "/θæŋk juː. ɑːr juː ˈtʃekɪŋ ˈeni ˈbæɡɪdʒ təˈdeɪ?/",
+        "key_words": ["checking", "baggage"],
+        "grammar_points": ["present_continuous", "yes_no_question"]
+      },
+      {
+        "order": 4,
+        "speaker": "Passenger",
+        "text_en": "Yes, I have one suitcase to check in.",
+        "text_zh": "是的，我有一个行李箱要托运。",
+        "audio_url": "https://example.com/audio/airport-checkin-001-04.mp3",
+        "phonetic": "/jes, aɪ hæv wʌn ˈsuːtkeɪs tuː tʃek ɪn/",
+        "key_words": ["suitcase", "check in"],
+        "grammar_points": ["simple_present", "have_to_structure"]
+      },
+      {
+        "order": 5,
+        "speaker": "Staff",
+        "text_en": "Please place it on the scale. Would you prefer a window or aisle seat?",
+        "text_zh": "请把它放在秤上。您想要靠窗还是靠走廊的座位？",
+        "audio_url": "https://example.com/audio/airport-checkin-001-05.mp3",
+        "phonetic": "/pliːz pleɪs ɪt ɒn ðə skeɪl. wʊd juː prɪˈfɜːr ə ˈwɪndəʊ ɔːr aɪl siːt?/",
+        "key_words": ["scale", "window", "aisle", "seat"],
+        "grammar_points": ["imperative", "polite_preference_question"]
+      },
+      {
+        "order": 6,
+        "speaker": "Passenger",
+        "text_en": "Window seat, please.",
+        "text_zh": "靠窗座位，谢谢。",
+        "audio_url": "https://example.com/audio/airport-checkin-001-06.mp3",
+        "phonetic": "/ˈwɪndəʊ siːt, pliːz/",
+        "key_words": [],
+        "grammar_points": ["short_answer"]
+      },
+      {
+        "order": 7,
+        "speaker": "Staff",
+        "text_en": "Here's your boarding pass. Boarding starts at 10:30 AM at gate 23. Have a pleasant flight!",
+        "text_zh": "这是您的登机牌。10点30分开始在23号登机口登机。祝您旅途愉快！",
+        "audio_url": "https://example.com/audio/airport-checkin-001-07.mp3",
+        "phonetic": "/hɪərz jʊər ˈbɔːrdɪŋ pɑːs. ˈbɔːrdɪŋ stɑːrts ət ten ˈθɜːrti eɪ em ət ɡeɪt ˈtwenti θriː. hæv ə ˈplezənt flaɪt!/",
+        "key_words": ["boarding pass", "gate", "flight"],
+        "grammar_points": ["time_expression", "common_wishes"]
+      }
+    ],
+    "vocabulary": [
+      {"word": "passport", "translation": "护照", "level": "A1"},
+      {"word": "baggage", "translation": "行李", "level": "A2"},
+      {"word": "suitcase", "translation": "行李箱", "level": "A2"},
+      {"word": "scale", "translation": "秤", "level": "A2"},
+      {"word": "boarding pass", "translation": "登机牌", "level": "A2"},
+      {"word": "gate", "translation": "登机口", "level": "A2"},
+      {"word": "aisle", "translation": "走廊", "level": "B1"},
+      {"word": "check in", "translation": "托运/办理登机", "level": "A2"}
+    ],
+    "cultural_notes": "In Western airports, passengers are expected to arrive 2-3 hours before international flights. Always have documents ready before approaching the counter.",
+    "practice_tips": "Practice the phrase 'Here you are' - it's more natural than 'Here it is' when handing documents to someone.",
+    "created_at": "2025-10-03T00:00:00Z"
+  },
+  {
+    "id": "airport-security-001",
+    "scenario_id": "airport-basics",
+    "sub_scenario_id": "airport-security",
+    "order": 2,
+    "title_en": "Going Through Security",
+    "title_zh": "通过安检",
+    "level": "A2",
+    "sentences": [
+      {
+        "order": 1,
+        "speaker": "Security",
+        "text_en": "Please remove your laptop and liquids from your bag.",
+        "text_zh": "请从包里拿出您的笔记本电脑和液体物品。",
+        "audio_url": "https://example.com/audio/airport-security-001-01.mp3",
+        "phonetic": "/pliːz rɪˈmuːv jʊər ˈlæptɒp ənd ˈlɪkwɪdz frɒm jʊər bæɡ/",
+        "key_words": ["remove", "laptop", "liquids"],
+        "grammar_points": ["imperative", "phrasal_verb_remove_from"]
+      },
+      {
+        "order": 2,
+        "speaker": "Passenger",
+        "text_en": "Do I need to take off my shoes?",
+        "text_zh": "我需要脱鞋吗？",
+        "audio_url": "https://example.com/audio/airport-security-001-02.mp3",
+        "phonetic": "/duː aɪ niːd tuː teɪk ɒf maɪ ʃuːz?/",
+        "key_words": ["take off", "shoes"],
+        "grammar_points": ["need_to", "yes_no_question"]
+      },
+      {
+        "order": 3,
+        "speaker": "Security",
+        "text_en": "Yes, please. Also remove your belt and empty your pockets.",
+        "text_zh": "是的，请脱下。还请摘下您的皮带并掏空口袋。",
+        "audio_url": "https://example.com/audio/airport-security-001-03.mp3",
+        "phonetic": "/jes, pliːz. ˈɔːlsəʊ rɪˈmuːv jʊər belt ənd ˈempti jʊər ˈpɒkɪts/",
+        "key_words": ["belt", "empty", "pockets"],
+        "grammar_points": ["imperative_sequence", "also_connector"]
+      },
+      {
+        "order": 4,
+        "speaker": "Passenger",
+        "text_en": "Okay, all done.",
+        "text_zh": "好的，都弄好了。",
+        "audio_url": "https://example.com/audio/airport-security-001-04.mp3",
+        "phonetic": "/əʊˈkeɪ, ɔːl dʌn/",
+        "key_words": [],
+        "grammar_points": ["informal_confirmation"]
+      },
+      {
+        "order": 5,
+        "speaker": "Security",
+        "text_en": "Please step through the metal detector.",
+        "text_zh": "请通过金属探测器。",
+        "audio_url": "https://example.com/audio/airport-security-001-05.mp3",
+        "phonetic": "/pliːz step θruː ðə ˈmetl dɪˈtektər/",
+        "key_words": ["step through", "metal detector"],
+        "grammar_points": ["imperative", "phrasal_verb_step_through"]
+      },
+      {
+        "order": 6,
+        "speaker": "Security",
+        "text_en": "Thank you. You can collect your belongings now.",
+        "text_zh": "谢谢。您现在可以取回您的物品了。",
+        "audio_url": "https://example.com/audio/airport-security-001-06.mp3",
+        "phonetic": "/θæŋk juː. juː kæn kəˈlekt jʊər bɪˈlɒŋɪŋz naʊ/",
+        "key_words": ["collect", "belongings"],
+        "grammar_points": ["can_permission", "now_time_marker"]
+      }
+    ],
+    "vocabulary": [
+      {"word": "remove", "translation": "移除，拿出", "level": "A2"},
+      {"word": "laptop", "translation": "笔记本电脑", "level": "A2"},
+      {"word": "liquids", "translation": "液体", "level": "A2"},
+      {"word": "take off", "translation": "脱下", "level": "A2"},
+      {"word": "belt", "translation": "皮带", "level": "A2"},
+      {"word": "pockets", "translation": "口袋", "level": "A1"},
+      {"word": "metal detector", "translation": "金属探测器", "level": "B1"},
+      {"word": "belongings", "translation": "所有物，行李", "level": "B1"}
+    ],
+    "cultural_notes": "TSA (US) and similar security agencies have strict liquid rules: containers must be 100ml or less, placed in a clear plastic bag. Follow instructions promptly to avoid delays.",
+    "practice_tips": "Practice the phrasal verb 'take off' (remove) vs 'take off' (plane departure) - same words, different meanings based on context.",
+    "created_at": "2025-10-03T00:00:00Z"
+  },
+  {
+    "id": "airport-boarding-001",
+    "scenario_id": "airport-basics",
+    "sub_scenario_id": "airport-boarding",
+    "order": 3,
+    "title_en": "Boarding the Flight",
+    "title_zh": "登机",
+    "level": "B1",
+    "sentences": [
+      {
+        "order": 1,
+        "speaker": "Announcement",
+        "text_en": "Attention passengers. We are now boarding rows 20 and above.",
+        "text_zh": "旅客请注意。我们现在开始登机，20排及以后的座位。",
+        "audio_url": "https://example.com/audio/airport-boarding-001-01.mp3",
+        "phonetic": "/əˈtenʃən ˈpæsɪndʒərz. wiː ɑːr naʊ ˈbɔːrdɪŋ rəʊz ˈtwenti ənd əˈbʌv/",
+        "key_words": ["attention", "boarding", "rows"],
+        "grammar_points": ["announcement_structure", "present_continuous"]
+      },
+      {
+        "order": 2,
+        "speaker": "Passenger",
+        "text_en": "Excuse me, I'm in row 18. Should I wait?",
+        "text_zh": "打扰一下，我是18排的。我应该等一下吗？",
+        "audio_url": "https://example.com/audio/airport-boarding-001-02.mp3",
+        "phonetic": "/ɪkˈskjuːz miː, aɪm ɪn rəʊ ˈeɪˈtiːn. ʃʊd aɪ weɪt?/",
+        "key_words": ["row", "wait"],
+        "grammar_points": ["should_question", "polite_interruption"]
+      },
+      {
+        "order": 3,
+        "speaker": "Staff",
+        "text_en": "Yes, please wait for your row to be called. We'll board you shortly.",
+        "text_zh": "是的，请等待您的排数被叫到。我们很快会让您登机。",
+        "audio_url": "https://example.com/audio/airport-boarding-001-03.mp3",
+        "phonetic": "/jes, pliːz weɪt fɔːr jʊər rəʊ tuː biː kɔːld. wiːl bɔːrd juː ˈʃɔːrtli/",
+        "key_words": ["be called", "shortly"],
+        "grammar_points": ["passive_voice", "future_will", "shortly_time"]
+      },
+      {
+        "order": 4,
+        "speaker": "Announcement",
+        "text_en": "We are now inviting rows 10 through 19 to board.",
+        "text_zh": "我们现在邀请10排到19排的乘客登机。",
+        "audio_url": "https://example.com/audio/airport-boarding-001-04.mp3",
+        "phonetic": "/wiː ɑːr naʊ ɪnˈvaɪtɪŋ rəʊz ten θruː ˈnaɪnˈtiːn tuː bɔːrd/",
+        "key_words": ["inviting", "through"],
+        "grammar_points": ["present_continuous", "range_expression_through"]
+      },
+      {
+        "order": 5,
+        "speaker": "Staff",
+        "text_en": "May I see your boarding pass, please? You're in seat 18C.",
+        "text_zh": "请出示您的登机牌好吗？您是18C座位。",
+        "audio_url": "https://example.com/audio/airport-boarding-001-05.mp3",
+        "phonetic": "/meɪ aɪ siː jʊər ˈbɔːrdɪŋ pɑːs, pliːz? jʊər ɪn siːt ˈeɪˈtiːn siː/",
+        "key_words": ["boarding pass", "seat"],
+        "grammar_points": ["polite_request_may", "seat_designation"]
+      },
+      {
+        "order": 6,
+        "speaker": "Passenger",
+        "text_en": "Thank you. Which way should I go?",
+        "text_zh": "谢谢。我应该往哪边走？",
+        "audio_url": "https://example.com/audio/airport-boarding-001-06.mp3",
+        "phonetic": "/θæŋk juː. wɪtʃ weɪ ʃʊd aɪ ɡəʊ?/",
+        "key_words": ["which way"],
+        "grammar_points": ["should_question", "direction_inquiry"]
+      },
+      {
+        "order": 7,
+        "speaker": "Staff",
+        "text_en": "Turn right and proceed to the rear of the aircraft. Have a nice flight!",
+        "text_zh": "右转然后往飞机后部走。祝您旅途愉快！",
+        "audio_url": "https://example.com/audio/airport-boarding-001-07.mp3",
+        "phonetic": "/tɜːn raɪt ənd prəˈsiːd tuː ðə rɪər ɒv ði ˈeəkrɑːft. hæv ə naɪs flaɪt!/",
+        "key_words": ["turn", "proceed", "rear", "aircraft"],
+        "grammar_points": ["imperative_sequence", "directional_instructions"]
+      }
+    ],
+    "vocabulary": [
+      {"word": "boarding", "translation": "登机", "level": "A2"},
+      {"word": "rows", "translation": "排", "level": "A2"},
+      {"word": "shortly", "translation": "很快", "level": "B1"},
+      {"word": "inviting", "translation": "邀请", "level": "A2"},
+      {"word": "through", "translation": "通过，从...到...", "level": "A2"},
+      {"word": "proceed", "translation": "前进", "level": "B1"},
+      {"word": "rear", "translation": "后部", "level": "B1"},
+      {"word": "aircraft", "translation": "飞机", "level": "B1"}
+    ],
+    "cultural_notes": "Airlines board by zones or rows to manage flow. Priority boarding often includes first class, business class, families with children, and loyalty program members.",
+    "practice_tips": "Listen for key boarding announcements: 'rows', 'zones', 'now boarding'. Seat designations follow pattern: Row Number + Letter (e.g., 18C).",
+    "created_at": "2025-10-03T00:00:00Z"
+  },
+  {
+    "id": "hotel-checkin-001",
+    "scenario_id": "hotel-stay",
+    "sub_scenario_id": "hotel-checkin",
+    "order": 1,
+    "title_en": "Hotel Front Desk Check-in",
+    "title_zh": "酒店前台入住",
+    "level": "A2",
+    "sentences": [
+      {
+        "order": 1,
+        "speaker": "Guest",
+        "text_en": "Good evening. I have a reservation under the name Smith.",
+        "text_zh": "晚上好。我有一个预订，名字是Smith。",
+        "audio_url": "https://example.com/audio/hotel-checkin-001-01.mp3",
+        "phonetic": "/ɡʊd ˈiːvnɪŋ. aɪ hæv ə ˌrezəˈveɪʃən ˈʌndər ðə neɪm smɪθ/",
+        "key_words": ["reservation", "under the name"],
+        "grammar_points": ["simple_present", "preposition_under"]
+      },
+      {
+        "order": 2,
+        "speaker": "Receptionist",
+        "text_en": "Welcome, Mr. Smith. Let me pull up your reservation. I see you booked a deluxe room for three nights?",
+        "text_zh": "欢迎，Smith先生。让我调出您的预订。我看到您预订了豪华房三晚？",
+        "audio_url": "https://example.com/audio/hotel-checkin-001-02.mp3",
+        "phonetic": "/ˈwelkəm, ˈmɪstər smɪθ. let miː pʊl ʌp jʊər ˌrezəˈveɪʃən. aɪ siː juː bʊkt ə dɪˈlʌks ruːm fɔːr θriː naɪts?/",
+        "key_words": ["pull up", "booked", "deluxe room"],
+        "grammar_points": ["phrasal_verb_pull_up", "past_simple_booked", "confirmation_question"]
+      },
+      {
+        "order": 3,
+        "speaker": "Guest",
+        "text_en": "That's correct. Does the room have a city view?",
+        "text_zh": "没错。房间有城市景观吗？",
+        "audio_url": "https://example.com/audio/hotel-checkin-001-03.mp3",
+        "phonetic": "/ðæts kəˈrekt. dʌz ðə ruːm hæv ə ˈsɪti vjuː?/",
+        "key_words": ["city view"],
+        "grammar_points": ["confirmation_thats_correct", "does_question"]
+      },
+      {
+        "order": 4,
+        "speaker": "Receptionist",
+        "text_en": "Yes, you'll be in room 1508 on the 15th floor with a wonderful city view. May I have your ID and credit card, please?",
+        "text_zh": "是的，您将入住15楼的1508房间，有很棒的城市景观。请出示您的身份证件和信用卡好吗？",
+        "audio_url": "https://example.com/audio/hotel-checkin-001-04.mp3",
+        "phonetic": "/jes, juːl biː ɪn ruːm ˈfɪfˈtiːn əʊ eɪt ɒn ðə ˈfɪfˈtiːnθ flɔːr wɪð ə ˈwʌndərfəl ˈsɪti vjuː. meɪ aɪ hæv jʊər aɪ diː ənd ˈkredɪt kɑːrd, pliːz?/",
+        "key_words": ["floor", "wonderful", "ID", "credit card"],
+        "grammar_points": ["future_youll_be", "ordinal_number", "polite_request"]
+      },
+      {
+        "order": 5,
+        "speaker": "Guest",
+        "text_en": "Here you go. What time is breakfast served?",
+        "text_zh": "给您。早餐几点供应？",
+        "audio_url": "https://example.com/audio/hotel-checkin-001-05.mp3",
+        "phonetic": "/hɪər juː ɡəʊ. wɒt taɪm ɪz ˈbrekfəst sɜːrvd?/",
+        "key_words": ["breakfast", "served"],
+        "grammar_points": ["here_you_go", "passive_voice_is_served", "time_question"]
+      },
+      {
+        "order": 6,
+        "speaker": "Receptionist",
+        "text_en": "Breakfast is served from 6:30 to 10:00 AM in the restaurant on the ground floor. Here are your room keys. The elevator is to your right.",
+        "text_zh": "早餐从早上6点30分到10点在一楼餐厅供应。这是您的房卡。电梯在您右手边。",
+        "audio_url": "https://example.com/audio/hotel-checkin-001-06.mp3",
+        "phonetic": "/ˈbrekfəst ɪz sɜːrvd frɒm sɪks ˈθɜːrti tuː ten əʊ klɒk eɪ em ɪn ðə ˈrestrɒnt ɒn ðə ɡraʊnd flɔːr. hɪər ɑːr jʊər ruːm kiːz. ði ˈelɪveɪtər ɪz tuː jʊər raɪt/",
+        "key_words": ["ground floor", "room keys", "elevator"],
+        "grammar_points": ["time_range_from_to", "directional_to_your_right"]
+      },
+      {
+        "order": 7,
+        "speaker": "Guest",
+        "text_en": "Thank you very much. Have a good evening!",
+        "text_zh": "非常感谢。祝您晚安！",
+        "audio_url": "https://example.com/audio/hotel-checkin-001-07.mp3",
+        "phonetic": "/θæŋk juː ˈveri mʌtʃ. hæv ə ɡʊd ˈiːvnɪŋ!/",
+        "key_words": [],
+        "grammar_points": ["polite_thanks", "common_wishes"]
+      }
+    ],
+    "vocabulary": [
+      {"word": "reservation", "translation": "预订", "level": "A2"},
+      {"word": "pull up", "translation": "调出（信息）", "level": "B1"},
+      {"word": "deluxe", "translation": "豪华的", "level": "B1"},
+      {"word": "city view", "translation": "城市景观", "level": "A2"},
+      {"word": "floor", "translation": "楼层", "level": "A1"},
+      {"word": "credit card", "translation": "信用卡", "level": "A2"},
+      {"word": "ground floor", "translation": "一楼", "level": "A2"},
+      {"word": "elevator", "translation": "电梯", "level": "A2"}
+    ],
+    "cultural_notes": "US: first floor = ground floor. UK: ground floor ≠ first floor (first floor is one level up). Hotels typically require credit card for incidentals even if prepaid.",
+    "practice_tips": "Learn hotel room types: standard, deluxe, suite. Practice ordinal numbers for floors: 1st, 2nd, 3rd, 15th.",
+    "created_at": "2025-10-03T00:00:00Z"
+  },
+  {
+    "id": "hotel-service-001",
+    "scenario_id": "hotel-stay",
+    "sub_scenario_id": "hotel-service",
+    "order": 2,
+    "title_en": "Requesting Room Service",
+    "title_zh": "请求客房服务",
+    "level": "B1",
+    "sentences": [
+      {
+        "order": 1,
+        "speaker": "Guest",
+        "text_en": "Hello, this is room 1508. I'd like to order room service, please.",
+        "text_zh": "你好，这是1508房间。我想点客房送餐服务。",
+        "audio_url": "https://example.com/audio/hotel-service-001-01.mp3",
+        "phonetic": "/həˈləʊ, ðɪs ɪz ruːm ˈfɪfˈtiːn əʊ eɪt. aɪd laɪk tuː ˈɔːrdər ruːm ˈsɜːrvɪs, pliːz/",
+        "key_words": ["room service", "order"],
+        "grammar_points": ["would_like_to", "polite_request"]
+      },
+      {
+        "order": 2,
+        "speaker": "Staff",
+        "text_en": "Of course, sir. What would you like to have?",
+        "text_zh": "当然，先生。您想要什么呢？",
+        "audio_url": "https://example.com/audio/hotel-service-001-02.mp3",
+        "phonetic": "/ɒv kɔːrs, sɜːr. wɒt wʊd juː laɪk tuː hæv?/",
+        "key_words": ["would like to have"],
+        "grammar_points": ["polite_inquiry", "would_like"]
+      },
+      {
+        "order": 3,
+        "speaker": "Guest",
+        "text_en": "I'll have the Caesar salad and a grilled chicken sandwich. Could I also get extra towels?",
+        "text_zh": "我要凯撒沙拉和一个烤鸡三明治。我还能要一些额外的毛巾吗？",
+        "audio_url": "https://example.com/audio/hotel-service-001-03.mp3",
+        "phonetic": "/aɪl hæv ðə ˈsiːzər ˈsæləd ənd ə ɡrɪld ˈtʃɪkɪn ˈsænwɪtʃ. kʊd aɪ ˈɔːlsəʊ ɡet ˈekstrə ˈtaʊəlz?/",
+        "key_words": ["Caesar salad", "grilled chicken", "extra", "towels"],
+        "grammar_points": ["future_will_have", "could_polite_request", "also_connector"]
+      },
+      {
+        "order": 4,
+        "speaker": "Staff",
+        "text_en": "Certainly. Would you like anything to drink with that?",
+        "text_zh": "当然可以。您需要饮料吗？",
+        "audio_url": "https://example.com/audio/hotel-service-001-04.mp3",
+        "phonetic": "/ˈsɜːrtənli. wʊd juː laɪk ˈeniθɪŋ tuː drɪŋk wɪð ðæt?/",
+        "key_words": ["anything to drink", "with that"],
+        "grammar_points": ["certainly_confirmation", "would_like", "with_accompaniment"]
+      },
+      {
+        "order": 5,
+        "speaker": "Guest",
+        "text_en": "Yes, a bottle of sparkling water, please. How long will it take?",
+        "text_zh": "是的，请来一瓶气泡水。需要多长时间？",
+        "audio_url": "https://example.com/audio/hotel-service-001-05.mp3",
+        "phonetic": "/jes, ə ˈbɒtl ɒv ˈspɑːrklɪŋ ˈwɔːtər, pliːz. haʊ lɒŋ wɪl ɪt teɪk?/",
+        "key_words": ["sparkling water", "how long"],
+        "grammar_points": ["bottle_of", "duration_question"]
+      },
+      {
+        "order": 6,
+        "speaker": "Staff",
+        "text_en": "It should arrive in about 20 to 25 minutes. Is there anything else I can help you with?",
+        "text_zh": "大约20到25分钟送到。还有其他需要帮忙的吗？",
+        "audio_url": "https://example.com/audio/hotel-service-001-06.mp3",
+        "phonetic": "/ɪt ʃʊd əˈraɪv ɪn əˈbaʊt ˈtwenti tuː ˈtwenti faɪv ˈmɪnɪts. ɪz ðeər ˈeniθɪŋ els aɪ kæn help juː wɪð?/",
+        "key_words": ["arrive", "about", "anything else"],
+        "grammar_points": ["should_probability", "time_range", "offer_to_help"]
+      },
+      {
+        "order": 7,
+        "speaker": "Guest",
+        "text_en": "No, that's all. Thank you!",
+        "text_zh": "不用了，就这些。谢谢！",
+        "audio_url": "https://example.com/audio/hotel-service-001-07.mp3",
+        "phonetic": "/nəʊ, ðæts ɔːl. θæŋk juː!/",
+        "key_words": [],
+        "grammar_points": ["thats_all", "polite_ending"]
+      }
+    ],
+    "vocabulary": [
+      {"word": "room service", "translation": "客房送餐服务", "level": "A2"},
+      {"word": "order", "translation": "点餐，订购", "level": "A2"},
+      {"word": "grilled", "translation": "烤的", "level": "B1"},
+      {"word": "extra", "translation": "额外的", "level": "A2"},
+      {"word": "towels", "translation": "毛巾", "level": "A2"},
+      {"word": "sparkling water", "translation": "气泡水", "level": "B1"},
+      {"word": "arrive", "translation": "到达", "level": "A2"},
+      {"word": "anything else", "translation": "其他任何东西", "level": "A2"}
+    ],
+    "cultural_notes": "Room service typically includes a delivery fee or service charge (15-20%). Tipping the delivery person $2-5 is customary in the US.",
+    "practice_tips": "Practice 'I'd like' vs 'I'll have' - both work for ordering, but 'I'd like' is slightly more polite. Learn common food adjectives: grilled, fried, steamed, baked.",
+    "created_at": "2025-10-03T00:00:00Z"
+  },
+  {
+    "id": "hotel-checkout-001",
+    "scenario_id": "hotel-stay",
+    "sub_scenario_id": "hotel-checkout",
+    "order": 3,
+    "title_en": "Check-out and Billing",
+    "title_zh": "退房结账",
+    "level": "B1",
+    "sentences": [
+      {
+        "order": 1,
+        "speaker": "Guest",
+        "text_en": "Good morning. I'd like to check out, please. Room 1508.",
+        "text_zh": "早上好。我想退房。1508房间。",
+        "audio_url": "https://example.com/audio/hotel-checkout-001-01.mp3",
+        "phonetic": "/ɡʊd ˈmɔːrnɪŋ. aɪd laɪk tuː tʃek aʊt, pliːz. ruːm ˈfɪfˈtiːn əʊ eɪt/",
+        "key_words": ["check out"],
+        "grammar_points": ["would_like_to", "phrasal_verb_check_out"]
+      },
+      {
+        "order": 2,
+        "speaker": "Receptionist",
+        "text_en": "Certainly, Mr. Smith. How was your stay?",
+        "text_zh": "当然，Smith先生。您住得怎么样？",
+        "audio_url": "https://example.com/audio/hotel-checkout-001-02.mp3",
+        "phonetic": "/ˈsɜːrtənli, ˈmɪstər smɪθ. haʊ wɒz jʊər steɪ?/",
+        "key_words": ["stay"],
+        "grammar_points": ["how_was_question", "past_simple"]
+      },
+      {
+        "order": 3,
+        "speaker": "Guest",
+        "text_en": "It was excellent, thank you. Could I see my bill before settling up?",
+        "text_zh": "非常好，谢谢。我能在结账前看一下账单吗？",
+        "audio_url": "https://example.com/audio/hotel-checkout-001-03.mp3",
+        "phonetic": "/ɪt wɒz ˈeksələnt, θæŋk juː. kʊd aɪ siː maɪ bɪl bɪˈfɔːr ˈsetlɪŋ ʌp?/",
+        "key_words": ["bill", "settling up"],
+        "grammar_points": ["past_simple_was", "could_request", "before_time", "phrasal_verb_settling_up"]
+      },
+      {
+        "order": 4,
+        "speaker": "Receptionist",
+        "text_en": "Of course. Let me print that out for you. I see you had room service last night for $45, and there's a minibar charge of $12.",
+        "text_zh": "当然。让我给您打印出来。我看到您昨晚的客房送餐是45美元，还有12美元的迷你吧费用。",
+        "audio_url": "https://example.com/audio/hotel-checkout-001-04.mp3",
+        "phonetic": "/ɒv kɔːrs. let miː prɪnt ðæt aʊt fɔːr juː. aɪ siː juː hæd ruːm ˈsɜːrvɪs lɑːst naɪt fɔːr ˈfɔːrti faɪv ˈdɒlərz, ənd ðeərz ə ˈmɪnibɑːr tʃɑːrdʒ ɒv ˈtwelv ˈdɒlərz/",
+        "key_words": ["print out", "minibar", "charge"],
+        "grammar_points": ["phrasal_verb_print_out", "past_simple_had", "theres_charge"]
+      },
+      {
+        "order": 5,
+        "speaker": "Guest",
+        "text_en": "That looks correct. Can I pay by credit card?",
+        "text_zh": "看起来是对的。我可以用信用卡支付吗？",
+        "audio_url": "https://example.com/audio/hotel-checkout-001-05.mp3",
+        "phonetic": "/ðæt lʊks kəˈrekt. kæn aɪ peɪ baɪ ˈkredɪt kɑːrd?/",
+        "key_words": ["looks correct", "pay by"],
+        "grammar_points": ["looks_adjective", "can_permission", "pay_by_method"]
+      },
+      {
+        "order": 6,
+        "speaker": "Receptionist",
+        "text_en": "Yes, I'll charge it to the card on file. Could you please sign here? Would you like a receipt?",
+        "text_zh": "是的，我会从您登记的卡中扣款。请在这里签名好吗？您需要收据吗？",
+        "audio_url": "https://example.com/audio/hotel-checkout-001-06.mp3",
+        "phonetic": "/jes, aɪl tʃɑːrdʒ ɪt tuː ðə kɑːrd ɒn faɪl. kʊd juː pliːz saɪn hɪər? wʊd juː laɪk ə rɪˈsiːt?/",
+        "key_words": ["on file", "sign", "receipt"],
+        "grammar_points": ["future_will", "charge_to", "polite_request", "would_like"]
+      },
+      {
+        "order": 7,
+        "speaker": "Guest",
+        "text_en": "Yes, please. Also, could you call a taxi to the airport?",
+        "text_zh": "是的，请给我。还有，您能帮我叫一辆去机场的出租车吗？",
+        "audio_url": "https://example.com/audio/hotel-checkout-001-07.mp3",
+        "phonetic": "/jes, pliːz. ˈɔːlsəʊ, kʊd juː kɔːl ə ˈtæksi tuː ði ˈeəpɔːrt?/",
+        "key_words": ["call a taxi"],
+        "grammar_points": ["also_connector", "could_request", "directional_to"]
+      },
+      {
+        "order": 8,
+        "speaker": "Receptionist",
+        "text_en": "Absolutely. It should be here in about 5 minutes. Thank you for staying with us!",
+        "text_zh": "当然。大约5分钟就到。感谢您入住我们酒店！",
+        "audio_url": "https://example.com/audio/hotel-checkout-001-08.mp3",
+        "phonetic": "/ˈæbsəluːtli. ɪt ʃʊd biː hɪər ɪn əˈbaʊt faɪv ˈmɪnɪts. θæŋk juː fɔːr ˈsteɪɪŋ wɪð ʌs!/",
+        "key_words": ["absolutely", "staying with us"],
+        "grammar_points": ["absolutely_confirmation", "should_prediction", "thank_for_gerund"]
+      }
+    ],
+    "vocabulary": [
+      {"word": "check out", "translation": "退房", "level": "A2"},
+      {"word": "stay", "translation": "入住，逗留", "level": "A2"},
+      {"word": "bill", "translation": "账单", "level": "A2"},
+      {"word": "settling up", "translation": "结账", "level": "B2"},
+      {"word": "minibar", "translation": "迷你吧", "level": "B1"},
+      {"word": "charge", "translation": "费用，收费", "level": "A2"},
+      {"word": "on file", "translation": "存档的，登记的", "level": "B2"},
+      {"word": "receipt", "translation": "收据", "level": "A2"}
+    ],
+    "cultural_notes": "Check-out time is typically 11 AM or 12 PM. Late check-out may incur extra charges. Always review your bill for unexpected charges (minibar, phone calls, parking).",
+    "practice_tips": "Distinguish 'check in' (arrival) vs 'check out' (departure). Learn hotel charges vocabulary: room rate, tax, service charge, incidentals.",
+    "created_at": "2025-10-03T00:00:00Z"
+  },
+  {
+    "id": "meeting-intro-001",
+    "scenario_id": "business-meeting",
+    "sub_scenario_id": "meeting-intro",
+    "order": 1,
+    "title_en": "Professional Self Introduction",
+    "title_zh": "职业自我介绍",
+    "level": "B1",
+    "sentences": [
+      {
+        "order": 1,
+        "speaker": "Person A",
+        "text_en": "Good morning, everyone. Let me introduce myself. I'm Sarah Chen, the new Marketing Manager.",
+        "text_zh": "大家早上好。让我自我介绍一下。我是Sarah Chen，新任市场经理。",
+        "audio_url": "https://example.com/audio/meeting-intro-001-01.mp3",
+        "phonetic": "/ɡʊd ˈmɔːrnɪŋ, ˈevriwʌn. let miː ˌɪntrəˈdjuːs maɪˈself. aɪm ˈsærə tʃen, ðə njuː ˈmɑːrkɪtɪŋ ˈmænɪdʒər/",
+        "key_words": ["introduce myself", "Marketing Manager"],
+        "grammar_points": ["let_me_structure", "job_title"]
+      },
+      {
+        "order": 2,
+        "speaker": "Person A",
+        "text_en": "I joined the company last month from our Singapore office. I'm excited to be working with this team.",
+        "text_zh": "我上个月从新加坡办公室加入公司。很高兴能与这个团队合作。",
+        "audio_url": "https://example.com/audio/meeting-intro-001-02.mp3",
+        "phonetic": "/aɪ dʒɔɪnd ðə ˈkʌmpəni lɑːst mʌnθ frɒm ˈaʊər ˌsɪŋəˈpɔːr ˈɒfɪs. aɪm ɪkˈsaɪtɪd tuː biː ˈwɜːrkɪŋ wɪð ðɪs tiːm/",
+        "key_words": ["joined", "excited to be working"],
+        "grammar_points": ["past_simple_joined", "excited_to_infinitive", "continuous_working"]
+      },
+      {
+        "order": 3,
+        "speaker": "Person B",
+        "text_en": "Welcome aboard, Sarah! I'm Tom Wilson, Sales Director. I've heard great things about your work in Singapore.",
+        "text_zh": "欢迎加入，Sarah！我是Tom Wilson，销售总监。我听说了很多关于您在新加坡工作的好评。",
+        "audio_url": "https://example.com/audio/meeting-intro-001-03.mp3",
+        "phonetic": "/ˈwelkəm əˈbɔːrd, ˈsærə! aɪm tɒm ˈwɪlsən, seɪlz dəˈrektər. aɪv hɜːrd ɡreɪt θɪŋz əˈbaʊt jʊər wɜːrk ɪn ˌsɪŋəˈpɔːr/",
+        "key_words": ["welcome aboard", "Sales Director", "heard great things"],
+        "grammar_points": ["welcome_aboard_idiom", "present_perfect_heard", "about_preposition"]
+      },
+      {
+        "order": 4,
+        "speaker": "Person A",
+        "text_en": "Thank you, Tom. I'm looking forward to collaborating with sales on our upcoming campaigns.",
+        "text_zh": "谢谢，Tom。我期待与销售团队在即将到来的营销活动中合作。",
+        "audio_url": "https://example.com/audio/meeting-intro-001-04.mp3",
+        "phonetic": "/θæŋk juː, tɒm. aɪm ˈlʊkɪŋ ˈfɔːrwərd tuː kəˈlæbəreɪtɪŋ wɪð seɪlz ɒn ˈaʊər ˈʌpkʌmɪŋ kæmˈpeɪnz/",
+        "key_words": ["looking forward to", "collaborating", "upcoming campaigns"],
+        "grammar_points": ["looking_forward_to_gerund", "collaborating_with", "upcoming_adjective"]
+      },
+      {
+        "order": 5,
+        "speaker": "Person C",
+        "text_en": "Hi Sarah, I'm Linda Park, Product Manager. If you need any support with product information, feel free to reach out.",
+        "text_zh": "你好Sarah，我是Linda Park，产品经理。如果您需要任何产品信息支持，请随时联系我。",
+        "audio_url": "https://example.com/audio/meeting-intro-001-05.mp3",
+        "phonetic": "/haɪ ˈsærə, aɪm ˈlɪndə pɑːrk, ˈprɒdʌkt ˈmænɪdʒər. ɪf juː niːd ˈeni səˈpɔːrt wɪð ˈprɒdʌkt ˌɪnfərˈmeɪʃən, fiːl friː tuː riːtʃ aʊt/",
+        "key_words": ["Product Manager", "support", "feel free to", "reach out"],
+        "grammar_points": ["if_conditional", "need_with", "feel_free_to_infinitive", "phrasal_verb_reach_out"]
+      },
+      {
+        "order": 6,
+        "speaker": "Person A",
+        "text_en": "That's very kind of you, Linda. I'm sure I'll take you up on that offer soon!",
+        "text_zh": "您真是太好了，Linda。我肯定很快就会接受您的帮助！",
+        "audio_url": "https://example.com/audio/meeting-intro-001-06.mp3",
+        "phonetic": "/ðæts ˈveri kaɪnd ɒv juː, ˈlɪndə. aɪm ʃʊər aɪl teɪk juː ʌp ɒn ðæt ˈɒfər suːn/",
+        "key_words": ["kind of you", "take you up on", "offer"],
+        "grammar_points": ["thats_kind_of_you", "future_will_take", "phrasal_verb_take_up_on", "that_offer"]
+      }
+    ],
+    "vocabulary": [
+      {"word": "introduce myself", "translation": "自我介绍", "level": "A2"},
+      {"word": "joined", "translation": "加入", "level": "A2"},
+      {"word": "excited", "translation": "兴奋的", "level": "A2"},
+      {"word": "welcome aboard", "translation": "欢迎加入", "level": "B1"},
+      {"word": "collaborating", "translation": "合作", "level": "B1"},
+      {"word": "upcoming", "translation": "即将到来的", "level": "B1"},
+      {"word": "reach out", "translation": "联系", "level": "B1"},
+      {"word": "take you up on", "translation": "接受（提议）", "level": "B2"}
+    ],
+    "cultural_notes": "In Western business culture, introductions typically include name, title, and a brief background. It's common to offer help to new team members. Handshakes are standard (pre/post-pandemic considerations apply).",
+    "practice_tips": "Master professional titles: Manager, Director, VP, C-level (CEO, CFO, CTO). Practice 'looking forward to' + gerund structure - very common in business English.",
+    "created_at": "2025-10-03T00:00:00Z"
+  },
+  {
+    "id": "meeting-agenda-001",
+    "scenario_id": "business-meeting",
+    "sub_scenario_id": "meeting-agenda",
+    "order": 2,
+    "title_en": "Discussing Meeting Agenda",
+    "title_zh": "讨论会议议程",
+    "level": "B2",
+    "sentences": [
+      {
+        "order": 1,
+        "speaker": "Chair",
+        "text_en": "Alright, let's get started. The main agenda item today is our Q4 marketing strategy. Sarah, would you like to kick things off?",
+        "text_zh": "好的，我们开始吧。今天的主要议程是我们第四季度的市场策略。Sarah，您想先开始吗？",
+        "audio_url": "https://example.com/audio/meeting-agenda-001-01.mp3",
+        "phonetic": "/ɔːlˈraɪt, lets ɡet ˈstɑːrtɪd. ðə meɪn əˈdʒendə ˈaɪtəm təˈdeɪ ɪz ˈaʊər kjuː fɔːr ˈmɑːrkɪtɪŋ ˈstrætədʒi. ˈsærə, wʊd juː laɪk tuː kɪk θɪŋz ɒf?/",
+        "key_words": ["let's get started", "agenda item", "Q4", "kick things off"],
+        "grammar_points": ["lets_suggestion", "main_adjective", "would_like_to", "phrasal_verb_kick_off"]
+      },
+      {
+        "order": 2,
+        "speaker": "Sarah",
+        "text_en": "Absolutely. I've analyzed our current market position and identified three key areas we should focus on.",
+        "text_zh": "当然。我分析了我们当前的市场地位，并确定了我们应该关注的三个关键领域。",
+        "audio_url": "https://example.com/audio/meeting-agenda-001-02.mp3",
+        "phonetic": "/ˈæbsəluːtli. aɪv ˈænəlaɪzd ˈaʊər ˈkʌrənt ˈmɑːrkɪt pəˈzɪʃən ənd aɪˈdentɪfaɪd θriː kiː ˈeəriəz wiː ʃʊd ˈfəʊkəs ɒn/",
+        "key_words": ["analyzed", "market position", "identified", "key areas", "focus on"],
+        "grammar_points": ["present_perfect_analyzed", "current_adjective", "should_modal", "focus_on"]
+      },
+      {
+        "order": 3,
+        "speaker": "Tom",
+        "text_en": "Before we dive in, could you clarify how this aligns with our sales targets?",
+        "text_zh": "在我们深入讨论之前，您能说明一下这如何与我们的销售目标保持一致吗？",
+        "audio_url": "https://example.com/audio/meeting-agenda-001-03.mp3",
+        "phonetic": "/bɪˈfɔːr wiː daɪv ɪn, kʊd juː ˈklærɪfaɪ haʊ ðɪs əˈlaɪnz wɪð ˈaʊər seɪlz ˈtɑːrɡɪts?/",
+        "key_words": ["dive in", "clarify", "aligns with", "sales targets"],
+        "grammar_points": ["before_time", "could_polite_request", "aligns_with", "how_indirect_question"]
+      },
+      {
+        "order": 4,
+        "speaker": "Sarah",
+        "text_en": "Good question. Each of these initiatives is designed to drive a 15% increase in qualified leads, which should translate to higher conversion rates.",
+        "text_zh": "好问题。这些举措中的每一项都旨在将合格线索增加15%，这应该能转化为更高的转化率。",
+        "audio_url": "https://example.com/audio/meeting-agenda-001-04.mp3",
+        "phonetic": "/ɡʊd ˈkwestʃən. iːtʃ ɒv ðiːz ɪˈnɪʃətɪvz ɪz dɪˈzaɪnd tuː draɪv ə ˈfɪfˈtiːn pərˈsent ɪnˈkriːs ɪn ˈkwɒlɪfaɪd liːdz, wɪtʃ ʃʊd trænsˈleɪt tuː ˈhaɪər kənˈvɜːrʒən reɪts/",
+        "key_words": ["initiatives", "designed to", "drive", "qualified leads", "translate to", "conversion rates"],
+        "grammar_points": ["each_of", "is_designed_to", "percentage_expression", "should_prediction", "which_relative_clause"]
+      },
+      {
+        "order": 5,
+        "speaker": "Linda",
+        "text_en": "That makes sense. However, I'm concerned about the timeline. Can we realistically achieve this by year-end?",
+        "text_zh": "这说得通。但是，我担心时间表。我们能在年底前实际完成这个目标吗？",
+        "audio_url": "https://example.com/audio/meeting-agenda-001-05.mp3",
+        "phonetic": "/ðæt meɪks sens. haʊˈevər, aɪm kənˈsɜːrnd əˈbaʊt ðə ˈtaɪmlaɪn. kæn wiː ˌrɪəˈlɪstɪkli əˈtʃiːv ðɪs baɪ jɪər end?/",
+        "key_words": ["makes sense", "concerned about", "timeline", "realistically", "achieve", "year-end"],
+        "grammar_points": ["that_makes_sense", "im_concerned_about", "can_possibility", "realistically_adverb", "by_deadline"]
+      },
+      {
+        "order": 6,
+        "speaker": "Sarah",
+        "text_en": "Fair point. If we prioritize digital channels and leverage automation tools, I believe it's achievable. We'd need full team buy-in, though.",
+        "text_zh": "说得对。如果我们优先考虑数字渠道并利用自动化工具，我相信是可以实现的。不过，我们需要整个团队的支持。",
+        "audio_url": "https://example.com/audio/meeting-agenda-001-06.mp3",
+        "phonetic": "/feər pɔɪnt. ɪf wiː praɪˈɒrɪtaɪz ˈdɪdʒɪtl ˈtʃænlz ənd ˈliːvərɪdʒ ˌɔːtəˈmeɪʃən tuːlz, aɪ bɪˈliːv ɪts əˈtʃiːvəbl. wiːd niːd fʊl tiːm baɪ ɪn, ðəʊ/",
+        "key_words": ["fair point", "prioritize", "leverage", "automation", "achievable", "buy-in"],
+        "grammar_points": ["fair_point_acknowledgment", "if_conditional", "i_believe", "its_achievable", "wed_need", "though_contrast"]
+      },
+      {
+        "order": 7,
+        "speaker": "Chair",
+        "text_en": "Excellent discussion. Let's table this for now and reconvene after reviewing Sarah's full proposal. Any objections?",
+        "text_zh": "讨论得很好。我们先暂时搁置这个，在审查Sarah的完整提案后再重新开会。有异议吗？",
+        "audio_url": "https://example.com/audio/meeting-agenda-001-07.mp3",
+        "phonetic": "/ˈeksələnt dɪˈskʌʃən. lets ˈteɪbl ðɪs fɔːr naʊ ənd ˌriːkənˈviːn ˈɑːftər rɪˈvjuːɪŋ ˈsærəz fʊl prəˈpəʊzl. ˈeni əbˈdʒekʃənz?/",
+        "key_words": ["table", "for now", "reconvene", "reviewing", "proposal", "objections"],
+        "grammar_points": ["lets_suggestion", "table_idiom", "for_now", "after_gerund", "any_question"]
+      }
+    ],
+    "vocabulary": [
+      {"word": "agenda item", "translation": "议程项目", "level": "B1"},
+      {"word": "kick things off", "translation": "开始", "level": "B2"},
+      {"word": "analyzed", "translation": "分析", "level": "B1"},
+      {"word": "identified", "translation": "识别，确定", "level": "B1"},
+      {"word": "dive in", "translation": "深入", "level": "B2"},
+      {"word": "aligns with", "translation": "与...一致", "level": "B2"},
+      {"word": "initiatives", "translation": "举措，计划", "level": "B2"},
+      {"word": "qualified leads", "translation": "合格线索", "level": "C1"},
+      {"word": "conversion rates", "translation": "转化率", "level": "B2"},
+      {"word": "leverage", "translation": "利用", "level": "B2"},
+      {"word": "buy-in", "translation": "支持，认可", "level": "C1"},
+      {"word": "table", "translation": "搁置（讨论）", "level": "C1"},
+      {"word": "reconvene", "translation": "重新召集", "level": "C1"}
+    ],
+    "cultural_notes": "'Table' means OPPOSITE things in US vs UK! US: postpone discussion. UK: bring up for discussion. In business meetings, disagreements should be expressed politely with phrases like 'I'm concerned...' or 'Could you clarify...'",
+    "practice_tips": "Master business meeting phrases: 'kick off', 'dive in', 'table this', 'circle back', 'touch base'. Practice softening language: 'I believe', 'It seems', 'Perhaps we could'.",
+    "created_at": "2025-10-03T00:00:00Z"
+  },
+  {
+    "id": "meeting-summary-001",
+    "scenario_id": "business-meeting",
+    "sub_scenario_id": "meeting-summary",
+    "order": 3,
+    "title_en": "Meeting Summary and Action Items",
+    "title_zh": "会议总结和行动项",
+    "level": "B2",
+    "sentences": [
+      {
+        "order": 1,
+        "speaker": "Chair",
+        "text_en": "Alright, let's wrap up. To summarize, we've covered three main points today.",
+        "text_zh": "好的，我们总结一下。总结来说，我们今天讨论了三个要点。",
+        "audio_url": "https://example.com/audio/meeting-summary-001-01.mp3",
+        "phonetic": "/ɔːlˈraɪt, lets ræp ʌp. tuː ˈsʌməraɪz, wiːv ˈkʌvərd θriː meɪn pɔɪnts təˈdeɪ/",
+        "key_words": ["wrap up", "to summarize", "covered"],
+        "grammar_points": ["lets_suggestion", "phrasal_verb_wrap_up", "to_summarize", "present_perfect_covered"]
+      },
+      {
+        "order": 2,
+        "speaker": "Chair",
+        "text_en": "First, we've agreed on the Q4 marketing strategy focusing on digital channels. Second, the budget allocation has been approved. Third, we've identified potential risks.",
+        "text_zh": "首先，我们同意了专注于数字渠道的第四季度市场策略。其次，预算分配已获批准。第三，我们已经识别了潜在风险。",
+        "audio_url": "https://example.com/audio/meeting-summary-001-02.mp3",
+        "phonetic": "/fɜːrst, wiːv əˈɡriːd ɒn ðə kjuː fɔːr ˈmɑːrkɪtɪŋ ˈstrætədʒi ˈfəʊkəsɪŋ ɒn ˈdɪdʒɪtl ˈtʃænlz. ˈsekənd, ðə ˈbʌdʒɪt ˌæləˈkeɪʃən həz biːn əˈpruːvd. θɜːrd, wiːv aɪˈdentɪfaɪd pəˈtenʃəl rɪsks/",
+        "key_words": ["agreed on", "budget allocation", "approved", "potential risks"],
+        "grammar_points": ["sequencing_first_second_third", "present_perfect_agreed", "passive_has_been_approved"]
+      },
+      {
+        "order": 3,
+        "speaker": "Sarah",
+        "text_en": "Just to clarify, the timeline we discussed is still flexible pending final approvals from senior management, correct?",
+        "text_zh": "澄清一下，我们讨论的时间表仍然是灵活的，等待高级管理层的最终批准，对吗？",
+        "audio_url": "https://example.com/audio/meeting-summary-001-03.mp3",
+        "phonetic": "/dʒʌst tuː ˈklærɪfaɪ, ðə ˈtaɪmlaɪn wiː dɪsˈkʌst ɪz stɪl ˈfleksəbl ˈpendɪŋ ˈfaɪnl əˈpruːvlz frɒm ˈsiːniər ˈmænɪdʒmənt, kəˈrekt?/",
+        "key_words": ["just to clarify", "timeline", "flexible", "pending", "senior management"],
+        "grammar_points": ["just_to_clarify", "still_adverb", "pending_preposition", "correct_tag_question"]
+      },
+      {
+        "order": 4,
+        "speaker": "Chair",
+        "text_en": "That's right. Moving on to action items: Sarah, you'll draft the detailed proposal by next Friday.",
+        "text_zh": "没错。接下来说行动项：Sarah，您要在下周五之前起草详细提案。",
+        "audio_url": "https://example.com/audio/meeting-summary-001-04.mp3",
+        "phonetic": "/ðæts raɪt. ˈmuːvɪŋ ɒn tuː ˈækʃən ˈaɪtəmz: ˈsærə, juːl drɑːft ðə dɪˈteɪld prəˈpəʊzl baɪ nekst ˈfraɪdeɪ/",
+        "key_words": ["moving on to", "action items", "draft", "detailed proposal"],
+        "grammar_points": ["thats_right", "phrasal_verb_moving_on_to", "future_youll", "by_deadline"]
+      },
+      {
+        "order": 5,
+        "speaker": "Chair",
+        "text_en": "Tom, you're responsible for coordinating with the sales team on lead qualification criteria. Linda, please review the technical feasibility.",
+        "text_zh": "Tom，您负责与销售团队协调线索资格标准。Linda，请审查技术可行性。",
+        "audio_url": "https://example.com/audio/meeting-summary-001-05.mp3",
+        "phonetic": "/tɒm, jʊər rɪˈspɒnsəbl fɔːr kəʊˈɔːrdɪneɪtɪŋ wɪð ðə seɪlz tiːm ɒn liːd ˌkwɒlɪfɪˈkeɪʃən kraɪˈtɪəriə. ˈlɪndə, pliːz rɪˈvjuː ðə ˈteknɪkl ˌfiːzəˈbɪləti/",
+        "key_words": ["responsible for", "coordinating", "criteria", "feasibility"],
+        "grammar_points": ["youre_responsible_for", "gerund_coordinating", "please_imperative", "technical_adjective"]
+      },
+      {
+        "order": 6,
+        "speaker": "Tom",
+        "text_en": "Understood. I'll loop in the regional managers and have preliminary feedback by Wednesday.",
+        "text_zh": "明白了。我会让区域经理参与进来，并在周三之前给出初步反馈。",
+        "audio_url": "https://example.com/audio/meeting-summary-001-06.mp3",
+        "phonetic": "/ˌʌndərˈstʊd. aɪl luːp ɪn ðə ˈriːdʒənl ˈmænɪdʒərz ənd hæv prɪˈlɪmɪnəri ˈfiːdbæk baɪ ˈwenzdeɪ/",
+        "key_words": ["loop in", "regional managers", "preliminary feedback"],
+        "grammar_points": ["understood_confirmation", "future_ill", "phrasal_verb_loop_in", "have_possess", "by_deadline"]
+      },
+      {
+        "order": 7,
+        "speaker": "Chair",
+        "text_en": "Perfect. Let's schedule a follow-up meeting for two weeks from now. I'll send out calendar invites. Thanks everyone for your contributions today!",
+        "text_zh": "很好。我们安排两周后的后续会议。我会发送日历邀请。感谢大家今天的贡献！",
+        "audio_url": "https://example.com/audio/meeting-summary-001-07.mp3",
+        "phonetic": "/ˈpɜːrfɪkt. lets ˈskedʒuːl ə ˈfɒləʊ ʌp ˈmiːtɪŋ fɔːr tuː wiːks frɒm naʊ. aɪl send aʊt ˈkælɪndər ɪnˈvaɪts. θæŋks ˈevriwʌn fɔːr jʊər ˌkɒntrɪˈbjuːʃənz təˈdeɪ/",
+        "key_words": ["schedule", "follow-up meeting", "calendar invites", "contributions"],
+        "grammar_points": ["lets_suggestion", "follow_up_compound", "from_now", "future_ill", "thanks_for"]
+      }
+    ],
+    "vocabulary": [
+      {"word": "wrap up", "translation": "总结，结束", "level": "B2"},
+      {"word": "to summarize", "translation": "总结来说", "level": "B1"},
+      {"word": "covered", "translation": "涵盖", "level": "B1"},
+      {"word": "budget allocation", "translation": "预算分配", "level": "B2"},
+      {"word": "approved", "translation": "批准", "level": "B1"},
+      {"word": "pending", "translation": "等待，悬而未决", "level": "B2"},
+      {"word": "action items", "translation": "行动项", "level": "B2"},
+      {"word": "draft", "translation": "起草", "level": "B1"},
+      {"word": "responsible for", "translation": "负责", "level": "A2"},
+      {"word": "coordinating", "translation": "协调", "level": "B2"},
+      {"word": "criteria", "translation": "标准（复数）", "level": "B2"},
+      {"word": "feasibility", "translation": "可行性", "level": "C1"},
+      {"word": "loop in", "translation": "让...参与", "level": "C1"},
+      {"word": "preliminary", "translation": "初步的", "level": "B2"},
+      {"word": "follow-up", "translation": "后续的", "level": "B1"}
+    ],
+    "cultural_notes": "Effective meeting summaries include: key decisions, action items with owners and deadlines, and next steps. Always confirm understanding with phrases like 'Just to clarify...' or 'To confirm...'",
+    "practice_tips": "Master summary phrases: 'To sum up', 'In conclusion', 'To recap'. Learn action item language: 'You're responsible for', 'Please ensure', 'I'll take care of', 'Let's circle back on'.",
+    "created_at": "2025-10-03T00:00:00Z"
+  }
+]

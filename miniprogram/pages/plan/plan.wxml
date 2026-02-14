@@ -1,0 +1,4 @@
+<view class="container">
+  <progress-bar percent="{{percent}}" />
+  <view style="margin-top: 16rpx;">连续打卡：{{streak}} 天</view>
+</view>

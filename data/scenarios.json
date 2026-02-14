@@ -1,0 +1,140 @@
+[
+  {
+    "id": "airport-basics",
+    "name_en": "Airport Essentials",
+    "name_zh": "机场场景",
+    "category": "travel",
+    "level": "A2",
+    "priority": 1,
+    "description_en": "Essential conversations for navigating airports: check-in, security, and boarding",
+    "description_zh": "机场必备对话：值机、安检、登机流程",
+    "icon": "✈️",
+    "estimated_duration_minutes": 45,
+    "dialogue_count": 3,
+    "vocabulary_count": 25,
+    "tags": ["travel", "airport", "essential", "beginner-friendly"],
+    "scenarios": [
+      {
+        "id": "airport-checkin",
+        "order": 1,
+        "title_en": "Check-in Counter",
+        "title_zh": "办理值机",
+        "difficulty": "A2"
+      },
+      {
+        "id": "airport-security",
+        "order": 2,
+        "title_en": "Security Checkpoint",
+        "title_zh": "安检通关",
+        "difficulty": "A2"
+      },
+      {
+        "id": "airport-boarding",
+        "order": 3,
+        "title_en": "Boarding Gate",
+        "title_zh": "登机指引",
+        "difficulty": "B1"
+      }
+    ],
+    "learning_objectives": [
+      "Understanding airport staff instructions",
+      "Asking about flight information",
+      "Following security procedures",
+      "Responding to common questions"
+    ],
+    "created_at": "2025-10-03T00:00:00Z",
+    "updated_at": "2025-10-03T00:00:00Z"
+  },
+  {
+    "id": "hotel-stay",
+    "name_en": "Hotel Stay",
+    "name_zh": "酒店场景",
+    "category": "travel",
+    "level": "A2",
+    "priority": 2,
+    "description_en": "Common hotel interactions: check-in, room service, and check-out",
+    "description_zh": "酒店常见对话：前台入住、客房服务、退房结账",
+    "icon": "🏨",
+    "estimated_duration_minutes": 50,
+    "dialogue_count": 3,
+    "vocabulary_count": 30,
+    "tags": ["travel", "hotel", "accommodation", "service"],
+    "scenarios": [
+      {
+        "id": "hotel-checkin",
+        "order": 1,
+        "title_en": "Front Desk Check-in",
+        "title_zh": "前台入住登记",
+        "difficulty": "A2"
+      },
+      {
+        "id": "hotel-service",
+        "order": 2,
+        "title_en": "Room Service Request",
+        "title_zh": "客房服务请求",
+        "difficulty": "B1"
+      },
+      {
+        "id": "hotel-checkout",
+        "order": 3,
+        "title_en": "Check-out & Billing",
+        "title_zh": "退房结账",
+        "difficulty": "B1"
+      }
+    ],
+    "learning_objectives": [
+      "Making reservations and confirming details",
+      "Requesting hotel services",
+      "Handling billing inquiries",
+      "Reporting room issues"
+    ],
+    "created_at": "2025-10-03T00:00:00Z",
+    "updated_at": "2025-10-03T00:00:00Z"
+  },
+  {
+    "id": "business-meeting",
+    "name_en": "Business Meeting",
+    "name_zh": "商务会议",
+    "category": "business",
+    "level": "B2",
+    "priority": 3,
+    "description_en": "Professional meeting scenarios: introductions, discussions, and summaries",
+    "description_zh": "职场会议场景：自我介绍、议程讨论、总结发言",
+    "icon": "💼",
+    "estimated_duration_minutes": 60,
+    "dialogue_count": 3,
+    "vocabulary_count": 40,
+    "tags": ["business", "professional", "meeting", "intermediate"],
+    "scenarios": [
+      {
+        "id": "meeting-intro",
+        "order": 1,
+        "title_en": "Self Introduction",
+        "title_zh": "职业自我介绍",
+        "difficulty": "B1"
+      },
+      {
+        "id": "meeting-agenda",
+        "order": 2,
+        "title_en": "Discussing Agenda",
+        "title_zh": "讨论议程要点",
+        "difficulty": "B2"
+      },
+      {
+        "id": "meeting-summary",
+        "order": 3,
+        "title_en": "Meeting Summary",
+        "title_zh": "会议总结发言",
+        "difficulty": "B2"
+      }
+    ],
+    "learning_objectives": [
+      "Professional self-introduction",
+      "Expressing opinions politely",
+      "Asking clarifying questions",
+      "Summarizing key points"
+    ],
+    "created_at": "2025-10-03T00:00:00Z",
+    "updated_at": "2025-10-03T00:00:00Z"
+  }
+]

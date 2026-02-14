@@ -1,0 +1,3 @@
+<view wx:if="{{visible}}" class="ad-banner" bindtap="onClick">
+  <text>广告位（{{slot}}）</text>
+</view>

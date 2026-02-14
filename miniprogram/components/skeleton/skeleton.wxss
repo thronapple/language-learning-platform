@@ -1,0 +1,169 @@
+/* 骨架屏组件样式 */
+
+.skeleton {
+  width: 100%;
+}
+
+/* 基础骨架元素 */
+.skeleton-line,
+.skeleton-avatar,
+.skeleton-circle,
+.skeleton-image,
+.skeleton-title {
+  background: linear-gradient(
+    90deg,
+    #f0f0f0 25%,
+    #e0e0e0 50%,
+    #f0f0f0 75%
+  );
+  background-size: 400% 100%;
+  animation: skeleton-loading 1.5s ease-in-out infinite;
+  border-radius: var(--radius-sm);
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0 50%;
+  }
+}
+
+/* 行元素 */
+.skeleton-line {
+  height: 28rpx;
+  margin-bottom: 16rpx;
+}
+
+/* 头像元素 */
+.skeleton-avatar {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: var(--radius-full);
+  flex-shrink: 0;
+}
+
+/* 圆形元素 */
+.skeleton-circle {
+  width: 60rpx;
+  height: 60rpx;
+  border-radius: var(--radius-full);
+}
+
+/* 图片元素 */
+.skeleton-image {
+  height: 300rpx;
+  margin: var(--space-4) 0;
+  border-radius: var(--radius-lg);
+}
+
+/* 标题元素 */
+.skeleton-title {
+  height: 48rpx;
+  width: 60%;
+  margin-bottom: var(--space-6);
+}
+
+/* ========== 卡片骨架 ========== */
+.skeleton-card {
+  background: var(--bg-primary);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  box-shadow: var(--shadow-sm);
+}
+
+.skeleton-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+}
+
+.skeleton-lines {
+  flex: 1;
+}
+
+.skeleton-content .skeleton-line:last-child {
+  margin-bottom: 0;
+}
+
+/* ========== 列表骨架 ========== */
+.skeleton-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.skeleton-list-item {
+  background: var(--bg-primary);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.skeleton-list-item .skeleton-avatar {
+  width: 60rpx;
+  height: 60rpx;
+}
+
+.skeleton-list-item .skeleton-content {
+  flex: 1;
+}
+
+.skeleton-list-item .skeleton-line:last-child {
+  margin-bottom: 0;
+}
+
+/* ========== 文章骨架 ========== */
+.skeleton-article {
+  padding: var(--space-6);
+}
+
+.skeleton-paragraph {
+  margin-bottom: var(--space-6);
+}
+
+.skeleton-paragraph .skeleton-line:last-child {
+  margin-bottom: 0;
+}
+
+/* ========== 自定义骨架 ========== */
+.skeleton-custom {
+  /* 用户自定义内容 */
+}
+
+/* ========== 不同尺寸变体 ========== */
+.skeleton-sm .skeleton-line {
+  height: 20rpx;
+}
+
+.skeleton-sm .skeleton-avatar {
+  width: 60rpx;
+  height: 60rpx;
+}
+
+.skeleton-lg .skeleton-line {
+  height: 36rpx;
+}
+
+.skeleton-lg .skeleton-avatar {
+  width: 100rpx;
+  height: 100rpx;
+}
+
+/* ========== 淡入动画（骨架消失时）========== */
+.skeleton-fade-out {
+  animation: fadeOut 0.3s ease-out forwards;
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}

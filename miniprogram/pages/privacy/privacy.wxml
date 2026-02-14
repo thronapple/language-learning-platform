@@ -1,0 +1,9 @@
+<scroll-view class="container" scroll-y="true">
+  <view class="section">
+    <view class="title">隐私政策（简版）</view>
+    <view class="text">
+      我们仅收集用于提供服务的必要信息（如 OpenID、学习进度与自愿提交的联系信息）。
+      数据仅用于个性化学习与统计分析，不会向第三方出售或共享。您可随时申请删除。
+    </view>
+  </view>
+</scroll-view>

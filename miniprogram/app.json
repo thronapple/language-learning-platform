@@ -1,0 +1,25 @@
+{
+  "pages": [
+    "pages/assessment/intro/intro",
+    "pages/assessment/test/test",
+    "pages/assessment/result/result",
+    "pages/plan/index/index",
+    "pages/study/dialogue/dialogue",
+    "pages/index/index",
+    "pages/study/study",
+    "pages/vocab/vocab",
+    "pages/plan/plan",
+    "pages/import/import",
+    "pages/export/export",
+    "pages/upgrade/upgrade",
+    "pages/mine/mine",
+    "pages/privacy/privacy",
+    "pages/terms/terms"
+  ],
+  "window": {
+    "navigationBarTitleText": "语言学习",
+    "navigationBarBackgroundColor": "#ffffff",
+    "navigationBarTextStyle": "black",
+    "backgroundTextStyle": "light"
+  }
+}

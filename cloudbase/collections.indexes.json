@@ -1,0 +1,7 @@
+[
+  { "collection": "users", "indexes": [ { "keys": { "openid": 1 }, "options": { "unique": true } } ] },
+  { "collection": "progress", "indexes": [ { "keys": { "user_id": 1, "content_id": 1 }, "options": { } } ] },
+  { "collection": "vocab", "indexes": [ { "keys": { "user_id": 1, "next_review_at": 1 }, "options": { } } ] },
+  { "collection": "events", "indexes": [ { "keys": { "user_id": 1, "ts": 1 }, "options": { } } ] }
+]
+

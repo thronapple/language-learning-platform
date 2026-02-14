@@ -1,0 +1,16 @@
+from typing import Protocol
+
+
+class Repository(Protocol):
+    def get(self, collection: str, id: str) -> dict | None: ...
+    def put(self, collection: str, item: dict) -> str: ...
+    def delete(self, collection: str, id: str) -> bool: ...
+    def query(self, collection: str, filters: dict | None, limit: int, offset: int) -> tuple[list[dict], int]: ...
+    def query_with_date_filters(
+        self,
+        collection: str,
+        filters: dict | None = None,
+        date_filters: dict | None = None,
+        limit: int = 50,
+        offset: int = 0
+    ) -> tuple[list[dict], int]: ...

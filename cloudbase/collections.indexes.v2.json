@@ -1,0 +1,104 @@
+[
+  {
+    "collection": "users",
+    "indexes": [
+      { "keys": { "openid": 1 }, "options": { "unique": true } },
+      { "keys": { "unionid": 1 } },
+      { "keys": { "last_login": -1 } },
+      { "keys": { "subscription.status": 1 } }
+    ]
+  },
+  {
+    "collection": "scenarios",
+    "indexes": [
+      { "keys": { "category": 1, "sub_category": 1 } },
+      { "keys": { "priority_tier": 1, "is_essential": -1 } },
+      { "keys": { "tags": 1 } },
+      { "keys": { "level_range.min": 1, "level_range.max": 1 } },
+      { "keys": { "is_active": 1, "priority_tier": 1 } }
+    ]
+  },
+  {
+    "collection": "scenario_dialogues",
+    "indexes": [
+      { "keys": { "scenario_id": 1, "sequence": 1 } },
+      { "keys": { "level": 1 } },
+      { "keys": { "scenario_id": 1, "level": 1 } }
+    ]
+  },
+  {
+    "collection": "vocabulary",
+    "indexes": [
+      { "keys": { "word": 1 }, "options": { "unique": true } },
+      { "keys": { "level": 1 } },
+      { "keys": { "scenarios": 1 } },
+      { "keys": { "frequency": 1, "level": 1 } }
+    ]
+  },
+  {
+    "collection": "user_vocabulary",
+    "indexes": [
+      { "keys": { "user_id": 1, "vocabulary_id": 1 }, "options": { "unique": true } },
+      { "keys": { "user_id": 1, "srs.next_review_at": 1 } },
+      { "keys": { "user_id": 1, "status": 1 } },
+      { "keys": { "user_id": 1, "status": 1, "srs.next_review_at": 1 } }
+    ]
+  },
+  {
+    "collection": "assessment_questions",
+    "indexes": [
+      { "keys": { "type": 1, "level": 1, "difficulty": 1 } },
+      { "keys": { "scenario_id": 1 } },
+      { "keys": { "is_active": 1, "type": 1, "level": 1 } }
+    ]
+  },
+  {
+    "collection": "assessments",
+    "indexes": [
+      { "keys": { "user_id": 1, "completed_at": -1 } },
+      { "keys": { "user_id": 1, "status": 1 } },
+      { "keys": { "status": 1, "started_at": -1 } }
+    ]
+  },
+  {
+    "collection": "learning_plans",
+    "indexes": [
+      { "keys": { "user_id": 1, "status": 1 } },
+      { "keys": { "user_id": 1, "created_at": -1 } },
+      { "keys": { "status": 1, "goal.target_date": 1 } }
+    ]
+  },
+  {
+    "collection": "scenario_progress",
+    "indexes": [
+      { "keys": { "user_id": 1, "scenario_id": 1 }, "options": { "unique": true } },
+      { "keys": { "user_id": 1, "status": 1 } },
+      { "keys": { "plan_id": 1 } },
+      { "keys": { "user_id": 1, "status": 1, "last_practiced": -1 } }
+    ]
+  },
+  {
+    "collection": "sync_changes",
+    "indexes": [
+      { "keys": { "user_id": 1, "version": 1 } },
+      { "keys": { "user_id": 1, "entity_type": 1, "entity_id": 1 } },
+      { "keys": { "created_at": 1 }, "options": { "expireAfterSeconds": 2592000 } }
+    ]
+  },
+  {
+    "collection": "user_devices",
+    "indexes": [
+      { "keys": { "user_id": 1, "device_id": 1 }, "options": { "unique": true } },
+      { "keys": { "last_active_at": -1 } },
+      { "keys": { "user_id": 1, "is_active": 1 } }
+    ]
+  },
+  {
+    "collection": "events",
+    "indexes": [
+      { "keys": { "user_id": 1, "ts": 1 } },
+      { "keys": { "event": 1, "ts": -1 } },
+      { "keys": { "user_id": 1, "event": 1, "ts": -1 } }
+    ]
+  }
+]

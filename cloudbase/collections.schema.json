@@ -1,0 +1,472 @@
+{
+  "collections": [
+    {
+      "name": "users",
+      "description": "用户档案和统计信息",
+      "schema": {
+        "_id": "string (openid)",
+        "openid": "string",
+        "unionid": "string?",
+        "nick": "string",
+        "avatar": "string",
+        "created_at": "ISO8601",
+        "last_login": "ISO8601",
+        "subscription": {
+          "status": "enum(free|trial|pro)",
+          "pro_until": "ISO8601?",
+          "plan_type": "string?",
+          "trial_started_at": "ISO8601?"
+        },
+        "preferences": {
+          "daily_goal_minutes": "number",
+          "notification_enabled": "boolean",
+          "notification_times": "string[]",
+          "difficulty_preference": "enum(easy|adaptive|challenging)"
+        },
+        "stats": {
+          "total_study_minutes": "number",
+          "total_scenarios_completed": "number",
+          "total_vocab_mastered": "number",
+          "current_streak": "number",
+          "longest_streak": "number",
+          "last_study_date": "string"
+        },
+        "latest_assessment": {
+          "assessment_id": "string",
+          "overall_level": "string",
+          "completed_at": "ISO8601",
+          "weak_areas": "string[]"
+        },
+        "_version": "number",
+        "_updated_at": "ISO8601",
+        "_synced": "boolean"
+      }
+    },
+    {
+      "name": "scenarios",
+      "description": "场景包元数据",
+      "schema": {
+        "_id": "string",
+        "title": "string",
+        "title_en": "string",
+        "description": "string",
+        "category": "enum(tourism|business|academic|life)",
+        "sub_category": "string",
+        "tags": "string[]",
+        "level_range": {
+          "min": "enum(A1|A2|B1|B2|C1|C2)",
+          "max": "enum(A1|A2|B1|B2|C1|C2)"
+        },
+        "priority_tier": "enum(high|medium|low)",
+        "is_essential": "boolean",
+        "usage_frequency": "enum(very_high|high|medium|low)",
+        "estimated_duration": "number",
+        "dialogue_count": "number",
+        "vocab_count": "number",
+        "practice_count": "number",
+        "completion_criteria": {
+          "dialogue_listen_min": "number",
+          "follow_read_score_min": "number",
+          "vocab_mastery_ratio": "number",
+          "practice_pass_count": "number"
+        },
+        "prerequisites": "string[]",
+        "related_scenarios": "string[]",
+        "cover_image": "string",
+        "icon": "string",
+        "color": "string",
+        "stats": {
+          "user_count": "number",
+          "avg_completion_rate": "number",
+          "avg_time_to_master": "number",
+          "avg_rating": "number"
+        },
+        "created_at": "ISO8601",
+        "updated_at": "ISO8601",
+        "is_active": "boolean"
+      }
+    },
+    {
+      "name": "scenario_dialogues",
+      "description": "场景对话内容",
+      "schema": {
+        "_id": "string",
+        "scenario_id": "string",
+        "sequence": "number",
+        "title": "string",
+        "level": "enum(A1|A2|B1|B2|C1|C2)",
+        "difficulty": "number",
+        "dialogue": [
+          {
+            "speaker": "enum(staff|learner|other)",
+            "speaker_name": "string",
+            "text": "string",
+            "translation": "string",
+            "audio_url": "string",
+            "duration": "number"
+          }
+        ],
+        "full_audio_url": "string",
+        "full_duration": "number",
+        "key_phrases": [
+          {
+            "phrase": "string",
+            "translation": "string",
+            "usage": "string",
+            "example": "string"
+          }
+        ],
+        "vocabulary_ids": "string[]",
+        "grammar_points": [
+          {
+            "pattern": "string",
+            "explanation": "string",
+            "example": "string"
+          }
+        ],
+        "created_at": "ISO8601"
+      }
+    },
+    {
+      "name": "vocabulary",
+      "description": "全局词汇库",
+      "schema": {
+        "_id": "string",
+        "word": "string",
+        "phonetic_us": "string",
+        "phonetic_uk": "string",
+        "translations": {
+          "zh": "string",
+          "ja": "string?",
+          "ko": "string?"
+        },
+        "part_of_speech": "enum(noun|verb|adj|adv|prep|conj|interj)",
+        "level": "enum(A1|A2|B1|B2|C1|C2)",
+        "definitions": [
+          {
+            "meaning": "string",
+            "example": "string"
+          }
+        ],
+        "scenarios": "string[]",
+        "audio_url": "string",
+        "image_url": "string?",
+        "frequency": "enum(very_high|high|medium|low)",
+        "usage_count": "number",
+        "created_at": "ISO8601"
+      }
+    },
+    {
+      "name": "user_vocabulary",
+      "description": "用户生词本(SRS数据)",
+      "schema": {
+        "_id": "string",
+        "user_id": "string",
+        "vocabulary_id": "string",
+        "word": "string",
+        "translation": "string",
+        "srs": {
+          "level": "number",
+          "ease_factor": "number",
+          "interval_days": "number",
+          "next_review_at": "ISO8601",
+          "last_review_at": "ISO8601",
+          "total_reviews": "number",
+          "correct_count": "number",
+          "accuracy": "number"
+        },
+        "status": "enum(new|learning|mastered|archived)",
+        "mastered_at": "ISO8601?",
+        "learned_from": {
+          "scenario_id": "string",
+          "dialogue_id": "string",
+          "added_at": "ISO8601"
+        },
+        "notes": "string?",
+        "tags": "string[]",
+        "_version": "number",
+        "_updated_at": "ISO8601",
+        "_synced": "boolean",
+        "created_at": "ISO8601"
+      }
+    },
+    {
+      "name": "assessment_questions",
+      "description": "评估题库",
+      "schema": {
+        "_id": "string",
+        "type": "enum(listening|reading|vocabulary|grammar)",
+        "level": "enum(A1|A2|B1|B2|C1|C2)",
+        "difficulty": "number",
+        "scenario_id": "string?",
+        "skill_tested": "string",
+        "content": {
+          "audio_url": "string?",
+          "duration": "number?",
+          "transcript": "string?",
+          "passage": "string?",
+          "question": "string",
+          "question_zh": "string",
+          "options": "string[]",
+          "correct_index": "number",
+          "explanation": "string",
+          "explanation_zh": "string"
+        },
+        "metadata": {
+          "usage_count": "number",
+          "avg_accuracy": "number",
+          "avg_time_spent": "number",
+          "last_calibrated": "ISO8601"
+        },
+        "is_active": "boolean",
+        "created_at": "ISO8601"
+      }
+    },
+    {
+      "name": "assessments",
+      "description": "评估会话记录",
+      "schema": {
+        "_id": "string",
+        "user_id": "string",
+        "started_at": "ISO8601",
+        "completed_at": "ISO8601?",
+        "duration_secs": "number",
+        "status": "enum(in_progress|completed|abandoned)",
+        "results": {
+          "overall_level": "string",
+          "ability_score": "number",
+          "confidence": "number",
+          "dimensions": {
+            "listening": {
+              "level": "string",
+              "accuracy": "number",
+              "ability": "number"
+            },
+            "reading": {
+              "level": "string",
+              "accuracy": "number",
+              "ability": "number"
+            },
+            "vocabulary": {
+              "level": "string",
+              "accuracy": "number",
+              "ability": "number"
+            },
+            "grammar": {
+              "level": "string",
+              "accuracy": "number",
+              "ability": "number"
+            }
+          },
+          "weak_areas": "string[]",
+          "strong_areas": "string[]"
+        },
+        "questions": [
+          {
+            "question_id": "string",
+            "type": "string",
+            "level": "string",
+            "difficulty": "number",
+            "is_correct": "boolean",
+            "time_spent": "number",
+            "answer_selected": "number"
+          }
+        ],
+        "recommendations": {
+          "suggested_scenarios": "string[]",
+          "focus_areas": "string[]",
+          "estimated_study_days": "number"
+        },
+        "_version": "number",
+        "_updated_at": "ISO8601",
+        "created_at": "ISO8601"
+      }
+    },
+    {
+      "name": "learning_plans",
+      "description": "学习计划",
+      "schema": {
+        "_id": "string",
+        "user_id": "string",
+        "created_at": "ISO8601",
+        "status": "enum(active|completed|paused|expired)",
+        "goal": {
+          "type": "string",
+          "description": "string",
+          "target_date": "ISO8601",
+          "days_available": "number",
+          "daily_minutes": "number"
+        },
+        "baseline_assessment": {
+          "assessment_id": "string",
+          "overall_level": "string",
+          "weak_areas": "string[]"
+        },
+        "selected_scenarios": [
+          {
+            "scenario_id": "string",
+            "priority": "number",
+            "allocated_minutes": "number",
+            "target_readiness": "number",
+            "current_readiness": "number",
+            "status": "enum(not_started|in_progress|completed)",
+            "scheduled_days": "number[]"
+          }
+        ],
+        "daily_plans": [
+          {
+            "day": "number",
+            "date": "string",
+            "tasks": [
+              {
+                "scenario_id": "string",
+                "dialogue_id": "string?",
+                "duration": "number",
+                "activities": [
+                  {
+                    "type": "string",
+                    "times": "number?",
+                    "count": "number?",
+                    "duration": "number"
+                  }
+                ],
+                "completed": "boolean",
+                "completed_at": "ISO8601?",
+                "actual_duration": "number?"
+              }
+            ],
+            "total_planned": "number",
+            "total_actual": "number",
+            "completion_rate": "number",
+            "checked_in": "boolean"
+          }
+        ],
+        "overall_progress": {
+          "total_scenarios": "number",
+          "completed_scenarios": "number",
+          "in_progress_scenarios": "number",
+          "avg_readiness": "number",
+          "total_minutes_studied": "number",
+          "days_elapsed": "number",
+          "days_remaining": "number",
+          "on_track": "boolean"
+        },
+        "streak": {
+          "current": "number",
+          "longest": "number",
+          "last_checkin": "string"
+        },
+        "adjustments": [
+          {
+            "date": "string",
+            "reason": "string",
+            "scenario_id": "string",
+            "action": "string",
+            "old_priority": "number",
+            "new_priority": "number"
+          }
+        ],
+        "_version": "number",
+        "_updated_at": "ISO8601",
+        "_synced": "boolean"
+      }
+    },
+    {
+      "name": "scenario_progress",
+      "description": "用户场景学习进度",
+      "schema": {
+        "_id": "string",
+        "user_id": "string",
+        "scenario_id": "string",
+        "plan_id": "string",
+        "started_at": "ISO8601",
+        "last_practiced": "ISO8601",
+        "status": "enum(not_started|in_progress|completed|mastered)",
+        "dialogue_progress": [
+          {
+            "dialogue_id": "string",
+            "listen_count": "number",
+            "follow_read_attempts": "number",
+            "best_score": "number",
+            "last_score": "number",
+            "avg_score": "number",
+            "mastered": "boolean",
+            "first_practiced": "ISO8601",
+            "last_practiced": "ISO8601"
+          }
+        ],
+        "vocabulary_progress": {
+          "total": "number",
+          "learned": "number",
+          "mastered": "number",
+          "review_due": "number",
+          "next_review_at": "ISO8601"
+        },
+        "practice_results": [
+          {
+            "practice_id": "string",
+            "type": "string",
+            "passed": "boolean",
+            "score": "number",
+            "completed_at": "ISO8601"
+          }
+        ],
+        "readiness": "number",
+        "readiness_breakdown": {
+          "dialogue_completion": "number",
+          "follow_read_quality": "number",
+          "vocab_mastery": "number",
+          "practice_pass_rate": "number"
+        },
+        "completed": "boolean",
+        "completed_at": "ISO8601?",
+        "time_spent": {
+          "total_minutes": "number",
+          "listen": "number",
+          "follow_read": "number",
+          "vocab_review": "number",
+          "practice": "number"
+        },
+        "_version": "number",
+        "_updated_at": "ISO8601",
+        "_synced": "boolean",
+        "created_at": "ISO8601"
+      }
+    },
+    {
+      "name": "sync_changes",
+      "description": "多端同步变更日志",
+      "schema": {
+        "_id": "string",
+        "user_id": "string",
+        "entity_type": "string",
+        "entity_id": "string",
+        "action": "enum(create|update|delete)",
+        "version": "number",
+        "updated_at": "ISO8601",
+        "updated_by": "string",
+        "data": "object",
+        "tombstone": "boolean",
+        "synced_devices": "string[]",
+        "created_at": "ISO8601"
+      }
+    },
+    {
+      "name": "user_devices",
+      "description": "用户设备管理",
+      "schema": {
+        "_id": "string",
+        "user_id": "string",
+        "device_id": "string",
+        "device_type": "enum(ios|android|web|desktop)",
+        "device_name": "string",
+        "device_model": "string",
+        "last_sync_at": "ISO8601",
+        "last_sync_version": "number",
+        "registered_at": "ISO8601",
+        "last_active_at": "ISO8601",
+        "is_active": "boolean"
+      }
+    }
+  ]
+}

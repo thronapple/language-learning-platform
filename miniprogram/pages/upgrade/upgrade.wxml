@@ -1,0 +1,13 @@
+<view class="container">
+  <view class="title">去广告 / 配额翻倍 / 周报 / AI 评分分钟包（预告）</view>
+  <view class="row">
+    <button size="mini" bindtap="choose" data-plan="monthly" data-price="9.9">月 9.9</button>
+    <button size="mini" bindtap="choose" data-plan="monthly" data-price="14.9">月 14.9</button>
+  </view>
+  <view class="row">
+    <button size="mini" bindtap="choose" data-plan="yearly" data-price="69">年 69</button>
+    <button size="mini" bindtap="choose" data-plan="yearly" data-price="99">年 99</button>
+  </view>
+  <input placeholder="微信/手机号/邮箱" bindinput="onInput" />
+  <button type="primary" bindtap="submit">提交愿望单</button>
+</view>

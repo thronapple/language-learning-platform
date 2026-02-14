@@ -1,0 +1,46 @@
+<view class="container">
+  <!-- 音频播放器 -->
+  <view class="player">
+    <view class="audio-controls">
+      <button class="control-btn" bindtap="togglePlay">
+        {{ isPlaying ? '⏸️ 暂停' : '▶️ 播放' }}
+      </button>
+      <button class="control-btn secondary" bindtap="cycleRate">
+        倍速 {{audioRate}}x
+      </button>
+    </view>
+  </view>
+
+  <!-- 工具栏 -->
+  <view class="toolbar">
+    <view class="toolbar-left">
+      <switch checked="{{autoNext}}" bindchange="toggleAutoNext" />
+      <text class="hint">自动下一句</text>
+    </view>
+    <view class="toolbar-right">
+      <text class="timer-display">⏱️ {{secs}}s</text>
+    </view>
+  </view>
+
+  <!-- 句子列表 -->
+  <scroll-view class="sentences" scroll-y="true" scroll-into-view="{{activeAnchor}}">
+    <block wx:for="{{sentences}}" wx:key="index">
+      <view id="sentence-{{index}}" 
+            class="sentence {{index === activeIndex ? 'active' : ''}}"
+            bindtap="setActive" 
+            data-index="{{index}}">
+        {{item}}
+      </view>
+    </block>
+  </scroll-view>
+
+  <!-- 控制按钮 -->
+  <view class="controls">
+    <view class="nav-btn" bindtap="prev">⬅️ 上一句</view>
+    <view class="nav-btn primary" style="background: #1677ff !important; color: #ffffff !important;" bindtap="next">下一句 ➡️</view>
+    <view class="nav-btn finish" style="background: #52c41a !important; color: #ffffff !important;" bindtap="finish">✅ 完成</view>
+  </view>
+
+  <view class="footer">完成后将展示进度与明日预告</view>
+  <ad-interstitial id="finishAd" slot="finish" daily="2" />
+</view>

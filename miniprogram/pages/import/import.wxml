@@ -1,0 +1,5 @@
+<view class="container">
+  <textarea placeholder="粘贴文本或 URL" bindinput="onInput"></textarea>
+  <button type="primary" bindtap="doImport">导入</button>
+  <view class="hint">仅支持文本或白名单站点 URL（占位）</view>
+</view>
