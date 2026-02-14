@@ -6,6 +6,20 @@ Thumbs.db
 .vscode/
 .idea/
 
+# AI assistant configs
+AGENTS.md
+CLAUDE.md
+
+# Internal docs
+PROGRESS.md
+ROADMAP.md
+QUICKSTART.md
+TESTING.md
+AUDIO_SETUP.md
+开发计划.md
+设计方案与开发清单.md
+docs/
+
 # Env files
 .env
 .env.*
