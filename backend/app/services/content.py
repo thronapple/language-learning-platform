@@ -16,7 +16,12 @@ class ContentService:
         filters = {"type": ctype, "level": level}
         offset = (page - 1) * page_size
         docs, total = self.repo.query("content", filters, limit=page_size, offset=offset)
-        items = [ContentItem(**{**d, "id": d["id"]}) for d in docs]
+        items = []
+        for d in docs:
+            try:
+                items.append(ContentItem(**{**d, "id": d["id"]}))
+            except Exception as e:
+                logger.warning("Skipping invalid content item: %s — %s", d.get("id"), e)
         return items, total
 
     def get(self, content_id: str) -> ContentItem:

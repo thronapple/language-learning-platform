@@ -1,5 +1,36 @@
-<view class="container">
-  <textarea placeholder="粘贴文本或 URL" bindinput="onInput"></textarea>
-  <button type="primary" bindtap="doImport">导入</button>
-  <view class="hint">仅支持文本或白名单站点 URL（占位）</view>
+<view class="page">
+  <view class="header">
+    <view class="header-title">导入学习内容</view>
+    <view class="header-sub">粘贴英文文本或网页链接，自动生成学习材料</view>
+  </view>
+
+  <view class="content">
+    <view class="input-card">
+      <textarea
+        class="import-textarea"
+        placeholder="粘贴英文文本或网页 URL..."
+        value="{{text}}"
+        bindinput="onInput"
+        maxlength="5000"
+        auto-height
+      />
+      <view class="char-count" wx:if="{{text.length > 0}}">{{text.length}} 字</view>
+    </view>
+
+    <button
+      class="import-btn"
+      bindtap="doImport"
+      disabled="{{!text || importing}}"
+      loading="{{importing}}"
+    >
+      {{importing ? '导入中...' : '开始导入'}}
+    </button>
+
+    <view class="tips">
+      <view class="tips-title">支持的内容</view>
+      <view class="tip-item">📝 英文段落、句子、对话</view>
+      <view class="tip-item">🔗 白名单站点 URL（自动提取正文）</view>
+      <view class="tip-item">📋 复制粘贴即可导入</view>
+    </view>
+  </view>
 </view>

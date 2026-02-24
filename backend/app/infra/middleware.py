@@ -131,49 +131,98 @@ class LoggingMiddleware(BaseHTTPMiddleware):
 class MetricsMiddleware(BaseHTTPMiddleware):
     """
     Middleware for collecting application metrics.
+    Feeds into the global MetricsCollector for /metrics endpoint.
     """
 
     def __init__(self, app):
         super().__init__(app)
-        self.request_count = 0
-        self.total_request_time = 0.0
-        self.error_count = 0
+        from .metrics import metrics_collector
+        self._collector = metrics_collector
 
     async def dispatch(self, request: Request, call_next: Callable) -> Response:
         start_time = time.time()
-        self.request_count += 1
 
         try:
             response = await call_next(request)
-
-            # Track timing
             process_time = time.time() - start_time
-            self.total_request_time += process_time
 
-            # Track errors (4xx and 5xx status codes)
-            if response.status_code >= 400:
-                self.error_count += 1
+            # Feed into global collector
+            openid = getattr(request.state, "openid", None)
+            self._collector.record_request(
+                method=request.method,
+                path=request.url.path,
+                status_code=response.status_code,
+                response_time=process_time,
+                user_id=openid,
+            )
 
-            # Log metrics periodically (every 100 requests)
-            if self.request_count % 100 == 0:
-                avg_response_time = self.total_request_time / self.request_count
-                error_rate = (self.error_count / self.request_count) * 100
-
-                logger.info(
-                    "Application metrics",
+            # Log slow requests (>2s)
+            if process_time > 2.0:
+                logger.warning(
+                    "Slow request detected",
                     extra={
-                        "total_requests": self.request_count,
-                        "avg_response_time_ms": round(avg_response_time * 1000, 2),
-                        "error_count": self.error_count,
-                        "error_rate_percent": round(error_rate, 2),
+                        "method": request.method,
+                        "path": request.url.path,
+                        "process_time_ms": round(process_time * 1000, 2),
+                        "status_code": response.status_code,
                     }
                 )
 
             return response
 
         except Exception as e:
-            self.error_count += 1
+            process_time = time.time() - start_time
+            self._collector.record_request(
+                method=request.method,
+                path=request.url.path,
+                status_code=500,
+                response_time=process_time,
+            )
             raise
+
+
+class ErrorCaptureMiddleware(BaseHTTPMiddleware):
+    """
+    Catches unhandled exceptions and returns structured JSON error responses
+    instead of raw 500 HTML. Logs full traceback for debugging.
+    """
+
+    async def dispatch(self, request: Request, call_next: Callable) -> Response:
+        try:
+            return await call_next(request)
+        except Exception as exc:
+            request_id = getattr(request.state, "request_id", "unknown")
+            logger.error(
+                "Unhandled exception",
+                extra={
+                    "request_id": request_id,
+                    "method": request.method,
+                    "path": request.url.path,
+                    "error_type": type(exc).__name__,
+                    "error": str(exc),
+                },
+                exc_info=True,
+            )
+            from starlette.responses import JSONResponse as _JSONResponse
+            return _JSONResponse(
+                status_code=500,
+                content={
+                    "detail": "Internal server error",
+                    "request_id": request_id,
+                },
+            )
+
+
+class SecurityHeadersMiddleware(BaseHTTPMiddleware):
+    """Add security response headers to all responses."""
+
+    async def dispatch(self, request: Request, call_next: Callable) -> Response:
+        response = await call_next(request)
+        response.headers["X-Content-Type-Options"] = "nosniff"
+        response.headers["X-Frame-Options"] = "DENY"
+        response.headers["X-XSS-Protection"] = "1; mode=block"
+        response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+        return response
 
 
 def add_middleware(app: FastAPI) -> None:
@@ -184,9 +233,31 @@ def add_middleware(app: FastAPI) -> None:
     will be the first to process the request.
     """
     from .rate_limiter import RateLimitMiddleware
+    from .config import settings
+    from fastapi.middleware.cors import CORSMiddleware
+
+    # CORS — allow mini program and dev origins
+    allowed_origins = [
+        "https://servicewechat.com",  # WeChat Mini Program
+    ]
+    if settings.env == "dev":
+        allowed_origins += ["http://localhost:*", "http://127.0.0.1:*"]
+
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=allowed_origins,
+        allow_origin_regex=r"https://.*\.tcloudbase\.com",  # CloudBase domains
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+        expose_headers=["x-request-id", "x-process-time"],
+    )
 
     # Add in reverse order of execution
+    # (first added = outermost = last to process request)
+    app.add_middleware(SecurityHeadersMiddleware)
+    app.add_middleware(ErrorCaptureMiddleware)
     app.add_middleware(MetricsMiddleware)
     app.add_middleware(LoggingMiddleware, log_level="INFO")
-    app.add_middleware(RateLimitMiddleware)  # Rate limiting before auth
+    app.add_middleware(RateLimitMiddleware)
     app.add_middleware(RequestIdMiddleware)

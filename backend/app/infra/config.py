@@ -23,7 +23,9 @@ class Settings:
         self.wechat_auth_enabled: bool = os.getenv("WECHAT_AUTH_ENABLED", "false").lower() == "true"
         self.wechat_appid: str | None = os.getenv("WECHAT_APPID")
         self.wechat_secret: str | None = os.getenv("WECHAT_SECRET")
-        self.wechat_mock_prefix: str = os.getenv("WECHAT_MOCK_PREFIX", "mock_")
+        # Mock auth: enabled by default in dev, disabled in prod
+        _default_mock = "mock_" if self.env == "dev" else ""
+        self.wechat_mock_prefix: str = os.getenv("WECHAT_MOCK_PREFIX", _default_mock)
         # Storage
         self.storage_provider: str = os.getenv("STORAGE_PROVIDER", "local").lower()
         self.cdn_base: str | None = os.getenv("CDN_BASE")
@@ -33,6 +35,12 @@ class Settings:
         self.cos_secret_id: str | None = os.getenv("COS_SECRET_ID")
         self.cos_secret_key: str | None = os.getenv("COS_SECRET_KEY")
         self.cos_cdn_base: str | None = os.getenv("COS_CDN_BASE")
+        # JWT
+        self.jwt_secret: str = os.getenv("JWT_SECRET", "dev-secret-change-in-production")
+        self.jwt_expire_hours: int = int(os.getenv("JWT_EXPIRE_HOURS", "72"))
+
+        if self.env != "dev" and self.jwt_secret == "dev-secret-change-in-production":
+            raise RuntimeError("JWT_SECRET must be set in production environment")
 
 
 settings = Settings()

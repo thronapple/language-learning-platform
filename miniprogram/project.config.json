@@ -1,5 +1,6 @@
 {
   "setting": {
+    "urlCheck": false,
     "es6": true,
     "postcss": true,
     "minified": true,
@@ -11,8 +12,19 @@
       "disablePlugins": [],
       "outputPath": ""
     },
-    "useCompilerPlugins": ["typescript"],
-    "minifyWXML": true
+    "useCompilerPlugins": [
+      "typescript"
+    ],
+    "minifyWXML": true,
+    "compileWorklet": false,
+    "uploadWithSourceMap": true,
+    "packNpmManually": false,
+    "minifyWXSS": true,
+    "localPlugins": false,
+    "disableUseStrict": false,
+    "condition": false,
+    "swc": false,
+    "disableSWC": false
   },
   "compileType": "miniprogram",
   "simulatorPluginLibVersion": {},
@@ -20,6 +32,11 @@
     "ignore": [],
     "include": []
   },
-  "appid": "wxbc808f31f04415fe",
-  "editorSetting": {}
+  "appid": "wxbf5fc161529a826a",
+  "editorSetting": {},
+  "cloudfunctionRoot": "",
+  "cloudbaseRoot": "",
+  "miniprogramRoot": "./",
+  "cloudfunctionTemplateRoot": "",
+  "libVersion": "3.7.1"
 }

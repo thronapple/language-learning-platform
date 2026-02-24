@@ -74,18 +74,39 @@
     </view>
   </view>
 
-  <!-- 音频控制 -->
-  <view class="audio-control">
-    <view class="audio-player">
-      <view class="play-button" bindtap="toggleAudio">
-        <text class="icon">{{isPlaying ? '⏸' : '▶️'}}</text>
+  <!-- 底部操作面板 -->
+  <view class="bottom-panel">
+    <!-- 辅助功能 -->
+    <view class="assist-functions">
+      <view class="function-btn" bindtap="toggleAudio">
+        <text class="fn-icon">{{isPlaying ? '⏸' : '▶️'}}</text>
+        <text class="btn-text">{{isPlaying ? '暂停' : '播放'}}</text>
       </view>
-      <view class="audio-info">
-        <text class="audio-label">{{isPlaying ? '播放中' : '点击播放'}}</text>
-        <text class="play-count">已播放 {{playCount}} 次</text>
+      <view class="function-btn" bindtap="toggleSpeed">
+        <text class="fn-icon">⚡</text>
+        <text class="btn-text">{{playbackRate}}x</text>
       </view>
-      <view class="speed-control" bindtap="toggleSpeed">
-        <text class="speed-text">{{playbackRate}}x</text>
+      <view class="function-btn" bindtap="togglePhonetic">
+        <text class="fn-icon">{{showPhonetic ? '🔊' : '🔇'}}</text>
+        <text class="btn-text">音标</text>
+      </view>
+      <view class="function-btn" bindtap="toggleTranslation">
+        <text class="fn-icon">{{showTranslation ? '👁' : '👁‍🗨'}}</text>
+        <text class="btn-text">翻译</text>
+      </view>
+    </view>
+
+    <!-- 跟读评分结果 -->
+    <view class="score-section" wx:if="{{showScore && scoreInfo}}">
+      <view class="score-bar" style="border-color: {{scoreInfo.color}};">
+        <view class="score-left">
+          <text class="score-number" style="color: {{scoreInfo.color}};">{{scoreInfo.score}}</text>
+          <text class="score-unit">分</text>
+        </view>
+        <view class="score-right">
+          <text class="score-level" style="color: {{scoreInfo.color}};">{{scoreInfo.level}}</text>
+          <text class="score-reco" wx:if="{{recognizedText}}">{{recognizedText}}</text>
+        </view>
       </view>
     </view>
 
@@ -98,47 +119,27 @@
       >
         <text class="icon">🎤</text>
         <text class="record-text">
-          {{isRecording ? '录音中...' : '按住跟读'}}
+          {{isRecording ? '录音中...' : evaluating ? '评测中...' : '按住跟读'}}
         </text>
       </button>
     </view>
-  </view>
 
-  <!-- 辅助功能 -->
-  <view class="assist-functions">
-    <view class="function-btn" bindtap="togglePhonetic">
-      <text class="icon">{{showPhonetic ? '🔊' : '🔇'}}</text>
-      <text class="btn-text">音标</text>
+    <!-- 导航按钮 -->
+    <view class="navigation">
+      <button
+        class="nav-btn prev"
+        bindtap="previousSentence"
+        disabled="{{currentIndex === 0}}"
+      >
+        上一句
+      </button>
+      <button
+        class="nav-btn next"
+        bindtap="nextSentence"
+      >
+        {{currentIndex === dialogue.sentences.length - 1 ? '完成对话' : '下一句'}}
+      </button>
     </view>
-    <view class="function-btn" bindtap="toggleTranslation">
-      <text class="icon">{{showTranslation ? '👁' : '👁‍🗨'}}</text>
-      <text class="btn-text">翻译</text>
-    </view>
-    <view class="function-btn" bindtap="repeatSentence">
-      <text class="icon">🔄</text>
-      <text class="btn-text">重听</text>
-    </view>
-    <view class="function-btn" bindtap="showNotes">
-      <text class="icon">📝</text>
-      <text class="btn-text">笔记</text>
-    </view>
-  </view>
-
-  <!-- 导航按钮 -->
-  <view class="navigation">
-    <button
-      class="nav-btn prev"
-      bindtap="previousSentence"
-      disabled="{{currentIndex === 0}}"
-    >
-      上一句
-    </button>
-    <button
-      class="nav-btn next"
-      bindtap="nextSentence"
-    >
-      {{currentIndex === dialogue.sentences.length - 1 ? '完成对话' : '下一句'}}
-    </button>
   </view>
 
   <!-- 完成对话弹窗 -->

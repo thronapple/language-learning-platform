@@ -6,6 +6,7 @@
 import { haptics } from '../../../utils/haptics';
 import { toast } from '../../../utils/toast';
 import { loading } from '../../../utils/loading';
+import { request } from '../../../services/request';
 
 interface Sentence {
   order: number;
@@ -44,6 +45,10 @@ Page({
     recorderManager: null as any,
     isRecording: false,
     recordCount: 0,
+    recognizedText: '',
+    scoreInfo: null as { score: number; level: string; color: string } | null,
+    showScore: false,
+    evaluating: false,
 
     // 完成相关
     showCompletion: false,
@@ -80,10 +85,8 @@ Page({
 
     try {
       // 调用后端API获取对话（带TTS音频）
-      const request = require('../../../services/request').request;
-
       const dialogue = await loading.delayWrap(
-        request.get<Dialogue>(`/dialogues/${dialogueId}`),
+        request.get<Dialogue>(`/api/dialogues/${dialogueId}`),
         '加载对话中...',
         300
       );
@@ -195,30 +198,72 @@ Page({
     const recorderManager = wx.getRecorderManager();
 
     recorderManager.onStart(() => {
-      console.log('录音开始');
+      console.log('[Dialogue] 录音开始');
     });
 
-    recorderManager.onStop((res) => {
-      console.log('录音停止', res);
-      this.setData({ recordCount: this.data.recordCount + 1 });
-
-      // TODO: 可以上传录音进行评分
-      wx.showToast({
-        title: '录音完成',
-        icon: 'success',
-        duration: 1000
+    recorderManager.onStop((res: any) => {
+      console.log('[Dialogue] 录音停止', res);
+      this.setData({
+        isRecording: false,
+        recordCount: this.data.recordCount + 1,
       });
+
+      // 上传录音到后端评测
+      this.uploadAndEvaluate(res.tempFilePath);
     });
 
-    recorderManager.onError((error) => {
-      console.error('录音失败:', error);
-      wx.showToast({
-        title: '录音失败',
-        icon: 'none'
-      });
+    recorderManager.onError((error: any) => {
+      console.error('[Dialogue] 录音失败:', error);
+      this.setData({ isRecording: false });
+      toast.error('录音失败');
     });
 
     this.setData({ recorderManager });
+  },
+
+  /**
+   * 上传录音并评测发音
+   */
+  uploadAndEvaluate(filePath: string) {
+    const { dialogue, currentIndex } = this.data;
+    if (!dialogue) return;
+
+    const reference = dialogue.sentences[currentIndex].text_en;
+    this.setData({ evaluating: true, showScore: false });
+
+    const baseUrl = request.getBaseUrl();
+
+    wx.uploadFile({
+      url: `${baseUrl}/api/speech/evaluate`,
+      filePath,
+      name: 'file',
+      formData: { reference },
+      success: (res) => {
+        try {
+          const data = JSON.parse(res.data);
+          this.setData({
+            evaluating: false,
+            showScore: true,
+            recognizedText: data.recognized || '',
+            scoreInfo: {
+              score: data.score ?? 0,
+              level: data.level || '识别失败',
+              color: data.color || '#999',
+            },
+          });
+          // 3秒后自动隐藏
+          setTimeout(() => this.setData({ showScore: false }), 3000);
+        } catch (e) {
+          console.error('[Dialogue] Parse evaluate result failed:', e);
+          this.setData({ evaluating: false });
+        }
+      },
+      fail: (err) => {
+        console.error('[Dialogue] Upload evaluate failed:', err);
+        this.setData({ evaluating: false });
+        toast.error('评测失败，请重试');
+      },
+    });
   },
 
   /**
@@ -229,18 +274,18 @@ Page({
     if (!recorderManager) return;
 
     try {
-      // 中等反馈 - 重要操作
       haptics.medium();
 
       recorderManager.start({
-        duration: 60000, // 最长60秒
-        format: 'mp3'
+        duration: 15000,
+        format: 'mp3',
+        sampleRate: 16000,
+        numberOfChannels: 1,
       });
-      this.setData({ isRecording: true });
+      this.setData({ isRecording: true, recognizedText: '', showScore: false });
 
-      // 埋点
       wx.reportAnalytics('recording_start', {
-        sentence_index: this.data.currentIndex
+        sentence_index: this.data.currentIndex,
       });
     } catch (error) {
       console.error('[Dialogue] Record start failed:', error);
@@ -255,9 +300,7 @@ Page({
     const { recorderManager, isRecording } = this.data;
     if (!recorderManager || !isRecording) return;
 
-    // 轻触反馈
     haptics.light();
-
     recorderManager.stop();
     this.setData({ isRecording: false });
   },
@@ -419,14 +462,23 @@ Page({
    */
   async finishDialogue() {
     console.log('[Dialogue] Finish dialogue');
-    // 成功反馈
     haptics.success();
 
-    // TODO: 保存学习进度到服务器
+    // Save progress to server
+    try {
+      const duration = Math.floor((Date.now() - this.data.startTime) / 1000);
+      await request.post('/api/dialogue/complete', {
+        dialogue_id: this.data.dialogue?.id,
+        play_count: this.data.playCount,
+        record_count: this.data.recordCount,
+        duration,
+      });
+    } catch (err) {
+      console.warn('[Dialogue] Progress save failed:', err);
+    }
 
     toast.success('学习完成！');
 
-    // 返回计划页
     setTimeout(() => {
       wx.navigateBack();
     }, 1500);

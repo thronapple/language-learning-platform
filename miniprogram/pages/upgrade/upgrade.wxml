@@ -1,13 +1,89 @@
-<view class="container">
-  <view class="title">去广告 / 配额翻倍 / 周报 / AI 评分分钟包（预告）</view>
-  <view class="row">
-    <button size="mini" bindtap="choose" data-plan="monthly" data-price="9.9">月 9.9</button>
-    <button size="mini" bindtap="choose" data-plan="monthly" data-price="14.9">月 14.9</button>
+<view class="page">
+  <view class="header">
+    <view class="header-icon">⭐</view>
+    <view class="header-title">升级 Pro</view>
+    <view class="header-sub">解锁全部功能，提升学习效率</view>
   </view>
-  <view class="row">
-    <button size="mini" bindtap="choose" data-plan="yearly" data-price="69">年 69</button>
-    <button size="mini" bindtap="choose" data-plan="yearly" data-price="99">年 99</button>
+
+  <view class="content">
+    <!-- 权益列表 -->
+    <view class="benefits-card">
+      <view class="benefits-title">Pro 会员权益</view>
+      <view class="benefit-item">
+        <text class="benefit-icon">🚫</text>
+        <text class="benefit-text">去除所有广告</text>
+      </view>
+      <view class="benefit-item">
+        <text class="benefit-icon">📚</text>
+        <text class="benefit-text">导入配额翻倍</text>
+      </view>
+      <view class="benefit-item">
+        <text class="benefit-icon">📊</text>
+        <text class="benefit-text">每周学习报告</text>
+      </view>
+      <view class="benefit-item">
+        <text class="benefit-icon">🤖</text>
+        <text class="benefit-text">AI 口语评分（即将推出）</text>
+      </view>
+    </view>
+
+    <!-- 定价选择 -->
+    <view class="pricing-section">
+      <view class="section-title">选择方案</view>
+      <view class="pricing-grid">
+        <view
+          class="price-card {{plan === 'monthly' && price === '9.9' ? 'selected' : ''}}"
+          bindtap="choose"
+          data-plan="monthly"
+          data-price="9.9"
+        >
+          <view class="price-period">月付</view>
+          <view class="price-amount">¥9.9</view>
+          <view class="price-unit">/月</view>
+        </view>
+        <view
+          class="price-card {{plan === 'monthly' && price === '14.9' ? 'selected' : ''}}"
+          bindtap="choose"
+          data-plan="monthly"
+          data-price="14.9"
+        >
+          <view class="price-period">月付 Plus</view>
+          <view class="price-amount">¥14.9</view>
+          <view class="price-unit">/月</view>
+        </view>
+        <view
+          class="price-card {{plan === 'yearly' ? 'selected' : ''}}"
+          bindtap="choose"
+          data-plan="yearly"
+          data-price="69"
+        >
+          <view class="price-period">年付</view>
+          <view class="price-amount">¥69</view>
+          <view class="price-unit">/年 省40%</view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 联系方式 -->
+    <view class="contact-card">
+      <view class="contact-label">留下联系方式，正式上线后通知你</view>
+      <input
+        class="contact-input"
+        placeholder="微信号 / 手机号 / 邮箱"
+        value="{{contact}}"
+        bindinput="onInput"
+      />
+    </view>
+
+    <button
+      class="submit-btn"
+      bindtap="submit"
+      disabled="{{!contact || submitting}}"
+      loading="{{submitting}}"
+    >
+      {{submitting ? '提交中...' : '提交愿望单'}}
+    </button>
+
+    <view class="footer-note">功能预告，正式上线后以实际为准</view>
   </view>
-  <input placeholder="微信/手机号/邮箱" bindinput="onInput" />
-  <button type="primary" bindtap="submit">提交愿望单</button>
 </view>

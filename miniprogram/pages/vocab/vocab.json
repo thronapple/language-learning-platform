@@ -1,1 +1,8 @@
-{ "navigationBarTitleText": "生词本" }
+{
+  "navigationBarTitleText": "词汇本",
+  "usingComponents": {
+    "state-empty": "/components/state-empty/state-empty",
+    "state-error": "/components/state-error/state-error",
+    "skeleton": "/components/skeleton/skeleton"
+  }
+}

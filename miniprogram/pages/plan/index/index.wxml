@@ -2,6 +2,14 @@
   <!-- 加载骨架 -->
   <skeleton type="list" rows="{{3}}" wx:if="{{loading}}" />
 
+  <!-- 无计划空状态 -->
+  <view wx:elif="{{noPlan}}" class="no-plan-state fade-in">
+    <view class="no-plan-icon">📋</view>
+    <text class="no-plan-title">还没有学习计划</text>
+    <text class="no-plan-desc">完成水平测评后，系统将为你生成个性化学习计划</text>
+    <button class="no-plan-btn" bindtap="goAssessment">开始水平测评</button>
+  </view>
+
   <!-- 页面内容 -->
   <view wx:else class="fade-in">
   <!-- 顶部信息卡 -->

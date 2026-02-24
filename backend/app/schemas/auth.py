@@ -16,5 +16,15 @@ class User(BaseModel):
 
 class MeResponse(BaseModel):
     user: User
+    token: str = ""
     featureFlags: List[str] = []
+
+
+class RefreshRequest(BaseModel):
+    token: str
+
+
+class RefreshResponse(BaseModel):
+    token: str
+    openid: str
 

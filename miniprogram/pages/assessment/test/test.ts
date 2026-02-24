@@ -68,11 +68,13 @@ Page({
       //   level: result.first_question.level
       // });
 
-    } catch (error) {
-      console.error('启动评估失败:', error);
+    } catch (error: any) {
+      const msg = error?.message || String(error);
+      console.error('启动评估失败:', msg);
       wx.showToast({
-        title: '加载失败',
-        icon: 'none'
+        title: msg.length > 20 ? '网络连接失败' : msg,
+        icon: 'none',
+        duration: 3000,
       });
       this.setData({ loading: false });
     }
@@ -82,11 +84,31 @@ Page({
    * 初始化音频上下文
    */
   initAudioContext() {
-    const audioContext = wx.createInnerAudioContext();
+    const audioContext = wx.createInnerAudioContext({ obeyMuteSwitch: false });
     const question = this.data.question;
+    const audioUrl = question.content.audio_url;
 
-    console.log('🔊 设置音频URL:', question.content.audio_url);
-    audioContext.src = question.content.audio_url;
+    console.log('🔊 设置音频URL:', audioUrl);
+
+    // 先下载音频到本地临时文件，避免域名校验问题
+    wx.downloadFile({
+      url: audioUrl,
+      success: (res) => {
+        if (res.statusCode === 200) {
+          console.log('✅ 音频下载成功:', res.tempFilePath);
+          audioContext.src = res.tempFilePath;
+        } else {
+          console.error('❌ 音频下载失败, statusCode:', res.statusCode);
+          audioContext.src = audioUrl;
+        }
+      },
+      fail: (err) => {
+        console.error('❌ 音频下载失败:', err);
+        // 降级：直接用URL
+        audioContext.src = audioUrl;
+      }
+    });
+
     audioContext.onPlay(() => {
       console.log('✅ 音频开始播放');
       this.setData({

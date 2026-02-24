@@ -1,16 +1,82 @@
-<view class="container">
-  <view class="toolbar">
-    <switch checked="{{onlyDue}}" bindchange="toggleDue" />
-    <text class="hint">仅看今日复习</text>
-  </view>
-  <view class="search">
-    <input placeholder="输入单词（可搜索）" bindinput="onInput" />
-    <button size="mini" bindtap="add">添加</button>
-  </view>
-  <block wx:for="{{items}}" wx:key="word">
-    <view class="row">
-      <review-card data-word="{{item.word}}" word="{{item.word}}" meaning="{{item.meaning}}" bind:rate="onRate" />
-      <button class="remove" size="mini" data-word="{{item.word}}" bindtap="remove">移除</button>
+<view class="page">
+  <!-- 顶部搜索 + 添加 -->
+  <view class="header">
+    <view class="search-bar">
+      <view class="search-input-wrap">
+        <text class="search-icon">🔍</text>
+        <input
+          class="search-input"
+          placeholder="搜索或添加新单词"
+          value="{{word}}"
+          bindinput="onInput"
+          confirm-type="send"
+          bindconfirm="add"
+        />
+      </view>
+      <button class="add-btn" bindtap="add" disabled="{{!word}}">添加</button>
     </view>
-  </block>
+    <view class="filter-row">
+      <text class="filter-label">仅显示待复习</text>
+      <switch checked="{{onlyDue}}" bindchange="toggleDue" color="#667eea" />
+    </view>
+  </view>
+
+  <!-- 加载中 -->
+  <skeleton type="list" wx:if="{{loading}}" />
+
+  <!-- 加载失败 -->
+  <state-error wx:elif="{{loadError}}" bind:retry="load" />
+
+  <!-- 空状态 -->
+  <state-empty
+    wx:elif="{{!loading && items.length === 0}}"
+    icon="{{onlyDue ? '🎉' : '📖'}}"
+    title="{{onlyDue ? '暂无待复习单词' : '词汇本还是空的'}}"
+    desc="{{onlyDue ? '太棒了，你已经复习完啦！' : '在上方输入框添加你想记住的单词'}}"
+  />
+
+  <!-- 词汇列表 -->
+  <view wx:elif="{{items.length > 0}}" class="word-list">
+    <view
+      wx:for="{{items}}"
+      wx:key="word"
+      class="word-card"
+    >
+      <view class="word-main" bindtap="toggleMeaning" data-word="{{item.word}}">
+        <view class="word-text">{{item.word}}</view>
+        <view class="word-meta">
+          <text class="word-meaning" wx:if="{{showMeaning[item.word]}}">{{item.meaning || '点击查看释义'}}</text>
+          <text class="word-hint" wx:else>点击查看释义</text>
+        </view>
+      </view>
+
+      <!-- SRS 评分按钮 -->
+      <view class="rate-row">
+        <view class="rate-btn again" bindtap="onRate" data-word="{{item.word}}" data-rating="again">
+          <text class="rate-emoji">😵</text>
+          <text class="rate-label">忘了</text>
+        </view>
+        <view class="rate-btn hard" bindtap="onRate" data-word="{{item.word}}" data-rating="hard">
+          <text class="rate-emoji">😅</text>
+          <text class="rate-label">模糊</text>
+        </view>
+        <view class="rate-btn good" bindtap="onRate" data-word="{{item.word}}" data-rating="good">
+          <text class="rate-emoji">😊</text>
+          <text class="rate-label">记住</text>
+        </view>
+        <view class="rate-btn easy" bindtap="onRate" data-word="{{item.word}}" data-rating="easy">
+          <text class="rate-emoji">🤩</text>
+          <text class="rate-label">很熟</text>
+        </view>
+      </view>
+
+      <!-- 移除 -->
+      <view class="remove-row">
+        <text class="remove-link" bindtap="remove" data-word="{{item.word}}">移除</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部留白给 tabBar -->
+  <view style="height: calc(120rpx + env(safe-area-inset-bottom))"></view>
 </view>

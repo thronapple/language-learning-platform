@@ -5,7 +5,7 @@ from pydantic import BaseModel
 
 class ContentItem(BaseModel):
     id: str
-    type: Literal["sentence", "dialog", "word"]
+    type: Literal["sentence", "dialog", "dialogue", "word"]
     tags: List[str] = []
     level: Optional[str] = None
     text: str

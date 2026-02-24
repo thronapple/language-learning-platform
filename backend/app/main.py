@@ -1,4 +1,5 @@
 import logging
+import time
 import urllib.parse
 from pathlib import Path
 from fastapi import FastAPI, Request, HTTPException, Depends
@@ -27,7 +28,7 @@ from .services.billing import BillingService
 from .services.wishlist import WishlistService
 from .services.plan import PlanService
 from .services.events import EventsService
-from .schemas.auth import MeRequest, MeResponse, User
+from .schemas.auth import MeRequest, MeResponse, RefreshRequest, RefreshResponse, User
 from .schemas.content import ContentItem, ContentListResponse
 from .schemas.study import SaveProgressRequest, OkResponse
 from .schemas.vocab import (
@@ -48,6 +49,12 @@ from .schemas.events import TrackEventRequest, OkResponse as TrackOk
 
 app = FastAPI(title="Language Learning Platform Backend", version="0.1.0")
 add_middleware(app)
+
+# Mount pre-generated audio files
+from fastapi.staticfiles import StaticFiles
+_static_audio = Path(__file__).resolve().parent.parent / "static" / "audio"
+if _static_audio.is_dir():
+    app.mount("/static/audio", StaticFiles(directory=str(_static_audio)), name="static-audio")
 
 
 # Global exception handlers
@@ -194,7 +201,19 @@ def metrics():
 def auth_me(payload: MeRequest) -> MeResponse:
     openid = auth_service.exchange_code_for_openid(payload.code)
     user = auth_service.get_or_create_user(openid)
-    return MeResponse(user=user, featureFlags=settings.feature_flags)
+    from .infra.jwt_utils import create_token
+    token = create_token(openid)
+    return MeResponse(user=user, token=token, featureFlags=settings.feature_flags)
+
+
+@app.post("/auth/refresh", response_model=RefreshResponse)
+def auth_refresh(payload: RefreshRequest) -> RefreshResponse:
+    """Refresh a JWT token. Accepts valid or recently expired tokens (within 7 days)."""
+    from .infra.jwt_utils import refresh_token
+    new_token, openid = refresh_token(payload.token)
+    if not new_token or not openid:
+        raise HTTPException(status_code=401, detail="Token cannot be refreshed")
+    return RefreshResponse(token=new_token, openid=openid)
 
 
 @app.get("/content", response_model=ContentListResponse)
@@ -326,169 +345,226 @@ def events_track(
     return TrackOk(ok=True)
 
 
-# ============ Assessment APIs (Mock) ============
+# ============ Assessment APIs (Real) ============
 import uuid
+import random
 
-# 存储评估会话 (内存模拟)
-_assessments = {}
+from .services.assessment_service import AdaptiveQuestionSelector, AssessmentEvaluator
+from .domain.assessment import Assessment, AssessmentQuestion, DimensionResult
 
-@app.post("/api/assessment/start")
-def assessment_start():
-    """启动评估"""
-    assessment_id = f"assess_{uuid.uuid4().hex[:12]}"
+# In-memory assessment sessions (keyed by assessment_id)
+_assessments: dict[str, dict] = {}
+_assessment_timestamps: dict[str, float] = {}
+_ASSESSMENT_TTL_SECONDS = 30 * 60  # 30 minutes
 
-    _assessments[assessment_id] = {
-        "id": assessment_id,
-        "current_question": 1,
-        "answers": []
+
+def _cleanup_stale_sessions() -> None:
+    """Remove assessment sessions older than TTL (lazy cleanup)."""
+    now = time.monotonic()
+    expired = [k for k, ts in _assessment_timestamps.items() if now - ts > _ASSESSMENT_TTL_SECONDS]
+    for k in expired:
+        _assessments.pop(k, None)
+        _assessment_timestamps.pop(k, None)
+
+
+# Evaluator instance (stateless, reusable)
+_evaluator = AssessmentEvaluator()
+
+
+class _MemoryQuestionRepo:
+    """Thin adapter: lets AdaptiveQuestionSelector query the MemoryRepository."""
+
+    def __init__(self, repository):
+        self._repo = repository
+
+    async def get(self, question_id: str):
+        doc = self._repo.get("assessment_questions", question_id)
+        if not doc:
+            return None
+        return self._to_domain(doc)
+
+    async def find_closest(self, level: str, type: str, exclude_ids: list[str]):
+        items, _ = self._repo.query("assessment_questions", {"level": level, "type": type}, limit=100, offset=0)
+        candidates = [it for it in items if it["id"] not in exclude_ids and it.get("is_active", True)]
+        if not candidates:
+            # Fallback: ignore level, just match type
+            items, _ = self._repo.query("assessment_questions", {"type": type}, limit=100, offset=0)
+            candidates = [it for it in items if it["id"] not in exclude_ids and it.get("is_active", True)]
+        if not candidates:
+            # Final fallback: any active question not yet answered
+            items, _ = self._repo.query("assessment_questions", None, limit=200, offset=0)
+            candidates = [it for it in items if it["id"] not in exclude_ids and it.get("is_active", True)]
+        if not candidates:
+            return None
+        return self._to_domain(random.choice(candidates))
+
+    @staticmethod
+    def _to_domain(doc: dict) -> AssessmentQuestion:
+        from datetime import datetime as _dt
+        return AssessmentQuestion(
+            id=doc["id"],
+            type=doc["type"],
+            level=doc["level"],
+            difficulty=doc.get("difficulty", 0.5),
+            scenario_id=doc.get("scenario_id"),
+            skill_tested=doc.get("skill_tested", ""),
+            content=doc["content"],
+            metadata=doc.get("metadata", {}),
+            is_active=doc.get("is_active", True),
+            created_at=_dt.fromisoformat(doc["created_at"]) if isinstance(doc.get("created_at"), str) else doc.get("created_at"),
+        )
+
+
+_question_repo = _MemoryQuestionRepo(repo)
+_selector = AdaptiveQuestionSelector(_question_repo)
+
+
+def _question_to_response(q: AssessmentQuestion, request: Request) -> dict:
+    """Convert domain question to API response dict with TTS audio URL."""
+    base_url = f"https://{request.headers.get('host', request.url.netloc)}"
+    content = dict(q.content)
+    # Generate TTS audio_url for the question text (or listening transcript)
+    if q.type == "listening" and content.get("transcript"):
+        audio_text = content["transcript"]
+    else:
+        audio_text = content.get("question", "")
+    content["audio_url"] = f"{base_url}/api/tts/audio?text={urllib.parse.quote(audio_text)}&lang=en"
+    return {
+        "id": q.id,
+        "type": q.type,
+        "level": q.level,
+        "content": content,
+        "correct_index": content.get("correct_index", 0),
     }
 
-    # 返回第一题
-    question_text = "What does 'Hello' mean?"
-    # 使用后端代理的TTS URL（完整URL）
-    # 注意：微信小程序不支持localhost，必须使用127.0.0.1
-    base_url = "http://127.0.0.1:8000"  # TODO: 从配置读取
-    audio_url = f"{base_url}/api/tts/audio?text={urllib.parse.quote(question_text)}&lang=en"
+
+@app.post("/api/assessment/start")
+async def assessment_start(request: Request):
+    """启动评估 — 创建会话并返回第一题"""
+    _cleanup_stale_sessions()
+    assessment_id = f"assess_{uuid.uuid4().hex[:12]}"
+
+    _assessment_timestamps[assessment_id] = time.monotonic()
+    _assessments[assessment_id] = {
+        "id": assessment_id,
+        "started_at": datetime.now(timezone.utc).isoformat(),
+        "questions": [],  # answered question records
+    }
+
+    # Select the first question via adaptive algorithm
+    first_q = await _selector.select_next([], total_questions=10)
+    if not first_q:
+        raise HTTPException(status_code=500, detail="No questions available in the question bank")
 
     return {
         "assessment_id": assessment_id,
-        "first_question": {
-            "id": "q_001",
-            "type": "reading",
-            "level": "A2",
-            "content": {
-                "question": question_text,
-                "question_zh": "'Hello' 是什么意思？",
-                "passage": "Hello is a common greeting in English.",
-                "audio_url": audio_url,
-                "options": ["你好", "再见", "谢谢", "对不起"]
-            },
-            "correct_index": 0
-        }
+        "first_question": _question_to_response(first_q, request),
     }
 
 
 @app.post("/api/assessment/answer")
-def assessment_answer(payload: dict):
-    """提交答案"""
+async def assessment_answer(payload: dict, request: Request):
+    """提交答案 — 判断正误，自适应选下一题"""
+    _cleanup_stale_sessions()
     assessment_id = payload.get("assessment_id")
-    answer_index = payload.get("answer_index", 0)
+    question_id = payload.get("question_id", "")
+    answer_index = payload.get("answer_index", -1)
+    time_spent = payload.get("time_spent", 0)
 
-    assessment = _assessments.get(assessment_id, {})
-    current = assessment.get("current_question", 1)
+    session = _assessments.get(assessment_id)
+    if not session:
+        raise HTTPException(status_code=404, detail="Assessment session not found")
 
-    # 模拟答案正确性
-    is_correct = (answer_index == 0)
+    # Look up the question from the repo to check correctness
+    question = await _question_repo.get(question_id)
+    if question:
+        correct_index = question.content.get("correct_index", 0)
+        is_correct = (answer_index == correct_index)
+        explanation = question.content.get("explanation") if not is_correct else None
+        q_type = question.type
+        q_level = question.level
+        difficulty = question.difficulty
+    else:
+        # Fallback if question not found (shouldn't happen normally)
+        is_correct = False
+        explanation = None
+        q_type = "vocabulary"
+        q_level = "B1"
+        difficulty = 0.5
 
-    # 记录答案
-    if "answers" not in assessment:
-        assessment["answers"] = []
-    assessment["answers"].append({
-        "question_id": f"q_{current:03d}",
+    # Record the answer
+    session["questions"].append({
+        "question_id": question_id,
+        "type": q_type,
+        "level": q_level,
+        "difficulty": difficulty,
         "is_correct": is_correct,
-        "answer_index": answer_index
+        "time_spent": time_spent,
+        "answer_selected": answer_index,
     })
 
-    # 下一题
-    next_num = current + 1
-    assessment["current_question"] = next_num
+    # Select next question (adaptive)
+    next_q = await _selector.select_next(session["questions"], total_questions=10)
 
-    if next_num <= 10:
-        # 返回下一题
-        question_types = ["reading", "listening", "vocabulary", "grammar"]
-        q_type = question_types[(next_num - 1) % 4]
-
-        question_text = f"Question {next_num}: Choose the correct answer"
-
-        # 生成TTS音频URL（使用后端代理，完整URL）
-        base_url = "http://127.0.0.1:8000"
-        if q_type == "listening":
-            # 听力题使用完整句子
-            audio_text = "Listen carefully. The cat is sitting on the mat."
-            audio_url = f"{base_url}/api/tts/audio?text={urllib.parse.quote(audio_text)}&lang=en"
-        else:
-            # 其他题型也提供问题朗读
-            audio_url = f"{base_url}/api/tts/audio?text={urllib.parse.quote(question_text)}&lang=en"
-
-        return {
-            "is_correct": is_correct,
-            "explanation": "正确答案是 '你好'" if not is_correct else None,
-            "next_question": {
-                "id": f"q_{next_num:03d}",
-                "type": q_type,
-                "level": "B1",
-                "content": {
-                    "question": question_text,
-                    "question_zh": f"问题 {next_num}：选择正确答案",
-                    "passage": "This is a sample passage for reading comprehension." if q_type == "reading" else None,
-                    "audio_url": audio_url,
-                    "options": ["Option A", "Option B", "Option C", "Option D"]
-                },
-                "correct_index": 0
-            }
-        }
-    else:
-        # 完成
-        return {
-            "is_correct": is_correct,
-            "explanation": None,
-            "next_question": None
-        }
+    return {
+        "is_correct": is_correct,
+        "explanation": explanation,
+        "next_question": _question_to_response(next_q, request) if next_q else None,
+    }
 
 
 @app.post("/api/assessment/complete")
-def assessment_complete(payload: dict):
-    """完成评估"""
+def assessment_complete(
+    payload: dict,
+    request: Request,
+    user_id: str | None = Depends(get_optional_user_openid),
+):
+    """完成评估 — 使用 AssessmentEvaluator 计算真实结果"""
     assessment_id = payload.get("assessment_id")
-    assessment = _assessments.get(assessment_id, {})
-    answers = assessment.get("answers", [])
+    session = _assessments.get(assessment_id)
+    if not session:
+        raise HTTPException(status_code=404, detail="Assessment session not found")
 
-    # 计算准确率
-    correct_count = sum(1 for a in answers if a.get("is_correct"))
-    accuracy = correct_count / len(answers) if answers else 0.5
+    # Build a domain Assessment object for the evaluator
+    assessment_obj = Assessment(
+        user_id=user_id or "anonymous",
+        started_at=datetime.fromisoformat(session["started_at"]),
+        status="in_progress",
+        questions=session["questions"],
+    )
 
-    # 模拟结果
+    result = _evaluator.calculate_result(assessment_obj)
+    recommendations = _evaluator.generate_recommendations(result)
+
+    # Clean up session
+    _assessments.pop(assessment_id, None)
+    _assessment_timestamps.pop(assessment_id, None)
+
+    # Persist result to repo for history
+    result_dict = result.to_dict()
+    result_dict["recommendations"] = recommendations
+    result_dict["assessment_id"] = assessment_id
+    result_dict["user_id"] = user_id or "anonymous"
+    result_dict["completed_at"] = datetime.now(timezone.utc).isoformat()
+    result_dict["question_count"] = len(session["questions"])
+    repo.put("assessment_results", result_dict)
+
     return {
-        "overall_level": "B1" if accuracy >= 0.6 else "A2",
-        "ability_score": accuracy * 5,
-        "confidence": 0.85,
-        "dimensions": {
-            "listening": {
-                "level": "A2",
-                "accuracy": 0.7,
-                "ability": 1.2
-            },
-            "reading": {
-                "level": "B1",
-                "accuracy": 0.8,
-                "ability": 1.5
-            },
-            "vocabulary": {
-                "level": "A2",
-                "accuracy": 0.65,
-                "ability": 1.0
-            },
-            "grammar": {
-                "level": "B1",
-                "accuracy": 0.75,
-                "ability": 1.3
-            }
-        },
-        "weak_areas": ["listening", "vocabulary"],
-        "strong_areas": ["reading"],
-        "recommendations": {
-            "suggested_scenarios": ["机场场景", "酒店场景", "餐厅用餐"],
-            "focus_areas": ["听力理解", "词汇掌握"],
-            "estimated_study_days": 30
-        }
+        **result.to_dict(),
+        "recommendations": recommendations,
     }
 
 
 @app.get("/api/assessment/history")
-def assessment_history():
+def assessment_history(user_id: str | None = Depends(get_optional_user_openid)):
     """获取评估历史"""
+    filters = {"user_id": user_id} if user_id else None
+    items, total = repo.query("assessment_results", filters, limit=20, offset=0)
+    # Sort by completed_at descending
+    items.sort(key=lambda x: x.get("completed_at", ""), reverse=True)
     return {
-        "assessments": []
+        "assessments": items,
+        "total": total
     }
 
 
@@ -510,13 +586,7 @@ async def tts_audio(text: str, lang: str = "en", engine: str = "edge"):
 
     返回: MP3音频文件
     """
-    print(f"\n{'='*80}")
-    print(f"🎯 [API] /api/tts/audio 被调用")
-    print(f"   文本: {text}")
-    print(f"   语言: {lang}")
-    print(f"   引擎: {engine}")
-    print(f"{'='*80}\n")
-    logger.info(f"🎯 [API] /api/tts/audio 被调用 | text='{text}' | lang={lang} | engine={engine}")
+    logger.info("TTS audio requested", extra={"text": text[:50], "lang": lang, "engine": engine})
     try:
         # 使用Edge TTS生成音频（更自然的声音）- 异步调用
         audio_file = await tts_service.get_tts_url_async(text, lang, engine)
@@ -526,8 +596,7 @@ async def tts_audio(text: str, lang: str = "en", engine: str = "edge"):
                 audio_file,
                 media_type="audio/mpeg",
                 headers={
-                    "Cache-Control": "public, max-age=31536000",  # 缓存1年
-                    "Access-Control-Allow-Origin": "*"
+                    "Cache-Control": "public, max-age=31536000",
                 }
             )
         else:
@@ -547,91 +616,417 @@ async def tts_audio(text: str, lang: str = "en", engine: str = "edge"):
         )
 
 
-# ============ Dialogue API (Mock with TTS) ============
+# ============ Speech Evaluation API ============
+from fastapi import UploadFile, File, Form
+from .services.speech import evaluate as speech_evaluate
+
+@app.post("/api/speech/evaluate")
+async def api_speech_evaluate(
+    file: UploadFile = File(...),
+    reference: str = Form(...),
+):
+    """接收录音文件，语音识别后与原文比对打分。"""
+    audio_bytes = await file.read()
+    result = speech_evaluate(audio_bytes, reference)
+    return result
+
+
+# ============ Dialogue Progress API ============
+
+@app.post("/api/dialogue/complete")
+def dialogue_complete(
+    payload: dict,
+    user_id: str = Depends(get_current_user_openid),
+):
+    """Record dialogue completion and update plan progress if applicable."""
+    dialogue_id = payload.get("dialogue_id")
+    play_count = payload.get("play_count", 0)
+    record_count = payload.get("record_count", 0)
+    duration = payload.get("duration", 0)
+
+    if not dialogue_id:
+        raise HTTPException(status_code=400, detail="dialogue_id is required")
+
+    if not repo.get("dialogues", dialogue_id):
+        raise HTTPException(status_code=404, detail=f"Dialogue '{dialogue_id}' not found")
+
+    # Save progress record
+    progress = {
+        "user_id": user_id,
+        "dialogue_id": dialogue_id,
+        "play_count": play_count,
+        "record_count": record_count,
+        "duration": duration,
+        "completed_at": datetime.now(timezone.utc).isoformat(),
+    }
+    repo.put("dialogue_progress", progress)
+
+    # Update active plan progress if a plan exists
+    plans, _ = repo.query("plans", {"user_id": user_id, "status": "active"}, limit=1, offset=0)
+    plan_updated = False
+    if plans:
+        plan = plans[0]
+        for task in plan.get("daily_tasks", []):
+            if task.get("dialogue_id") == dialogue_id and not task.get("is_completed"):
+                task["is_completed"] = True
+                plan_updated = True
+                break
+
+        if plan_updated:
+            # Recalculate progress
+            for goal in plan.get("scenario_goals", []):
+                if dialogue_id in goal.get("dialogue_ids", []):
+                    completed_in_scenario = sum(
+                        1 for t in plan.get("daily_tasks", [])
+                        if t.get("scenario_id") == goal["scenario_id"] and t.get("is_completed")
+                    )
+                    total_in_scenario = len(goal["dialogue_ids"])
+                    goal["current_readiness"] = round(completed_in_scenario / max(1, total_in_scenario) * 0.85, 2)
+                    goal["readinessPercent"] = round(goal["current_readiness"] * 100)
+
+            total = plan.get("total_dialogues", 1)
+            completed = sum(1 for t in plan.get("daily_tasks", []) if t.get("is_completed"))
+            plan["completed_dialogues"] = completed
+            plan["overall_progress"] = round(completed / max(1, total) * 100)
+            plan["completed_scenarios"] = sum(
+                1 for g in plan.get("scenario_goals", []) if g.get("current_readiness", 0) >= 0.85
+            )
+            if plan["overall_progress"] >= 100:
+                plan["status"] = "completed"
+            plan["updated_at"] = datetime.now(timezone.utc).isoformat()
+            repo.put("plans", plan)
+
+    return {"ok": True, "plan_updated": plan_updated}
+
+
+# ============ Dialogue API (Real Data) ============
 
 @app.get("/api/dialogues/{dialogue_id}")
-def get_dialogue(dialogue_id: str):
+def get_dialogue(dialogue_id: str, request: Request):
     """
     获取对话详情 (带TTS音频)
 
-    返回对话的所有句子，每句都有TTS生成的音频URL
+    从 dialogues 集合读取真实数据，为每句生成TTS音频URL
     """
-    # 模拟对话数据
-    dialogue_data = {
-        "airport-checkin-001": {
-            "id": "airport-checkin-001",
-            "scenario_id": "airport-basics",
-            "title_en": "Airport Check-in",
-            "title_zh": "机场值机办理",
-            "sentences": [
-                {
-                    "order": 1,
-                    "speaker": "Staff",
-                    "text_en": "Good morning! May I see your passport and ticket, please?",
-                    "text_zh": "早上好！请出示您的护照和机票？",
-                    "phonetic": "/ɡʊd ˈmɔːrnɪŋ meɪ aɪ siː jɔːr ˈpæspɔːrt ənd ˈtɪkɪt pliːz/",
-                    "key_words": ["passport", "ticket"]
-                },
-                {
-                    "order": 2,
-                    "speaker": "Passenger",
-                    "text_en": "Here you are.",
-                    "text_zh": "给您。",
-                    "phonetic": "/hɪər juː ɑːr/",
-                    "key_words": []
-                },
-                {
-                    "order": 3,
-                    "speaker": "Staff",
-                    "text_en": "Would you like a window seat or an aisle seat?",
-                    "text_zh": "您想要靠窗的座位还是靠过道的座位？",
-                    "phonetic": "/wʊd juː laɪk ə ˈwɪndəʊ siːt ɔːr ən aɪl siːt/",
-                    "key_words": ["window seat", "aisle seat"]
-                },
-                {
-                    "order": 4,
-                    "speaker": "Passenger",
-                    "text_en": "A window seat, please.",
-                    "text_zh": "靠窗的座位，谢谢。",
-                    "phonetic": "/ə ˈwɪndəʊ siːt pliːz/",
-                    "key_words": []
-                },
-                {
-                    "order": 5,
-                    "speaker": "Staff",
-                    "text_en": "Here is your boarding pass. Have a nice flight!",
-                    "text_zh": "这是您的登机牌。祝您旅途愉快！",
-                    "phonetic": "/hɪər ɪz jɔːr ˈbɔːrdɪŋ pæs hæv ə naɪs flaɪt/",
-                    "key_words": ["boarding pass", "flight"]
-                }
-            ]
-        }
-    }
-
-    dialogue = dialogue_data.get(dialogue_id)
+    dialogue = repo.get("dialogues", dialogue_id)
 
     if not dialogue:
-        # 默认返回一个简单对话
-        dialogue = {
-            "id": dialogue_id,
-            "title_en": "Sample Dialogue",
-            "title_zh": "示例对话",
-            "sentences": [
-                {
-                    "order": 1,
-                    "speaker": "Person A",
-                    "text_en": "Hello, how are you?",
-                    "text_zh": "你好，你好吗？",
-                    "phonetic": "/həˈloʊ haʊ ɑːr juː/",
-                    "key_words": ["hello"]
-                }
-            ]
-        }
+        raise HTTPException(status_code=404, detail=f"Dialogue '{dialogue_id}' not found")
 
-    # 为每个句子生成TTS音频URL（使用后端代理，完整URL）
-    base_url = "http://localhost:8000"
-    for sentence in dialogue["sentences"]:
+    # Build TTS audio URLs — prefer pre-generated static files, fallback to dynamic TTS
+    base_url = f"https://{request.headers.get('host', request.url.netloc)}"
+    for sentence in dialogue.get("sentences", []):
+        audio_url = sentence.get("audio_url", "")
+        if audio_url.startswith("/static/audio/"):
+            continue
         text_encoded = urllib.parse.quote(sentence["text_en"])
         sentence["audio_url"] = f"{base_url}/api/tts/audio?text={text_encoded}&lang=en"
 
     return dialogue
+
+
+@app.get("/api/scenarios")
+def list_scenarios():
+    """获取场景列表"""
+    items, total = repo.query("scenarios", None, limit=50, offset=0)
+    return {"scenarios": items, "total": total}
+
+
+@app.get("/api/scenarios/{scenario_id}")
+def get_scenario(scenario_id: str):
+    """获取场景详情"""
+    scenario = repo.get("scenarios", scenario_id)
+    if not scenario:
+        raise HTTPException(status_code=404, detail=f"Scenario '{scenario_id}' not found")
+    return scenario
+
+
+@app.get("/api/scenarios/{scenario_id}/dialogues")
+def list_scenario_dialogues(scenario_id: str, request: Request):
+    """获取场景下的所有对话"""
+    items, _ = repo.query("dialogues", {"scenario_id": scenario_id}, limit=50, offset=0)
+
+    base_url = f"https://{request.headers.get('host', request.url.netloc)}"
+    for dialogue in items:
+        for sentence in dialogue.get("sentences", []):
+            audio_url = sentence.get("audio_url", "")
+            if audio_url.startswith("/static/audio/"):
+                continue
+            text_encoded = urllib.parse.quote(sentence["text_en"])
+            sentence["audio_url"] = f"{base_url}/api/tts/audio?text={text_encoded}&lang=en"
+
+    return {"dialogues": items, "total": len(items)}
+
+
+# ============ Plan API ============
+
+# Level ordering for comparison
+_LEVEL_ORDER = {"A1": 0, "A2": 1, "B1": 2, "B2": 3, "C1": 4, "C2": 5}
+
+
+@app.post("/api/plan/generate")
+def generate_plan(
+    payload: dict,
+    user_id: str = Depends(get_current_user_openid),
+):
+    """
+    Generate a learning plan based on assessment results.
+
+    Expects: overall_level, weak_areas, strong_areas, target_date?, daily_minutes?, focus_categories?
+    """
+    overall_level = payload.get("overall_level", "A2")
+    weak_areas = payload.get("weak_areas", [])
+    strong_areas = payload.get("strong_areas", [])
+    target_date_str = payload.get("target_date")
+    daily_minutes = payload.get("daily_minutes", 30)
+    focus_categories = payload.get("focus_categories", [])
+
+    from datetime import date as _date, timedelta as _timedelta
+
+    # Calculate available days
+    available_days = 30
+    target_date = None
+    if target_date_str:
+        try:
+            target_date = _date.fromisoformat(target_date_str)
+            available_days = max(7, (target_date - _date.today()).days)
+        except ValueError:
+            pass
+
+    # 1. Get all scenarios and pick recommended ones
+    all_scenarios, _ = repo.query("scenarios", None, limit=50, offset=0)
+    user_level_idx = _LEVEL_ORDER.get(overall_level, 1)
+
+    def _score_scenario(s: dict) -> int:
+        score = 0
+        s_level_idx = _LEVEL_ORDER.get(s.get("level", "A2"), 1)
+        # Level fit: same level or one level up
+        if s_level_idx == user_level_idx or s_level_idx == user_level_idx + 1:
+            score += 20
+        # Priority bonus
+        score += max(0, 10 - s.get("priority", 5)) * 5
+        # Weak area match via tags
+        s_tags = set(s.get("tags", []))
+        for wa in weak_areas:
+            if wa in s_tags:
+                score += 30
+        # Focus category match
+        if focus_categories and s.get("category") in focus_categories:
+            score += 25
+        return score
+
+    scored = sorted(all_scenarios, key=_score_scenario, reverse=True)
+    num_scenarios = min(len(scored), 5 if available_days >= 21 else 3)
+    selected = scored[:num_scenarios]
+
+    # 2. Build scenario goals
+    scenario_goals = []
+    all_dialogue_ids = []
+    priority_labels = ["high", "medium", "low"]
+
+    for i, sc in enumerate(selected):
+        sid = sc["id"]
+        # Get dialogues for this scenario
+        dialogues, _ = repo.query("dialogues", {"scenario_id": sid}, limit=20, offset=0)
+        d_ids = [d["id"] for d in dialogues]
+        all_dialogue_ids.extend(d_ids)
+
+        # Collect key vocabulary from dialogues
+        key_vocab = []
+        for d in dialogues:
+            for sent in d.get("sentences", []):
+                key_vocab.extend(sent.get("key_words", []))
+        key_vocab = list(dict.fromkeys(key_vocab))[:10]  # dedupe, top 10
+
+        priority = priority_labels[min(i, 2)]
+
+        # Generate reason
+        reasons = []
+        if priority == "high":
+            reasons.append(f"高优先级{sc.get('category', '')}场景")
+        if any(wa in set(sc.get("tags", [])) for wa in weak_areas):
+            reasons.append(f"针对薄弱环节: {', '.join(weak_areas[:2])}")
+        if not reasons:
+            reasons.append(f"包含{len(d_ids)}个核心学习目标")
+
+        scenario_goals.append({
+            "scenario_id": sid,
+            "scenario_name": sc.get("name_zh", sc.get("name_en", sid)),
+            "icon": sc.get("icon", "📚"),
+            "priority": priority,
+            "target_readiness": 0.85,
+            "current_readiness": 0.0,
+            "readinessPercent": 0,
+            "estimated_days": max(1, len(d_ids) * 2),
+            "dialogue_ids": d_ids,
+            "key_vocabulary": key_vocab,
+            "reason": "；".join(reasons),
+        })
+
+    # 3. Generate daily tasks
+    today = _date.today()
+    daily_tasks = []
+    for idx, did in enumerate(all_dialogue_ids):
+        task_date = today + _timedelta(days=idx)
+        # Find dialogue info
+        dlg = repo.get("dialogues", did)
+        sentence_count = len(dlg.get("sentences", [])) if dlg else 5
+        # Find which scenario this belongs to
+        scenario_id = dlg.get("scenario_id", "") if dlg else ""
+        daily_tasks.append({
+            "date": task_date.isoformat(),
+            "scenario_id": scenario_id,
+            "dialogue_id": did,
+            "dialogue_title": dlg.get("title_zh", did) if dlg else did,
+            "vocabulary_count": sentence_count,
+            "estimated_minutes": max(10, sentence_count * 2),
+            "is_completed": False,
+        })
+
+    # 4. Build plan object
+    plan_id = f"plan_{uuid.uuid4().hex[:12]}"
+    now = datetime.now(timezone.utc)
+    plan = {
+        "id": plan_id,
+        "user_id": user_id,
+        "status": "active",
+        "created_at": now.isoformat(),
+        "updated_at": now.isoformat(),
+        "target_date": target_date.isoformat() if target_date else None,
+        "available_days": available_days,
+        "daily_minutes": daily_minutes,
+        "overall_level": overall_level,
+        "weak_areas": weak_areas,
+        "strong_areas": strong_areas,
+        "scenario_goals": scenario_goals,
+        "daily_tasks": daily_tasks,
+        "total_scenarios": len(scenario_goals),
+        "completed_scenarios": 0,
+        "total_dialogues": len(all_dialogue_ids),
+        "completed_dialogues": 0,
+        "overall_progress": 0,
+    }
+
+    # Deactivate any previous active plan for this user
+    old_plans, _ = repo.query("plans", {"user_id": user_id, "status": "active"}, limit=10, offset=0)
+    for op in old_plans:
+        op["status"] = "completed"
+        repo.put("plans", op)
+
+    repo.put("plans", plan)
+    return plan
+
+
+@app.get("/api/plan/current")
+def get_current_plan(user_id: str = Depends(get_current_user_openid)):
+    """Get the user's current active learning plan."""
+    items, total = repo.query("plans", {"user_id": user_id, "status": "active"}, limit=1, offset=0)
+    if not items:
+        raise HTTPException(status_code=404, detail="No active plan found")
+
+    plan = items[0]
+    # Add computed fields
+    if plan.get("target_date"):
+        from datetime import date as _date
+        try:
+            td = _date.fromisoformat(plan["target_date"])
+            plan["days_remaining"] = max(0, (td - _date.today()).days)
+        except ValueError:
+            plan["days_remaining"] = None
+
+    # Filter today's tasks
+    from datetime import date as _date
+    today_str = _date.today().isoformat()
+    plan["today_tasks"] = [t for t in plan.get("daily_tasks", []) if t.get("date") == today_str]
+
+    return plan
+
+
+@app.get("/api/plan/{plan_id}")
+def get_plan_detail(plan_id: str, user_id: str = Depends(get_current_user_openid)):
+    """Get plan details by ID."""
+    plan = repo.get("plans", plan_id)
+    if not plan or plan.get("user_id") != user_id:
+        raise HTTPException(status_code=404, detail="Plan not found")
+    return plan
+
+
+@app.put("/api/plan/{plan_id}/progress")
+def update_plan_progress(
+    plan_id: str,
+    payload: dict,
+    user_id: str = Depends(get_current_user_openid),
+):
+    """Update plan progress when a dialogue is completed."""
+    plan = repo.get("plans", plan_id)
+    if not plan or plan.get("user_id") != user_id:
+        raise HTTPException(status_code=404, detail="Plan not found")
+
+    completed_dialogue_id = payload.get("dialogue_id")
+    if not completed_dialogue_id:
+        raise HTTPException(status_code=400, detail="dialogue_id is required")
+
+    # Mark daily task as completed
+    for task in plan.get("daily_tasks", []):
+        if task.get("dialogue_id") == completed_dialogue_id:
+            task["is_completed"] = True
+            break
+
+    # Update scenario readiness
+    for goal in plan.get("scenario_goals", []):
+        if completed_dialogue_id in goal.get("dialogue_ids", []):
+            completed_in_scenario = sum(
+                1 for t in plan.get("daily_tasks", [])
+                if t.get("scenario_id") == goal["scenario_id"] and t.get("is_completed")
+            )
+            total_in_scenario = len(goal["dialogue_ids"])
+            goal["current_readiness"] = round(completed_in_scenario / max(1, total_in_scenario) * 0.85, 2)
+            goal["readinessPercent"] = round(goal["current_readiness"] * 100)
+
+    # Recalculate overall progress
+    total = plan.get("total_dialogues", 1)
+    completed = sum(1 for t in plan.get("daily_tasks", []) if t.get("is_completed"))
+    plan["completed_dialogues"] = completed
+    plan["overall_progress"] = round(completed / max(1, total) * 100)
+    plan["completed_scenarios"] = sum(
+        1 for g in plan.get("scenario_goals", []) if g.get("current_readiness", 0) >= 0.85
+    )
+
+    # Auto-complete plan
+    if plan["overall_progress"] >= 100:
+        plan["status"] = "completed"
+
+    plan["updated_at"] = datetime.now(timezone.utc).isoformat()
+    repo.put("plans", plan)
+    return plan
+
+
+@app.put("/api/plan/{plan_id}/pause")
+def pause_plan(plan_id: str, user_id: str = Depends(get_current_user_openid)):
+    """Pause a learning plan."""
+    plan = repo.get("plans", plan_id)
+    if not plan or plan.get("user_id") != user_id:
+        raise HTTPException(status_code=404, detail="Plan not found")
+    if plan.get("status") != "active":
+        raise HTTPException(status_code=400, detail="Only active plans can be paused")
+
+    plan["status"] = "paused"
+    plan["paused_at"] = datetime.now(timezone.utc).isoformat()
+    plan["updated_at"] = plan["paused_at"]
+    repo.put("plans", plan)
+    return {"ok": True, "status": "paused"}
+
+
+@app.put("/api/plan/{plan_id}/resume")
+def resume_plan(plan_id: str, user_id: str = Depends(get_current_user_openid)):
+    """Resume a paused learning plan."""
+    plan = repo.get("plans", plan_id)
+    if not plan or plan.get("user_id") != user_id:
+        raise HTTPException(status_code=404, detail="Plan not found")
+    if plan.get("status") != "paused":
+        raise HTTPException(status_code=400, detail="Only paused plans can be resumed")
+
+    plan["status"] = "active"
+    plan["updated_at"] = datetime.now(timezone.utc).isoformat()
+    repo.put("plans", plan)
+    return {"ok": True, "status": "active"}

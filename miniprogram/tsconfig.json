@@ -6,8 +6,7 @@
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "typeRoots": ["./typings"]
+    "forceConsistentCasingInFileNames": true
   },
   "include": [
     "**/*.ts"

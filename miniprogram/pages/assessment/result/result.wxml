@@ -37,10 +37,19 @@
   <view class="details-section">
     <view class="section-title">详细分析</view>
 
-    <view class="detail-item" wx:for="{{dimensionList}}" wx:key="name">
+    <view
+      class="detail-item clickable"
+      wx:for="{{dimensionList}}"
+      wx:key="name"
+      bindtap="onDimensionTap"
+      data-name="{{item.name}}"
+    >
       <view class="detail-header">
         <text class="detail-name">{{item.label}}</text>
-        <text class="detail-level level-{{item.level}}">{{item.level}}</text>
+        <view class="detail-header-right">
+          <text class="detail-level level-{{item.level}}">{{item.level}}</text>
+          <text class="detail-arrow">›</text>
+        </view>
       </view>
       <view class="detail-progress">
         <view class="progress-bar">
@@ -111,5 +120,55 @@
     <button class="view-history-btn" bindtap="viewHistory">
       查看历史评估
     </button>
+  </view>
+
+  <!-- 维度详情弹窗 -->
+  <view class="dimension-overlay {{showDimensionDetail ? 'show' : ''}}" bindtap="closeDimensionDetail">
+    <view class="dimension-sheet {{showDimensionDetail ? 'show' : ''}}" catchtap="">
+      <view class="sheet-header">
+        <view class="sheet-handle"></view>
+        <view class="sheet-title-row">
+          <view class="sheet-dot" style="background: {{selectedDimension.color}};"></view>
+          <text class="sheet-title">{{selectedDimension.label}}</text>
+          <text class="sheet-level level-{{selectedDimension.level}}">{{selectedDimension.level}}</text>
+        </view>
+        <view class="sheet-close" bindtap="closeDimensionDetail">✕</view>
+      </view>
+
+      <view class="sheet-body">
+        <!-- 数据摘要 -->
+        <view class="sheet-stats">
+          <view class="stat-item">
+            <text class="stat-value">{{selectedDimension.accuracyPercent}}%</text>
+            <text class="stat-label">准确率</text>
+          </view>
+          <view class="stat-item">
+            <text class="stat-value">{{selectedDimension.abilityDisplay}}</text>
+            <text class="stat-label">能力值</text>
+          </view>
+          <view class="stat-item">
+            <text class="stat-value">{{selectedDimension.level}}</text>
+            <text class="stat-label">CEFR等级</text>
+          </view>
+        </view>
+
+        <!-- 维度说明 -->
+        <view class="sheet-section">
+          <text class="sheet-section-title">维度说明</text>
+          <text class="sheet-section-text">{{selectedDimension.description}}</text>
+        </view>
+
+        <!-- 学习建议 -->
+        <view class="sheet-section">
+          <text class="sheet-section-title">学习建议</text>
+          <view class="suggestion-list">
+            <view class="suggestion-item" wx:for="{{selectedDimension.suggestions}}" wx:key="*this">
+              <text class="suggestion-bullet">•</text>
+              <text class="suggestion-text">{{item}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
   </view>
 </view>

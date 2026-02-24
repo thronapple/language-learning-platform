@@ -97,13 +97,8 @@ def test_rate_limit_per_user_isolation():
 
 
 def test_no_rate_limit_on_other_endpoints():
-    """Test endpoints without rate limits work normally."""
-    # Health check should not be rate limited
-    for i in range(10):
+    """Test endpoints without configured rate limits work normally."""
+    # Health check should never be rate limited
+    for i in range(15):
         resp = client.get("/health")
-        assert resp.status_code == 200
-
-    # Auth endpoint should not be rate limited
-    for i in range(10):
-        resp = client.post("/auth/me", json={"code": f"code_{i}"})
         assert resp.status_code == 200

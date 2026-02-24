@@ -10,10 +10,22 @@ class VocabService:
         self.repo = repo
 
     def add(self, payload: VocabAddRequest, user_id: str) -> None:
+        meaning = payload.meaning
+        phonetic = payload.phonetic
+
+        if not meaning or not phonetic:
+            from .dictionary import lookup
+            info = lookup(payload.word)
+            if info:
+                if not meaning:
+                    meaning = info.get("meaning")
+                if not phonetic:
+                    phonetic = info.get("phonetic")
+
         doc = {
             "word": payload.word,
-            "meaning": payload.meaning,
-            "phonetic": payload.phonetic,
+            "meaning": meaning,
+            "phonetic": phonetic,
             "srs_level": 0,
             "next_review_at": None,
             "user_id": user_id,

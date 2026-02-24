@@ -49,28 +49,28 @@ class AssessmentService {
    * 启动评估
    */
   async startAssessment(): Promise<StartAssessmentResponse> {
-    return await request.post<StartAssessmentResponse>('/assessment/start', {});
+    return await request.post<StartAssessmentResponse>('/api/assessment/start', {});
   }
 
   /**
    * 提交答案
    */
   async submitAnswer(data: SubmitAnswerRequest): Promise<SubmitAnswerResponse> {
-    return await request.post<SubmitAnswerResponse>('/assessment/answer', data);
+    return await request.post<SubmitAnswerResponse>('/api/assessment/answer', data);
   }
 
   /**
    * 完成评估
    */
   async completeAssessment(data: CompleteAssessmentRequest): Promise<AssessmentResult> {
-    return await request.post<AssessmentResult>('/assessment/complete', data);
+    return await request.post<AssessmentResult>('/api/assessment/complete', data);
   }
 
   /**
    * 获取评估历史
    */
   async getHistory(): Promise<any[]> {
-    const response = await request.get<{ assessments: any[] }>('/assessment/history');
+    const response = await request.get<{ assessments: any[] }>('/api/assessment/history');
     return response.assessments || [];
   }
 }

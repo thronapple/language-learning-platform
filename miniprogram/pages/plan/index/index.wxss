@@ -7,6 +7,52 @@
   animation: fadeIn var(--duration-base) var(--ease-out);
 }
 
+/* 无计划空状态 */
+.no-plan-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 160rpx 60rpx 80rpx;
+}
+
+.no-plan-icon {
+  font-size: 120rpx;
+  margin-bottom: 40rpx;
+}
+
+.no-plan-title {
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 20rpx;
+}
+
+.no-plan-desc {
+  font-size: 28rpx;
+  color: #999;
+  text-align: center;
+  line-height: 1.6;
+  margin-bottom: 60rpx;
+}
+
+.no-plan-btn {
+  background: var(--gradient-primary);
+  color: white;
+  font-size: 32rpx;
+  font-weight: 600;
+  padding: 0 80rpx;
+  line-height: 1;
+  padding-top: 28rpx;
+  padding-bottom: 28rpx;
+  border-radius: 48rpx;
+  box-shadow: var(--shadow-lg);
+}
+
+.no-plan-btn::after {
+  border: none;
+}
+
 /* 顶部信息卡 */
 .header-card {
   background: var(--gradient-primary);

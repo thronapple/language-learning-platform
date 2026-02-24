@@ -1,30 +1,32 @@
-<view class="container welcome-page">
-  <view class="welcome-content">
-    <view class="welcome-icon">📚</view>
-    <view class="title-large mt-lg">欢迎开始每日 5 分钟学习</view>
-    <view class="body-medium mt-sm">每天坚持一点点，语言能力大提升</view>
+<view class="page">
+  <!-- 头部渐变区 -->
+  <view class="hero">
+    <view class="hero-icon">📚</view>
+    <view class="hero-title">每日 5 分钟</view>
+    <view class="hero-sub">坚持一点点，语言能力大提升</view>
   </view>
-  
-  <view class="action-section">
-    <button class="start-btn" bindtap="goStudy" loading="{{loading}}">
-      {{loading ? '准备中...' : '开始学习'}}
+
+  <!-- 功能亮点 -->
+  <view class="features">
+    <view class="feature-card" bindtap="goStudy">
+      <text class="feature-icon">🎧</text>
+      <text class="feature-label">跟读练习</text>
+    </view>
+    <view class="feature-card" bindtap="goAssessment">
+      <text class="feature-icon">📝</text>
+      <text class="feature-label">水平评估</text>
+    </view>
+    <view class="feature-card" bindtap="goPlan">
+      <text class="feature-icon">📈</text>
+      <text class="feature-label">学习计划</text>
+    </view>
+  </view>
+
+  <!-- 操作区 -->
+  <view class="action-area">
+    <button class="btn-primary" bindtap="goStudy" loading="{{loading}}">
+      开始学习
     </button>
-    <view class="caption mt-md">首次进入会拉取内容列表</view>
-  </view>
-  
-  <view class="features-section mt-xl">
-    <view class="feature-item">
-      <view class="feature-icon">🎧</view>
-      <view class="feature-text">音频跟读</view>
-    </view>
-    <view class="feature-item">
-      <view class="feature-icon">📝</view>
-      <view class="feature-text">单词记忆</view>
-    </view>
-    <view class="feature-item">
-      <view class="feature-icon">⚡</view>
-      <view class="feature-text">快速进步</view>
-    </view>
+    <view class="hint-text">首次使用将进行水平评估</view>
   </view>
 </view>
-

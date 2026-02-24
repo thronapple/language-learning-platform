@@ -96,8 +96,11 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
 
     # Rate limit configurations: {path: (max_per_minute, max_per_day)}
     RATE_LIMITS = {
-        "/import": (5, 50),          # 5 per minute, 50 per day
-        "/export/longshot": (2, 20),  # 2 per minute, 20 per day
+        "/import": (5, 50),                   # 5 per minute, 50 per day
+        "/export/longshot": (2, 20),           # 2 per minute, 20 per day
+        "/auth/me": (10, 100),                 # 10 per minute, 100 per day
+        "/auth/refresh": (10, 200),            # 10 per minute, 200 per day
+        "/api/assessment/start": (5, 30),      # 5 per minute, 30 per day
     }
 
     async def dispatch(self, request: Request, call_next: Callable) -> Response:

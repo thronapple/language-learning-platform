@@ -1,25 +1,47 @@
 {
   "pages": [
+    "pages/index/index",
+    "pages/vocab/vocab",
+    "pages/mine/mine",
     "pages/assessment/intro/intro",
     "pages/assessment/test/test",
     "pages/assessment/result/result",
     "pages/plan/index/index",
-    "pages/study/dialogue/dialogue",
-    "pages/index/index",
-    "pages/study/study",
-    "pages/vocab/vocab",
     "pages/plan/plan",
+    "pages/study/dialogue/dialogue",
+    "pages/study/study",
     "pages/import/import",
     "pages/export/export",
     "pages/upgrade/upgrade",
-    "pages/mine/mine",
     "pages/privacy/privacy",
     "pages/terms/terms"
   ],
+  "tabBar": {
+    "custom": true,
+    "list": [
+      { "pagePath": "pages/index/index", "text": "首页" },
+      { "pagePath": "pages/vocab/vocab", "text": "词汇" },
+      { "pagePath": "pages/mine/mine", "text": "我的" }
+    ]
+  },
   "window": {
     "navigationBarTitleText": "语言学习",
     "navigationBarBackgroundColor": "#ffffff",
     "navigationBarTextStyle": "black",
     "backgroundTextStyle": "light"
+  },
+  "permission": {
+    "scope.record": {
+      "desc": "用于跟读练习和口语评测"
+    }
+  },
+  "requiredPrivateInfos": [
+    "getLocation"
+  ],
+  "networkTimeout": {
+    "request": 30000,
+    "connectSocket": 10000,
+    "uploadFile": 60000,
+    "downloadFile": 60000
   }
 }
