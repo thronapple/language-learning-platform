@@ -4,6 +4,10 @@ import { track } from '../../utils/track';
 interface VocabItem {
   word: string;
   meaning?: string;
+  phonetic?: string;
+  example?: string;
+  level?: string;
+  category?: string;
   nextReview?: string;
 }
 
@@ -11,10 +15,17 @@ Page({
   data: {
     items: [] as VocabItem[],
     allItems: [] as VocabItem[],
+    activeIndex: 0,
+    activeItem: null as VocabItem | null,
     word: '',
     onlyDue: false,
     loading: true,
     loadError: false,
+    revealed: false,
+    reviewedCount: 0,
+    rememberedCount: 8,
+    fuzzyCount: 3,
+    forgottenCount: 1,
     showMeaning: {} as Record<string, boolean>,
   },
 
@@ -23,6 +34,10 @@ Page({
       this.getTabBar().setData({ selected: 1 });
     }
     this.load();
+  },
+
+  goHome() {
+    wx.switchTab({ url: '/pages/index/index' });
   },
 
   load() {
@@ -41,7 +56,15 @@ Page({
   },
 
   toggleDue(e: WechatMiniprogram.SwitchChange) {
-    this.setData({ onlyDue: e.detail.value });
+    this.setData({ onlyDue: e.detail.value, activeIndex: 0, revealed: false });
+    this.load();
+  },
+
+  setFilter(e: WechatMiniprogram.TouchEvent) {
+    const raw = e.currentTarget.dataset.onlyDue;
+    const onlyDue = raw === true || raw === 'true';
+    if (onlyDue === this.data.onlyDue) return;
+    this.setData({ onlyDue, activeIndex: 0, revealed: false });
     this.load();
   },
 
@@ -73,8 +96,15 @@ Page({
     if (!word || !rating) return;
     vocab.review(word, rating).then(() => {
       try { track('vocab_review', { word, rating }); } catch (_) {}
+      const nextData: Record<string, number> = {
+        reviewedCount: this.data.reviewedCount + 1,
+      };
+      if (rating === 'again') nextData.forgottenCount = this.data.forgottenCount + 1;
+      if (rating === 'hard') nextData.fuzzyCount = this.data.fuzzyCount + 1;
+      if (rating === 'good' || rating === 'easy') nextData.rememberedCount = this.data.rememberedCount + 1;
+      this.setData(nextData);
       wx.showToast({ title: rating === 'easy' ? '太棒了！' : '继续加油', icon: 'success', duration: 800 });
-      this.load();
+      this.nextCard();
     });
   },
 
@@ -99,11 +129,42 @@ Page({
     const q = (this.data.word || '').trim().toLowerCase();
     if (!q) {
       this.setData({ items: this.data.allItems });
+      this.syncActiveItem();
       return;
     }
     const filtered = this.data.allItems.filter((it) =>
       (it.word || '').toLowerCase().indexOf(q) >= 0
     );
     this.setData({ items: filtered });
+    this.syncActiveItem();
+  },
+
+  syncActiveItem() {
+    const { items, activeIndex } = this.data;
+    if (!items.length) {
+      this.setData({ activeItem: null, activeIndex: 0, revealed: false });
+      return;
+    }
+    const nextIndex = Math.min(activeIndex, items.length - 1);
+    this.setData({
+      activeIndex: nextIndex,
+      activeItem: items[nextIndex],
+      revealed: false,
+    });
+  },
+
+  revealAnswer() {
+    this.setData({ revealed: true });
+  },
+
+  nextCard() {
+    const { items, activeIndex } = this.data;
+    if (!items.length) return;
+    const nextIndex = activeIndex >= items.length - 1 ? 0 : activeIndex + 1;
+    this.setData({
+      activeIndex: nextIndex,
+      activeItem: items[nextIndex],
+      revealed: false,
+    });
   },
 });

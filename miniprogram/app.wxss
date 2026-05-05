@@ -6,6 +6,9 @@
 /* 引入设计系统变量 */
 @import './styles/design-tokens.wxss';
 
+/* 引入共享组件类（chip / progress / 字体语义类等） */
+@import './styles/components.wxss';
+
 /* ========== 布局容器 ========== */
 .container {
   padding: var(--space-8);
@@ -19,8 +22,9 @@
 /* 卡片容器 */
 .card {
   background: var(--bg-primary);
+  border: 2rpx solid var(--border-light);
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-sm);
   padding: var(--space-8);
   margin-bottom: var(--space-6);
 }
@@ -45,11 +49,12 @@ button.btn-primary,
   border-radius: var(--radius-full);
   padding: var(--space-5) var(--space-8);
   font-size: var(--font-base);
-  font-weight: var(--font-semibold);
-  box-shadow: var(--shadow-md);
+  font-weight: var(--font-extrabold);
+  box-shadow: 0 8rpx 0 var(--brand-700), var(--shadow-sm);
   transition: all var(--duration-fast) var(--ease-out);
   position: relative;
   overflow: hidden;
+  letter-spacing: 0;
 }
 
 button.btn-primary::after,
@@ -59,16 +64,16 @@ button.btn-primary::after,
 
 button.btn-primary:active,
 .btn-primary:active {
-  transform: scale(0.98);
-  box-shadow: var(--shadow-sm);
+  transform: translateY(6rpx) scale(0.98);
+  box-shadow: 0 2rpx 0 var(--brand-700), var(--shadow-sm);
 }
 
 /* 次要按钮 */
 button.btn-secondary,
 .btn-secondary {
   background: var(--bg-primary);
-  color: #667eea;
-  border: 2rpx solid #667eea;
+  color: var(--brand-600);
+  border: 2rpx solid var(--brand-200);
   border-radius: var(--radius-full);
   padding: var(--space-5) var(--space-8);
   font-size: var(--font-base);
@@ -90,8 +95,8 @@ button.btn-secondary:active,
 /* 幽灵按钮 */
 button.btn-ghost,
 .btn-ghost {
-  background: transparent;
-  color: var(--text-secondary);
+  background: var(--ink-100);
+  color: var(--ink-700);
   border: 2rpx solid var(--border-light);
   border-radius: var(--radius-md);
   padding: var(--space-4) var(--space-6);
@@ -114,21 +119,21 @@ button[disabled],
 /* ========== 标题样式 ========== */
 .title-large {
   font-size: var(--font-2xl);
-  font-weight: var(--font-bold);
+  font-weight: var(--font-black);
   color: var(--text-primary);
   line-height: var(--leading-tight);
 }
 
 .title-medium {
   font-size: var(--font-xl);
-  font-weight: var(--font-semibold);
+  font-weight: var(--font-extrabold);
   color: var(--text-primary);
   line-height: var(--leading-snug);
 }
 
 .title-small {
   font-size: var(--font-lg);
-  font-weight: var(--font-medium);
+  font-weight: var(--font-bold);
   color: var(--text-primary);
   line-height: var(--leading-normal);
 }
@@ -265,4 +270,3 @@ view.nav-btn.finish {
   background: var(--gradient-success) !important;
   color: var(--text-inverse) !important;
 }
-

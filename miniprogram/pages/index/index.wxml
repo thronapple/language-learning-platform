@@ -1,32 +1,116 @@
-<view class="page">
-  <!-- 头部渐变区 -->
-  <view class="hero">
-    <view class="hero-icon">📚</view>
-    <view class="hero-title">每日 5 分钟</view>
-    <view class="hero-sub">坚持一点点，语言能力大提升</view>
-  </view>
-
-  <!-- 功能亮点 -->
-  <view class="features">
-    <view class="feature-card" bindtap="goStudy">
-      <text class="feature-icon">🎧</text>
-      <text class="feature-label">跟读练习</text>
+<view class="home-page">
+  <view class="home-appbar">
+    <view>
+      <view class="eyebrow">下午好，</view>
+      <view class="greeting">Lucia 👋</view>
     </view>
-    <view class="feature-card" bindtap="goAssessment">
-      <text class="feature-icon">📝</text>
-      <text class="feature-label">水平评估</text>
-    </view>
-    <view class="feature-card" bindtap="goPlan">
-      <text class="feature-icon">📈</text>
-      <text class="feature-label">学习计划</text>
+    <view class="appbar-actions">
+      <view class="icon-btn search-icon"></view>
+      <view class="icon-btn bell-icon"><view class="notify-dot"></view></view>
     </view>
   </view>
 
-  <!-- 操作区 -->
-  <view class="action-area">
-    <button class="btn-primary" bindtap="goStudy" loading="{{loading}}">
-      开始学习
-    </button>
-    <view class="hint-text">首次使用将进行水平评估</view>
+  <view class="home-scroll">
+    <view class="hero-card">
+      <view class="hero-deco deco-large"></view>
+      <view class="hero-deco deco-small"></view>
+      <view class="hero-label">
+        <view class="mini-icon cards-icon"></view>
+        <text>今日复习</text>
+      </view>
+      <view class="hero-count-row">
+        <text class="hero-count t-mono">{{dueCount}}</text>
+        <text class="hero-unit">张卡片待复习</text>
+      </view>
+      <view class="hero-meta">预计需要 <text class="strong">8 分钟</text> · 上次复习 2 小时前</view>
+      <button class="hero-btn btn-on-brand" bindtap="goVocab" loading="{{loading}}">
+        <text>开始复习</text>
+        <view class="button-arrow"></view>
+      </button>
+    </view>
+
+    <view class="streak-card">
+      <view class="streak-icon flame-icon"></view>
+      <view class="streak-main">
+        <text class="streak-label">连续学习</text>
+        <view class="streak-value">{{streak}} <text>天</text></view>
+      </view>
+      <view class="streak-days">
+        <view wx:for="{{weekDays}}" wx:key="label" class="day-item">
+          <view class="day-dot {{item.dotClass}}"></view>
+          <text>{{item.label}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="section-card task-card">
+      <view class="section-head">
+        <text class="section-title">今日任务</text>
+        <text class="section-meta">{{completionPercent}}% 完成</text>
+      </view>
+      <view
+        wx:for="{{tasks}}"
+        wx:key="label"
+        class="task-row {{item.rowClass}}"
+        bindtap="onTaskTap"
+        data-action="{{item.action}}"
+      >
+        <view class="task-icon task-icon-{{item.icon}}"></view>
+        <view class="task-copy">
+          <text class="task-title">{{item.label}}</text>
+          <text class="task-meta">{{item.meta}}</text>
+        </view>
+        <view class="task-status {{item.statusClass}}"></view>
+      </view>
+    </view>
+
+    <view class="scenarios-section">
+      <view class="section-head">
+        <text class="section-title">场景对话</text>
+        <view class="section-link" bindtap="goStudy">
+          <text>查看全部</text>
+          <view class="link-chevron"></view>
+        </view>
+      </view>
+      <scroll-view scroll-x class="scenario-scroll" show-scrollbar="{{false}}">
+        <view class="scenario-row">
+          <view
+            wx:for="{{scenarios}}"
+            wx:key="label"
+            class="scenario-card tone-{{item.tone}}"
+            bindtap="goDialogue"
+          >
+            <view class="scenario-icon scenario-icon-{{item.icon}}"></view>
+            <text class="scenario-title">{{item.label}}</text>
+            <text class="scenario-tag chip chip-ink">CEFR {{item.tag}}</text>
+          </view>
+        </view>
+      </scroll-view>
+    </view>
+
+    <view class="section-card progress-card">
+      <view class="section-title">本周进度</view>
+      <view class="progress-content">
+        <view class="ring" style="background: conic-gradient(var(--brand-500) {{weekProgress}}%, var(--ink-200) 0);">
+          <view class="ring-inner t-mono">{{weekProgress}}%</view>
+        </view>
+        <view class="progress-list">
+          <view class="progress-row">
+            <text>已学单词</text>
+            <text>{{vocabCount}}</text>
+          </view>
+          <view class="progress-row">
+            <text>对话场景</text>
+            <text>{{scenarioCount}}</text>
+          </view>
+          <view class="progress-row">
+            <text>累计时长</text>
+            <text>{{studyTime}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="tab-spacer"></view>
   </view>
 </view>

@@ -5,7 +5,32 @@ const store = require('./store/index')
 App({
   onLaunch() {
     wx.cloud.init({ traceUser: true })
+    this.loadFonts()
     this.login()
+  },
+
+  /**
+   * 加载设计稿同款 Web 字体（Nunito + Geist Mono）。
+   * 失败时静默降级到系统字体（PingFang SC），不阻塞登录。
+   * 注意：开发期需在开发者工具勾选"不校验合法域名"；
+   * 上线前需把 cdn.jsdelivr.net 加入小程序后台 downloadFile 合法域名。
+   */
+  loadFonts() {
+    const FONT_CDN = 'https://cdn.jsdelivr.net/fontsource/fonts'
+    const fonts = [
+      { family: 'Nunito',     weight: '700', url: `${FONT_CDN}/nunito@latest/latin-700-normal.woff2` },
+      { family: 'Nunito',     weight: '900', url: `${FONT_CDN}/nunito@latest/latin-900-normal.woff2` },
+      { family: 'Geist Mono', weight: '700', url: `${FONT_CDN}/geist-mono@latest/latin-700-normal.woff2` },
+    ]
+    fonts.forEach((f) => {
+      wx.loadFontFace({
+        family: f.family,
+        source: `url("${f.url}")`,
+        weight: f.weight,
+        scope: 'global',
+        fail: (err) => console.warn('[font] load failed:', f.family, f.weight, err && err.errMsg),
+      })
+    })
   },
 
   /**

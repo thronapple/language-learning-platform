@@ -1,5 +1,8 @@
 <view class="page">
   <view class="header">
+    <view class="hero-deco deco-large"></view>
+    <view class="hero-deco deco-small"></view>
+    <view class="header-kicker">IMPORT</view>
     <view class="header-title">导入学习内容</view>
     <view class="header-sub">粘贴英文文本或网页链接，自动生成学习材料</view>
   </view>
@@ -28,9 +31,18 @@
 
     <view class="tips">
       <view class="tips-title">支持的内容</view>
-      <view class="tip-item">📝 英文段落、句子、对话</view>
-      <view class="tip-item">🔗 白名单站点 URL（自动提取正文）</view>
-      <view class="tip-item">📋 复制粘贴即可导入</view>
+      <view class="tip-item">
+        <view class="tip-icon text-icon"></view>
+        <text>英文段落、句子、对话</text>
+      </view>
+      <view class="tip-item">
+        <view class="tip-icon link-icon"></view>
+        <text>白名单站点 URL（自动提取正文）</text>
+      </view>
+      <view class="tip-item">
+        <view class="tip-icon paste-icon"></view>
+        <text>复制粘贴即可导入</text>
+      </view>
     </view>
   </view>
 </view>

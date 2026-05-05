@@ -1,14 +1,6 @@
 // 根据环境自动切换BASE_URL
 const getBaseUrl = () => {
-  // 可以通过编译条件或配置来切换
-  const isDev = true // 开发环境标记，生产时改为false
-  if (isDev) {
-    // 开发环境：支持多个可能的本地地址
-    return 'http://127.0.0.1:8000' // 默认本地IP
-  } else {
-    // 生产环境：使用正式域名
-    return 'https://api.your-domain.com'
-  }
+  return 'https://lang-learning-225978-4-1404758981.sh.run.tcloudbase.com'
 }
 
 const BASE_URL = getBaseUrl()

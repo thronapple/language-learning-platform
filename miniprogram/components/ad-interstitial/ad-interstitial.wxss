@@ -1,6 +1,76 @@
-.mask { position: fixed; left:0; top:0; right:0; bottom:0; z-index:9999; }
-.backdrop { position:absolute; left:0; top:0; right:0; bottom:0; background: rgba(0,0,0,0.5); }
-.dialog { position:absolute; left: 20rpx; right: 20rpx; top: 25%; background:#fff; border-radius: 12rpx; padding: 24rpx; z-index:10000; }
-.title { font-weight: 600; margin-bottom: 8px; }
-.body { color:#666; margin-bottom: 12px; }
-.actions { display:flex; gap: 12px; justify-content:flex-end; }
+.mask {
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999;
+}
+
+.backdrop {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--bg-overlay);
+}
+
+.dialog {
+  position: absolute;
+  left: 48rpx;
+  right: 48rpx;
+  top: 24%;
+  z-index: 10000;
+  padding: 40rpx;
+  background: var(--paper);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-2xl);
+}
+
+.title {
+  color: var(--ink-900);
+  font-size: 36rpx;
+  line-height: 1.2;
+  font-weight: 900;
+  margin-bottom: 16rpx;
+}
+
+.body {
+  color: var(--ink-600);
+  font-size: 28rpx;
+  line-height: 1.6;
+  font-weight: 700;
+  margin-bottom: 32rpx;
+}
+
+.actions {
+  display: flex;
+  gap: 16rpx;
+  justify-content: flex-end;
+}
+
+.actions button {
+  min-width: 132rpx;
+  height: 72rpx;
+  line-height: 72rpx;
+  padding: 0 28rpx;
+  border-radius: var(--radius-full);
+  font-size: 26rpx;
+  font-weight: 900;
+}
+
+.actions button[type='primary'] {
+  color: white;
+  background: var(--brand-500);
+  box-shadow: 0 4rpx 0 var(--brand-700), var(--shadow-xs);
+}
+
+.actions button:not([type='primary']) {
+  color: var(--ink-700);
+  background: var(--ink-100);
+}
+
+.actions button::after {
+  border: none;
+}

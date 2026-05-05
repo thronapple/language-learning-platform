@@ -1,142 +1,102 @@
 <view class="assessment-result">
-  <!-- 等级徽章 -->
-  <view class="badge-section">
-    <view class="badge-container {{showBadge ? 'show' : ''}}">
-      <view class="badge-circle level-{{result.overall_level}}">
-        <text class="badge-level">{{result.overall_level}}</text>
-      </view>
-      <text class="badge-label">你的英语水平</text>
+  <view class="result-hero" wx:if="{{result}}">
+    <view class="hero-deco"></view>
+    <view class="result-appbar">
+      <view class="close-btn" bindtap="closeResult"></view>
     </view>
-
-    <view class="score-info">
-      <text class="score-value">{{result.ability_score}}</text>
-      <text class="score-label">能力值</text>
+    <view class="level-block">
+      <text class="level-label">测评完成 · 你的水平是</text>
+      <view class="level-row">
+        <text class="level">{{result.overall_level}}</text>
+        <text class="level-name">中级</text>
+      </view>
+      <text class="level-desc">能就熟悉的话题进行流畅交流</text>
     </view>
   </view>
 
-  <!-- 雷达图 -->
-  <view class="radar-section">
-    <view class="section-title">能力维度分析</view>
-    <canvas
-      canvas-id="radarCanvas"
-      id="radarCanvas"
-      class="radar-canvas"
-      bindtouchstart="onRadarTap"
-    ></canvas>
+  <view wx:if="{{result}}" class="result-scroll">
+    <canvas canvas-id="radarCanvas" id="radarCanvas" class="radar-canvas-hidden"></canvas>
 
-    <view class="dimension-legend">
-      <view class="legend-item" wx:for="{{dimensionList}}" wx:key="name">
-        <view class="legend-dot" style="background: {{item.color}};"></view>
-        <text class="legend-name">{{item.label}}</text>
-        <text class="legend-value">{{item.level}}</text>
-      </view>
-    </view>
-  </view>
-
-  <!-- 维度详情 -->
-  <view class="details-section">
-    <view class="section-title">详细分析</view>
-
-    <view
-      class="detail-item clickable"
-      wx:for="{{dimensionList}}"
-      wx:key="name"
-      bindtap="onDimensionTap"
-      data-name="{{item.name}}"
-    >
-      <view class="detail-header">
-        <text class="detail-name">{{item.label}}</text>
-        <view class="detail-header-right">
-          <text class="detail-level level-{{item.level}}">{{item.level}}</text>
-          <text class="detail-arrow">›</text>
+    <view class="card ability-card">
+      <text class="card-title">能力分析</text>
+      <view class="dimension-row" wx:for="{{dimensionList}}" wx:key="name" bindtap="onDimensionTap" data-name="{{item.name}}">
+        <view class="dimension-head">
+          <text>{{item.label}}</text>
+          <text>{{item.accuracyPercent}}/100</text>
+        </view>
+        <view class="progress-track">
+          <view class="progress-fill" style="width: {{item.accuracyPercent}}%; background: {{item.color}};"></view>
         </view>
       </view>
-      <view class="detail-progress">
-        <view class="progress-bar">
-          <view
-            class="progress-fill"
-            style="width: {{item.accuracy * 100}}%; background: {{item.color}};"
-          ></view>
+    </view>
+
+    <view class="focus-card" wx:if="{{hasWeakAreas}}">
+      <view class="focus-icon"></view>
+      <view class="focus-copy">
+        <text class="focus-title">推荐重点提升</text>
+        <text class="focus-text">{{primaryWeakArea}} 较薄弱，建议每日 10 分钟针对练习</text>
+      </view>
+    </view>
+
+    <view class="plan-section">
+      <text class="section-title">为你定制的学习计划</text>
+      <view class="plan-list">
+        <view class="plan-item">
+          <text class="plan-num">01</text>
+          <view>
+            <text class="plan-title">每日 8 分钟 SRS 复习</text>
+            <text class="plan-meta">巩固 {{result.overall_level}} 核心词汇</text>
+          </view>
         </view>
-        <text class="progress-text">准确率 {{item.accuracyPercent}}%</text>
-      </view>
-    </view>
-  </view>
-
-  <!-- 薄弱环节 -->
-  <view class="weak-areas-section" wx:if="{{result.weak_areas && result.weak_areas.length > 0}}">
-    <view class="section-title">
-      <text class="icon">⚠️</text>
-      <text>需要加强</text>
-    </view>
-
-    <view class="area-tags">
-      <view class="area-tag weak" wx:for="{{result.weak_areas}}" wx:key="*this">
-        {{item}}
-      </view>
-    </view>
-  </view>
-
-  <!-- 优势领域 -->
-  <view class="strong-areas-section" wx:if="{{result.strong_areas && result.strong_areas.length > 0}}">
-    <view class="section-title">
-      <text class="icon">✨</text>
-      <text>优势领域</text>
-    </view>
-
-    <view class="area-tags">
-      <view class="area-tag strong" wx:for="{{result.strong_areas}}" wx:key="*this">
-        {{item}}
-      </view>
-    </view>
-  </view>
-
-  <!-- 推荐场景 -->
-  <view class="recommendations-section">
-    <view class="section-title">为你推荐的学习场景</view>
-
-    <view class="scenario-cards">
-      <view
-        class="scenario-card"
-        wx:for="{{result.recommendations.suggested_scenarios}}"
-        wx:key="*this"
-      >
-        <text class="scenario-icon">📚</text>
-        <text class="scenario-name">{{item}}</text>
+        <view class="plan-item">
+          <text class="plan-num">02</text>
+          <view>
+            <text class="plan-title">每周 3 次场景对话</text>
+            <text class="plan-meta">从推荐场景开始练习</text>
+          </view>
+        </view>
+        <view class="plan-item">
+          <text class="plan-num">03</text>
+          <view>
+            <text class="plan-title">每日精听 + 跟读</text>
+            <text class="plan-meta">提升听力辨音和表达</text>
+          </view>
+        </view>
       </view>
     </view>
 
-    <view class="study-estimate">
-      <text class="estimate-label">预计学习周期:</text>
-      <text class="estimate-value">{{result.recommendations.estimated_study_days}} 天</text>
+    <view class="scenario-section" wx:if="{{scenarioTags.length > 0}}">
+      <text class="section-title">推荐场景</text>
+      <view class="scenario-tags">
+        <text wx:for="{{scenarioTags}}" wx:key="id" class="chip chip-indigo">{{item.label}}</text>
+      </view>
+      <view class="estimate">预计学习周期：{{result.recommendations.estimated_study_days}} 天</view>
     </view>
+
+    <view class="result-spacer"></view>
   </view>
 
-  <!-- 操作按钮 -->
-  <view class="actions">
-    <button class="generate-plan-btn" type="primary" bindtap="generatePlan">
-      生成专属学习计划
-    </button>
-    <button class="view-history-btn" bindtap="viewHistory">
-      查看历史评估
-    </button>
+  <view class="action-dock" wx:if="{{result}}">
+    <button class="start-plan-btn" bindtap="generatePlan">开启学习计划</button>
   </view>
 
-  <!-- 维度详情弹窗 -->
-  <view class="dimension-overlay {{showDimensionDetail ? 'show' : ''}}" bindtap="closeDimensionDetail">
-    <view class="dimension-sheet {{showDimensionDetail ? 'show' : ''}}" catchtap="">
+  <view class="result-loading" wx:else>
+    <text>正在加载结果...</text>
+  </view>
+
+  <view wx:if="{{showDimensionDetail}}" class="dimension-overlay show" bindtap="closeDimensionDetail">
+    <view class="dimension-sheet {{dimensionSheetClass}}" catchtap="">
       <view class="sheet-header">
         <view class="sheet-handle"></view>
         <view class="sheet-title-row">
           <view class="sheet-dot" style="background: {{selectedDimension.color}};"></view>
           <text class="sheet-title">{{selectedDimension.label}}</text>
-          <text class="sheet-level level-{{selectedDimension.level}}">{{selectedDimension.level}}</text>
+          <text class="sheet-level">{{selectedDimension.level}}</text>
         </view>
-        <view class="sheet-close" bindtap="closeDimensionDetail">✕</view>
+        <view class="sheet-close" bindtap="closeDimensionDetail">×</view>
       </view>
 
       <view class="sheet-body">
-        <!-- 数据摘要 -->
         <view class="sheet-stats">
           <view class="stat-item">
             <text class="stat-value">{{selectedDimension.accuracyPercent}}%</text>
@@ -148,17 +108,15 @@
           </view>
           <view class="stat-item">
             <text class="stat-value">{{selectedDimension.level}}</text>
-            <text class="stat-label">CEFR等级</text>
+            <text class="stat-label">CEFR</text>
           </view>
         </view>
 
-        <!-- 维度说明 -->
         <view class="sheet-section">
           <text class="sheet-section-title">维度说明</text>
           <text class="sheet-section-text">{{selectedDimension.description}}</text>
         </view>
 
-        <!-- 学习建议 -->
         <view class="sheet-section">
           <text class="sheet-section-title">学习建议</text>
           <view class="suggestion-list">

@@ -2,9 +2,9 @@ Component({
   data: {
     selected: 0,
     list: [
-      { pagePath: '/pages/index/index', text: '首页', icon: '🏠', iconSelected: '🏠' },
-      { pagePath: '/pages/vocab/vocab', text: '词汇', icon: '📖', iconSelected: '📖' },
-      { pagePath: '/pages/mine/mine', text: '我的', icon: '👤', iconSelected: '👤' },
+      { pagePath: '/pages/index/index', text: '首页', iconClass: 'home' },
+      { pagePath: '/pages/vocab/vocab', text: '词汇', iconClass: 'cards' },
+      { pagePath: '/pages/mine/mine', text: '我的', iconClass: 'user' },
     ],
   },
   methods: {

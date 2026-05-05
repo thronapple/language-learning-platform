@@ -14,6 +14,9 @@ Page({
     selectedIndex: null as number | null,
     isLastQuestion: false,
 
+    // 答题反馈 banner
+    feedback: null as null | { type: 'correct' | 'wrong'; text: string },
+
     // 音频相关
     isPlaying: false,
     listenCount: 0,
@@ -25,7 +28,8 @@ Page({
     startTime: 0,
 
     // 状态
-    loading: false
+    loading: false,
+    optionLetters: ['A', 'B', 'C', 'D', 'E', 'F']
   },
 
   onLoad() {
@@ -35,6 +39,10 @@ Page({
   onUnload() {
     // 清理定时器和音频
     this.cleanup();
+  },
+
+  goBack() {
+    wx.navigateBack();
   },
 
   /**
@@ -88,29 +96,29 @@ Page({
     const question = this.data.question;
     const audioUrl = question.content.audio_url;
 
-    console.log('🔊 设置音频URL:', audioUrl);
+    console.log('设置音频URL:', audioUrl);
 
     // 先下载音频到本地临时文件，避免域名校验问题
     wx.downloadFile({
       url: audioUrl,
       success: (res) => {
         if (res.statusCode === 200) {
-          console.log('✅ 音频下载成功:', res.tempFilePath);
+          console.log('音频下载成功:', res.tempFilePath);
           audioContext.src = res.tempFilePath;
         } else {
-          console.error('❌ 音频下载失败, statusCode:', res.statusCode);
+          console.error('音频下载失败, statusCode:', res.statusCode);
           audioContext.src = audioUrl;
         }
       },
       fail: (err) => {
-        console.error('❌ 音频下载失败:', err);
+        console.error('音频下载失败:', err);
         // 降级：直接用URL
         audioContext.src = audioUrl;
       }
     });
 
     audioContext.onPlay(() => {
-      console.log('✅ 音频开始播放');
+      console.log('音频开始播放');
       this.setData({
         isPlaying: true,
         listenCount: this.data.listenCount + 1
@@ -118,12 +126,12 @@ Page({
     });
 
     audioContext.onEnded(() => {
-      console.log('⏹️ 音频播放结束');
+      console.log('音频播放结束');
       this.setData({ isPlaying: false });
     });
 
     audioContext.onError((error) => {
-      console.error('❌ 音频播放失败:', error);
+      console.error('音频播放失败:', error);
       wx.showToast({
         title: '音频加载失败',
         icon: 'none'
@@ -132,11 +140,11 @@ Page({
     });
 
     audioContext.onWaiting(() => {
-      console.log('⏳ 音频加载中...');
+      console.log('音频加载中...');
     });
 
     audioContext.onCanplay(() => {
-      console.log('✅ 音频可以播放');
+      console.log('音频可以播放');
     });
 
     this.setData({ audioContext });
@@ -160,7 +168,7 @@ Page({
       audioContext.pause();
       this.setData({ isPlaying: false });
     } else {
-      console.log('▶️ 开始播放音频');
+      console.log('开始播放音频');
       audioContext.play();
     }
   },
@@ -207,10 +215,10 @@ Page({
    * 选择选项
    */
   selectOption(e: any) {
-    const index = e.currentTarget.dataset.index;
-    console.log('选择选项:', index, '类型:', typeof index);
+    const raw = e.currentTarget.dataset.index;
+    const index = typeof raw === 'number' ? raw : Number(raw);
+    if (Number.isNaN(index)) return;
     this.setData({ selectedIndex: index });
-    console.log('选择后 selectedIndex:', this.data.selectedIndex);
   },
 
   /**
@@ -258,23 +266,16 @@ Page({
       //   time_spent: timeSpent
       // });
 
-      // 显示反馈
-      if (result.is_correct) {
-        wx.showToast({
-          title: '✓ 正确',
-          icon: 'success',
-          duration: 800
-        });
-      } else {
-        wx.showToast({
-          title: '✗ 错误',
-          icon: 'none',
-          duration: 800
-        });
-      }
+      // 显示反馈：用 in-page banner 替代默认 wx.showToast，与设计语言统一
+      this.setData({
+        feedback: result.is_correct
+          ? { type: 'correct', text: '答对了！' }
+          : { type: 'wrong', text: '再想想，下次会更好' },
+      });
 
       // 等待反馈显示
       await new Promise(resolve => setTimeout(resolve, 1000));
+      this.setData({ feedback: null });
 
       // 检查是否有下一题
       if (result.next_question) {

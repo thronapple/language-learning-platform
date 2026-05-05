@@ -1,178 +1,124 @@
 <view class="dialogue-page">
-  <!-- 加载骨架 -->
   <skeleton type="article" wx:if="{{loading}}" />
 
-  <!-- 页面内容 -->
-  <view wx:else class="fade-in">
-  <!-- 顶部信息 -->
-  <view class="header">
-    <view class="dialogue-info">
-      <text class="dialogue-title">{{dialogue.title_zh}}</text>
-      <text class="dialogue-subtitle">{{dialogue.title_en}}</text>
-    </view>
-    <view class="progress-info">
-      <text class="current-sentence">{{currentIndex + 1}}/{{dialogue.sentences.length}}</text>
-    </view>
-  </view>
-
-  <!-- 进度条 -->
-  <view class="progress-container">
-    <view class="progress-bar">
-      <view
-        class="progress-fill"
-        style="width: {{(currentIndex / dialogue.sentences.length) * 100}}%;"
-      ></view>
-    </view>
-  </view>
-
-  <!-- 句子展示区 - 支持手势滑动 -->
-  <view
-    class="sentence-container"
-    bindtouchstart="onTouchStart"
-    bindtouchend="onTouchEnd"
-  >
-    <view
-      wx:for="{{dialogue.sentences}}"
-      wx:key="order"
-      class="sentence-item {{currentIndex === index ? 'active' : currentIndex > index ? 'completed' : 'pending'}}"
-      wx:if="{{index === currentIndex}}"
-    >
-      <!-- 说话人 -->
-      <view class="speaker-tag">
-        <text class="speaker-name">{{item.speaker}}</text>
+  <view wx:else class="dialogue-screen">
+    <view class="dialogue-hero">
+      <view class="hero-deco"></view>
+      <view class="hero-bar">
+        <view class="nav-icon back-icon" bindtap="goBack"></view>
+        <text class="scenario-label">SCENARIO · {{dialogue.level}}</text>
+        <view class="nav-icon settings-icon"></view>
       </view>
-
-      <!-- 英文文本 -->
-      <view class="text-section">
-        <text class="text-en">{{item.text_en}}</text>
-      </view>
-
-      <!-- 音标 -->
-      <view class="phonetic-section" wx:if="{{showPhonetic}}">
-        <text class="phonetic-text">{{item.phonetic}}</text>
-      </view>
-
-      <!-- 中文翻译 -->
-      <view class="text-section" wx:if="{{showTranslation}}">
-        <text class="text-zh">{{item.text_zh}}</text>
-      </view>
-
-      <!-- 关键词 -->
-      <view class="keywords-section" wx:if="{{item.key_words && item.key_words.length > 0}}">
-        <text class="keywords-label">关键词:</text>
-        <view class="keywords-list">
-          <text
-            wx:for="{{item.key_words}}"
-            wx:for-item="keyword"
-            wx:key="*this"
-            class="keyword-tag"
-          >
-            {{keyword}}
-          </text>
+      <view class="scenario-copy">
+        <view class="scenario-type">
+          <view class="coffee-icon"></view>
+          <text>{{dialogue.title_zh}}</text>
+        </view>
+        <text class="scenario-title">{{dialogue.title_en}}</text>
+        <view class="scenario-meta">
+          <text>· {{dialogue.sentences.length}} 轮对话</text>
+          <text wx:if="{{newWordsCount > 0}}">· {{newWordsCount}} 个新词</text>
+          <text>· 进度 {{currentIndex + 1}}/{{dialogue.sentences.length}}</text>
+        </view>
+        <view class="hero-progress">
+          <view class="hero-progress-fill" style="width: {{progressPercent}}%;"></view>
         </view>
       </view>
     </view>
-  </view>
 
-  <!-- 底部操作面板 -->
-  <view class="bottom-panel">
-    <!-- 辅助功能 -->
-    <view class="assist-functions">
-      <view class="function-btn" bindtap="toggleAudio">
-        <text class="fn-icon">{{isPlaying ? '⏸' : '▶️'}}</text>
-        <text class="btn-text">{{isPlaying ? '暂停' : '播放'}}</text>
+    <scroll-view
+      class="conversation-scroll"
+      scroll-y
+      bindtouchstart="onTouchStart"
+      bindtouchend="onTouchEnd"
+    >
+      <view
+        wx:for="{{displaySentences}}"
+        wx:key="order"
+        class="turn {{item.isUser ? 'user' : 'bot'}} {{item.isCurrent ? 'current' : ''}}"
+      >
+        <view wx:if="{{!item.isUser}}" class="avatar bot">{{item.avatarText}}</view>
+        <view class="bubble-wrap">
+          <text class="speaker-name">{{item.isUser ? 'You' : item.speaker}}</text>
+          <view class="bubble">
+            <text class="english">{{item.text_en}}</text>
+            <text class="chinese">{{item.text_zh}}</text>
+            <view class="bubble-actions" wx:if="{{!item.isUser}}">
+              <button class="play-btn" bindtap="toggleAudio" data-index="{{index}}">
+                <view class="play-glyph {{isPlaying && item.isCurrent ? 'pause' : 'play'}}"></view>
+                <text>{{isPlaying && item.isCurrent ? '暂停' : '0:03'}}</text>
+              </button>
+              <button class="speed-btn" bindtap="toggleSpeed">{{playbackRate}}×</button>
+            </view>
+            <view class="score-pill" wx:if="{{item.score}}">
+              <text class="score-value">★ {{item.score}}/100</text>
+              <text class="score-label">{{item.scoreLabel}}</text>
+            </view>
+          </view>
+        </view>
+        <view wx:if="{{item.isUser}}" class="avatar user">YOU</view>
       </view>
-      <view class="function-btn" bindtap="toggleSpeed">
-        <text class="fn-icon">⚡</text>
-        <text class="btn-text">{{playbackRate}}x</text>
-      </view>
-      <view class="function-btn" bindtap="togglePhonetic">
-        <text class="fn-icon">{{showPhonetic ? '🔊' : '🔇'}}</text>
-        <text class="btn-text">音标</text>
-      </view>
-      <view class="function-btn" bindtap="toggleTranslation">
-        <text class="fn-icon">{{showTranslation ? '👁' : '👁‍🗨'}}</text>
-        <text class="btn-text">翻译</text>
-      </view>
-    </view>
 
-    <!-- 跟读评分结果 -->
+      <view class="record-prompt">
+        <text class="prompt-label">{{evaluating ? '评测中' : isRecording ? '录音中' : '轮到你了 · 长按录音'}}</text>
+        <text class="prompt-text" wx:if="{{currentPromptZh}}">
+          请用英文回应：{{currentPromptZh}}
+        </text>
+      </view>
+    </scroll-view>
+
     <view class="score-section" wx:if="{{showScore && scoreInfo}}">
       <view class="score-bar" style="border-color: {{scoreInfo.color}};">
-        <view class="score-left">
-          <text class="score-number" style="color: {{scoreInfo.color}};">{{scoreInfo.score}}</text>
-          <text class="score-unit">分</text>
-        </view>
-        <view class="score-right">
+        <text class="score-number" style="color: {{scoreInfo.color}};">{{scoreInfo.score}}</text>
+        <view class="score-copy">
           <text class="score-level" style="color: {{scoreInfo.color}};">{{scoreInfo.level}}</text>
           <text class="score-reco" wx:if="{{recognizedText}}">{{recognizedText}}</text>
         </view>
       </view>
     </view>
 
-    <!-- 录音按钮 -->
-    <view class="record-section">
+    <view class="mic-dock">
+      <button class="dock-btn refresh-btn" bindtap="reRecord">
+        <text class="refresh-glyph">↻</text>
+      </button>
       <button
-        class="record-btn {{isRecording ? 'recording' : ''}}"
+        class="mic-btn {{isRecording ? 'recording' : ''}}"
         bindtouchstart="startRecording"
         bindtouchend="stopRecording"
       >
-        <text class="icon">🎤</text>
-        <text class="record-text">
-          {{isRecording ? '录音中...' : evaluating ? '评测中...' : '按住跟读'}}
-        </text>
+        <view class="mic-icon"></view>
+      </button>
+      <button class="dock-btn" bindtap="nextSentence">
+        <view class="next-icon"></view>
       </button>
     </view>
 
-    <!-- 导航按钮 -->
-    <view class="navigation">
-      <button
-        class="nav-btn prev"
-        bindtap="previousSentence"
-        disabled="{{currentIndex === 0}}"
-      >
-        上一句
-      </button>
-      <button
-        class="nav-btn next"
-        bindtap="nextSentence"
-      >
-        {{currentIndex === dialogue.sentences.length - 1 ? '完成对话' : '下一句'}}
-      </button>
-    </view>
-  </view>
+    <view class="completion-modal" wx:if="{{showCompletion}}">
+      <view class="modal-content">
+        <view class="modal-mark"></view>
+        <text class="modal-title">完成对话</text>
+        <text class="modal-desc">你已完成《{{dialogue.title_zh}}》的学习</text>
 
-  <!-- 完成对话弹窗 -->
-  <view class="completion-modal" wx:if="{{showCompletion}}">
-    <view class="modal-content">
-      <text class="modal-icon">🎉</text>
-      <text class="modal-title">完成对话！</text>
-      <text class="modal-desc">你已完成《{{dialogue.title_zh}}》的学习</text>
+        <view class="completion-stats">
+          <view class="stat-item">
+            <text class="stat-value">{{dialogue.sentences.length}}</text>
+            <text class="stat-label">句子</text>
+          </view>
+          <view class="stat-item">
+            <text class="stat-value">{{playCount}}</text>
+            <text class="stat-label">播放</text>
+          </view>
+          <view class="stat-item">
+            <text class="stat-value">{{recordCount}}</text>
+            <text class="stat-label">跟读</text>
+          </view>
+        </view>
 
-      <view class="completion-stats">
-        <view class="stat-item">
-          <text class="stat-value">{{dialogue.sentences.length}}</text>
-          <text class="stat-label">句子</text>
-        </view>
-        <view class="stat-item">
-          <text class="stat-value">{{playCount}}</text>
-          <text class="stat-label">播放次数</text>
-        </view>
-        <view class="stat-item">
-          <text class="stat-value">{{recordCount}}</text>
-          <text class="stat-label">跟读次数</text>
+        <view class="modal-actions">
+          <button class="modal-btn primary" bindtap="finishDialogue">完成学习</button>
+          <button class="modal-btn secondary" bindtap="reviewDialogue">再次复习</button>
         </view>
       </view>
-
-      <view class="modal-actions">
-        <button class="modal-btn primary" bindtap="finishDialogue">
-          完成学习
-        </button>
-        <button class="modal-btn secondary" bindtap="reviewDialogue">
-          再次复习
-        </button>
-      </view>
     </view>
-  </view>
   </view>
 </view>

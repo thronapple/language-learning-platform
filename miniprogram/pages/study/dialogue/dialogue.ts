@@ -17,6 +17,7 @@ interface Sentence {
   phonetic: string;
   key_words: string[];
   grammar_points: string[];
+  score?: number;
 }
 
 interface Dialogue {
@@ -27,13 +28,26 @@ interface Dialogue {
   sentences: Sentence[];
 }
 
+interface DisplaySentence extends Sentence {
+  isUser: boolean;
+  isCurrent: boolean;
+  isCompleted: boolean;
+  avatarText: string;
+  score?: number;
+  scoreLabel?: string;
+}
+
 Page({
   data: {
     dialogue: null as Dialogue | null,
+    displaySentences: [] as DisplaySentence[],
     currentIndex: 0,
+    progressPercent: 0,
+    currentPromptZh: '',
     showPhonetic: true,
     showTranslation: false,
     loading: true,
+    newWordsCount: 0,
 
     // 音频相关
     audioContext: null as any,
@@ -44,6 +58,7 @@ Page({
     // 录音相关
     recorderManager: null as any,
     isRecording: false,
+    recordTouchActive: false,
     recordCount: 0,
     recognizedText: '',
     scoreInfo: null as { score: number; level: string; color: string } | null,
@@ -72,6 +87,10 @@ Page({
     haptics.light();
   },
 
+  goBack() {
+    wx.navigateBack();
+  },
+
   onUnload() {
     console.log('[Dialogue] Page unload');
     this.cleanup();
@@ -93,10 +112,19 @@ Page({
 
       console.log('[Dialogue] Data loaded:', dialogue);
 
+      const uniqueWords = new Set<string>();
+      (dialogue.sentences || []).forEach((s) => {
+        (s.key_words || []).forEach((w) => {
+          if (w) uniqueWords.add(w.trim().toLowerCase());
+        });
+      });
+
       this.setData({
         dialogue: dialogue,
-        loading: false
+        loading: false,
+        newWordsCount: uniqueWords.size,
       });
+      this.updateDisplaySentences();
 
       this.initAudioContext();
 
@@ -107,14 +135,58 @@ Page({
       });
 
     } catch (error) {
-      console.error('[Dialogue] Load failed:', error);
-      this.setData({ loading: false });
-      toast.error('加载对话失败');
+      console.error('[Dialogue] Load failed, using stub:', error);
 
-      // 返回上一页
-      setTimeout(() => {
-        wx.navigateBack();
-      }, 1500);
+      // 后端不通时用兜底数据，便于开发期预览页面（生产上线前可删除此分支）
+      const stub: Dialogue = {
+        id: dialogueId || 'stub',
+        title_en: 'Ordering at a Café',
+        title_zh: '咖啡馆点单',
+        level: 'A2',
+        sentences: [
+          {
+            order: 1, speaker: 'Barista',
+            text_en: 'Hi there! What can I get started for you today?',
+            text_zh: '你好！今天想要点什么？',
+            audio_url: '', phonetic: '/haɪ ðɛr/',
+            key_words: ['get', 'started'], grammar_points: [],
+          },
+          {
+            order: 2, speaker: 'You',
+            text_en: "I'll have a medium oat milk latte, please.",
+            text_zh: '我要一杯中杯燕麦拿铁。',
+            audio_url: '', phonetic: '/aɪl hæv/',
+            key_words: ['medium', 'oat', 'milk', 'latte'], grammar_points: [],
+            score: 92,
+          },
+          {
+            order: 3, speaker: 'Barista',
+            text_en: 'Sure thing. Hot or iced?',
+            text_zh: '好的。要热的还是冰的？',
+            audio_url: '', phonetic: '/ʃʊr θɪŋ/',
+            key_words: ['hot', 'iced'], grammar_points: [],
+          },
+          {
+            order: 4, speaker: 'You',
+            text_en: 'Hot, please. And can I get an extra shot?',
+            text_zh: '热的，麻烦。能多加一份浓缩吗？',
+            audio_url: '', phonetic: '/hɑt pliːz/',
+            key_words: ['extra', 'shot'], grammar_points: [],
+          },
+        ],
+      };
+
+      const uniqueWords = new Set<string>();
+      stub.sentences.forEach((s) => {
+        (s.key_words || []).forEach((w) => uniqueWords.add(w.trim().toLowerCase()));
+      });
+
+      this.setData({
+        dialogue: stub,
+        loading: false,
+        newWordsCount: uniqueWords.size,
+      });
+      this.updateDisplaySentences();
     }
   },
 
@@ -122,7 +194,15 @@ Page({
    * 初始化音频上下文
    */
   initAudioContext() {
+    const existing = this.data.audioContext;
+    if (existing) {
+      try {
+        existing.destroy();
+      } catch (_) {}
+    }
+
     const audioContext = wx.createInnerAudioContext();
+    audioContext.obeyMuteSwitch = false;
 
     audioContext.onPlay(() => {
       this.setData({ isPlaying: true });
@@ -138,10 +218,17 @@ Page({
     audioContext.onError((error) => {
       console.error('音频播放失败:', error);
       this.setData({ isPlaying: false });
+      toast.error('音频播放失败');
     });
 
     this.setData({ audioContext });
     this.loadCurrentAudio();
+  },
+
+  ensureAudioContext() {
+    if (this.data.audioContext) return this.data.audioContext;
+    this.initAudioContext();
+    return this.data.audioContext;
   },
 
   /**
@@ -152,14 +239,27 @@ Page({
     if (!dialogue || !audioContext) return;
 
     const currentSentence = dialogue.sentences[currentIndex];
-    audioContext.src = currentSentence.audio_url;
+    audioContext.src = currentSentence?.audio_url || '';
+  },
+
+  loadAudioForIndex(index: number) {
+    const { dialogue } = this.data;
+    const audioContext = this.ensureAudioContext();
+    if (!dialogue || !audioContext) return '';
+
+    const sentence = dialogue.sentences[index];
+    const audioUrl = sentence?.audio_url || '';
+    audioContext.src = audioUrl;
+    return audioUrl;
   },
 
   /**
    * 切换音频播放
    */
-  toggleAudio() {
-    const { audioContext, isPlaying } = this.data;
+  toggleAudio(e?: any) {
+    const index = Number(e?.currentTarget?.dataset?.index ?? this.data.currentIndex);
+    const { isPlaying } = this.data;
+    const audioContext = this.ensureAudioContext();
     if (!audioContext) return;
 
     // 触觉反馈
@@ -169,6 +269,11 @@ Page({
       audioContext.pause();
       this.setData({ isPlaying: false });
     } else {
+      const audioUrl = this.loadAudioForIndex(index);
+      if (!audioUrl) {
+        toast.info('当前句子暂无音频');
+        return;
+      }
       audioContext.play();
     }
   },
@@ -177,6 +282,9 @@ Page({
    * 切换播放速度
    */
   toggleSpeed() {
+    const audioContext = this.ensureAudioContext();
+    if (!audioContext) return;
+
     const rates = [0.8, 1.0, 1.2, 1.5];
     const currentRate = this.data.playbackRate;
     const currentIndex = rates.indexOf(currentRate);
@@ -185,7 +293,7 @@ Page({
     // 触觉反馈
     haptics.light();
 
-    this.data.audioContext.playbackRate = nextRate;
+    audioContext.playbackRate = nextRate;
     this.setData({ playbackRate: nextRate });
 
     toast.info(`播放速度: ${nextRate}x`);
@@ -221,6 +329,49 @@ Page({
     this.setData({ recorderManager });
   },
 
+  ensureRecordAuthorized(): Promise<boolean> {
+    return new Promise((resolve) => {
+      wx.getSetting({
+        success: (setting) => {
+          const auth = setting.authSetting || {};
+          if (auth['scope.record']) {
+            resolve(true);
+            return;
+          }
+
+          if (auth['scope.record'] === false) {
+            wx.showModal({
+              title: '需要麦克风权限',
+              content: '请允许麦克风权限，用于跟读录音和口语评测。',
+              confirmText: '去设置',
+              success: (modalRes) => {
+                if (!modalRes.confirm) {
+                  resolve(false);
+                  return;
+                }
+                wx.openSetting({
+                  success: (openRes) => {
+                    resolve(!!openRes.authSetting?.['scope.record']);
+                  },
+                  fail: () => resolve(false),
+                });
+              },
+              fail: () => resolve(false),
+            });
+            return;
+          }
+
+          wx.authorize({
+            scope: 'scope.record',
+            success: () => resolve(true),
+            fail: () => resolve(false),
+          });
+        },
+        fail: () => resolve(false),
+      });
+    });
+  },
+
   /**
    * 上传录音并评测发音
    */
@@ -248,11 +399,15 @@ Page({
             scoreInfo: {
               score: data.score ?? 0,
               level: data.level || '识别失败',
-              color: data.color || '#999',
+              color: data.color || '#8e8a82',
             },
           });
+          this.updateDisplaySentences();
           // 3秒后自动隐藏
-          setTimeout(() => this.setData({ showScore: false }), 3000);
+          setTimeout(() => {
+            this.setData({ showScore: false });
+            this.updateDisplaySentences();
+          }, 3000);
         } catch (e) {
           console.error('[Dialogue] Parse evaluate result failed:', e);
           this.setData({ evaluating: false });
@@ -269,9 +424,18 @@ Page({
   /**
    * 开始录音
    */
-  startRecording() {
+  async startRecording() {
     const { recorderManager } = this.data;
-    if (!recorderManager) return;
+    if (!recorderManager || this.data.evaluating || this.data.isRecording) return;
+
+    this.setData({ recordTouchActive: true });
+    const authorized = await this.ensureRecordAuthorized();
+    if (!authorized) {
+      this.setData({ recordTouchActive: false });
+      toast.info('未获得麦克风权限');
+      return;
+    }
+    if (!this.data.recordTouchActive) return;
 
     try {
       haptics.medium();
@@ -289,6 +453,7 @@ Page({
       });
     } catch (error) {
       console.error('[Dialogue] Record start failed:', error);
+      this.setData({ recordTouchActive: false, isRecording: false });
       toast.error('录音启动失败');
     }
   },
@@ -298,6 +463,7 @@ Page({
    */
   stopRecording() {
     const { recorderManager, isRecording } = this.data;
+    this.setData({ recordTouchActive: false });
     if (!recorderManager || !isRecording) return;
 
     haptics.light();
@@ -325,10 +491,15 @@ Page({
    * 重复播放
    */
   repeatSentence() {
-    const { audioContext } = this.data;
+    const audioContext = this.ensureAudioContext();
     if (!audioContext) return;
 
     haptics.light();
+    const audioUrl = this.loadAudioForIndex(this.data.currentIndex);
+    if (!audioUrl) {
+      toast.info('当前句子暂无音频');
+      return;
+    }
     audioContext.seek(0);
     audioContext.play();
   },
@@ -339,6 +510,20 @@ Page({
   showNotes() {
     haptics.light();
     toast.info('笔记功能开发中');
+  },
+
+  /**
+   * 重新录制：清空当前句的评分状态，等待用户重新长按录音
+   */
+  reRecord() {
+    haptics.light();
+    if (!this.data.showScore && !this.data.scoreInfo) return;
+    this.setData({
+      showScore: false,
+      scoreInfo: null,
+      recognizedText: '',
+    });
+    this.updateDisplaySentences();
   },
 
   /**
@@ -364,6 +549,7 @@ Page({
       currentIndex: newIndex,
       isPlaying: false
     });
+    this.updateDisplaySentences();
 
     this.loadCurrentAudio();
   },
@@ -394,6 +580,7 @@ Page({
       currentIndex: newIndex,
       isPlaying: false
     });
+    this.updateDisplaySentences();
 
     this.loadCurrentAudio();
 
@@ -499,9 +686,51 @@ Page({
       recordCount: 0,
       startTime: Date.now()
     });
+    this.updateDisplaySentences();
 
     this.loadCurrentAudio();
     toast.info('开始复习');
+  },
+
+  updateDisplaySentences() {
+    const { dialogue, currentIndex, scoreInfo, showScore } = this.data;
+    if (!dialogue) return;
+
+    const labelOf = (s?: number) => {
+      if (s == null) return '';
+      if (s >= 90) return '发音很棒';
+      if (s >= 80) return '挺不错';
+      if (s >= 70) return '还可以';
+      if (s >= 60) return '继续加油';
+      return '再试一次';
+    };
+
+    const displaySentences = dialogue.sentences.map((sentence, index) => {
+      const isUser = sentence.speaker === 'B' || sentence.speaker === 'You' || sentence.speaker === 'YOU';
+      const liveScore = isUser && showScore && index === currentIndex && scoreInfo
+        ? scoreInfo.score
+        : undefined;
+      // 历史分数：用户句子若自带 score 字段（stub 数据或后端历史评测）也展示
+      const historyScore = isUser ? sentence.score : undefined;
+      const score = liveScore ?? historyScore;
+      return {
+        ...sentence,
+        isUser,
+        isCurrent: index === currentIndex,
+        isCompleted: index < currentIndex,
+        avatarText: isUser ? 'YOU' : (sentence.speaker || 'A').slice(0, 1),
+        score,
+        scoreLabel: labelOf(score),
+      };
+    });
+
+    this.setData({
+      displaySentences,
+      currentPromptZh: dialogue.sentences[currentIndex]?.text_zh || '',
+      progressPercent: dialogue.sentences.length
+        ? Math.round(((currentIndex + 1) / dialogue.sentences.length) * 100)
+        : 0,
+    });
   },
 
   /**
@@ -515,6 +744,7 @@ Page({
       audioContext.stop();
       audioContext.destroy();
     }
+    this.setData({ audioContext: null, isPlaying: false });
 
     // 停止录音
     if (recorderManager && isRecording) {

@@ -1,73 +1,75 @@
 <view class="assessment-test">
-  <!-- 进度条 -->
-  <view class="progress-bar">
-    <view class="progress-info">
-      <text class="current">{{currentQuestion}}/{{totalQuestions}}</text>
-      <text class="timer" wx:if="{{timeLeft > 0}}">剩余 {{timeLeft}}秒</text>
+  <view class="top-row">
+    <view class="back-btn" bindtap="goBack"></view>
+    <view class="progress-wrap">
+      <view class="progress-track">
+        <view class="progress-fill" style="width: {{progress}}%;"></view>
+      </view>
     </view>
-    <progress percent="{{progress}}" stroke-width="6" activeColor="#667eea"/>
+    <text class="question-count">{{currentQuestion}}/{{totalQuestions}}</text>
   </view>
 
-  <!-- 题目内容 -->
-  <view class="question-content" wx:if="{{question}}">
-    <!-- 听力题: 音频播放器 -->
-    <view class="audio-player" wx:if="{{question.type === 'listening'}}">
-      <view class="audio-icon" bindtap="toggleAudio">
-        <text class="icon">{{isPlaying ? '⏸' : '▶️'}}</text>
-      </view>
-      <view class="audio-info">
-        <text class="audio-text">点击播放音频</text>
-        <text class="listen-count">已播放 {{listenCount}} 次</text>
+  <view class="meta-row" wx:if="{{question}}">
+    <text class="chip chip-indigo">{{question.type}}</text>
+    <text class="chip chip-ink">{{question.level}}</text>
+    <text class="timer" wx:if="{{timeLeft > 0}}">剩余 {{timeLeft}}s</text>
+    <text class="timer" wx:else>时间到</text>
+  </view>
+
+  <view class="test-body" wx:if="{{question}}">
+    <view class="audio-card" wx:if="{{question.type === 'listening'}}" bindtap="toggleAudio">
+      <view class="audio-icon {{isPlaying ? 'playing' : ''}}"></view>
+      <view>
+        <text class="audio-title">{{isPlaying ? '正在播放' : '点击播放音频'}}</text>
+        <text class="audio-meta">已播放 {{listenCount}} 次</text>
       </view>
     </view>
 
-    <!-- 阅读题: 文本内容 -->
-    <view class="passage-box" wx:if="{{question.type === 'reading'}}">
-      <scroll-view scroll-y class="passage-scroll">
-        <text class="passage-text">{{question.content.passage}}</text>
+    <view class="passage-card" wx:if="{{question.type === 'reading'}}">
+      <text class="passage-label">阅读材料</text>
+      <scroll-view scroll-y class="passage-scroll" show-scrollbar="{{false}}">
+        <text>{{question.content.passage}}</text>
       </scroll-view>
     </view>
 
-    <!-- 问题 -->
-    <view class="question-box">
-      <text class="question-label">题目:</text>
-      <text class="question-text">{{question.content.question}}</text>
-      <text class="question-zh">{{question.content.question_zh}}</text>
-    </view>
+    <text class="prompt-label">选择正确的选项</text>
+    <text class="question-title">{{question.content.question}}</text>
+    <text class="question-zh" wx:if="{{question.content.question_zh}}">{{question.content.question_zh}}</text>
 
-    <!-- 选项 -->
     <view class="options">
       <view
         wx:for="{{question.content.options}}"
         wx:key="index"
-        class="option-item {{selectedIndex === index ? 'selected' : ''}}"
+        class="option-card {{selectedIndex === index ? 'selected' : ''}}"
         bindtap="selectOption"
         data-index="{{index}}"
       >
-        <view class="option-radio">
-          <text wx:if="{{selectedIndex === index}}">●</text>
-        </view>
+        <view class="option-letter">{{optionLetters[index]}}</view>
         <text class="option-text">{{item}}</text>
+        <view class="option-check" wx:if="{{selectedIndex === index}}"></view>
       </view>
     </view>
   </view>
 
-  <!-- 操作按钮 -->
-  <view class="actions">
+  <view wx:if="{{feedback}}" class="answer-feedback feedback-{{feedback.type}}">
+    <text class="feedback-glyph">{{feedback.type === 'correct' ? '✓' : '✗'}}</text>
+    <text class="feedback-text">{{feedback.text}}</text>
+  </view>
+
+  <view class="action-dock">
+    <button class="skip-btn" bindtap="nextQuestion">跳过</button>
     <button
-      class="next-btn"
-      type="primary"
+      class="confirm-btn"
       bindtap="nextQuestion"
       disabled="{{selectedIndex === null}}"
     >
-      {{isLastQuestion ? '完成评估' : '下一题'}}
+      {{isLastQuestion ? '完成评估' : '确认答案'}}
     </button>
   </view>
 
-  <!-- 加载状态 -->
   <view class="loading-mask" wx:if="{{loading}}">
     <view class="loading-box">
-      <text class="loading-text">正在加载...</text>
+      <text>正在加载...</text>
     </view>
   </view>
 </view>

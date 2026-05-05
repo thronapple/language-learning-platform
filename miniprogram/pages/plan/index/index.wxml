@@ -1,188 +1,148 @@
 <view class="plan-page">
-  <!-- 加载骨架 -->
   <skeleton type="list" rows="{{3}}" wx:if="{{loading}}" />
 
-  <!-- 无计划空状态 -->
-  <view wx:elif="{{noPlan}}" class="no-plan-state fade-in">
-    <view class="no-plan-icon">📋</view>
+  <view wx:elif="{{noPlan}}" class="no-plan-state">
+    <view class="empty-mark"></view>
     <text class="no-plan-title">还没有学习计划</text>
     <text class="no-plan-desc">完成水平测评后，系统将为你生成个性化学习计划</text>
     <button class="no-plan-btn" bindtap="goAssessment">开始水平测评</button>
   </view>
 
-  <!-- 页面内容 -->
-  <view wx:else class="fade-in">
-  <!-- 顶部信息卡 -->
-  <view class="header-card">
-    <view class="header-content">
-      <view class="level-badge">
-        <text class="level-text">{{plan.overall_level}}</text>
+  <view wx:else class="plan-screen">
+    <view class="plan-hero">
+      <view class="hero-deco deco-large"></view>
+      <view class="hero-deco deco-small"></view>
+
+      <view class="hero-appbar">
+        <view class="nav-icon back-icon" bindtap="goBack"></view>
+        <text>学习计划</text>
+        <view class="nav-icon settings-icon" bindtap="adjustPlan"></view>
       </view>
-      <view class="header-info">
-        <text class="greeting">你的学习计划</text>
-        <text class="target-date" wx:if="{{plan.target_date}}">
-          目标日期: {{plan.target_date}} (剩余{{plan.days_remaining}}天)
-        </text>
-      </view>
-    </view>
 
-    <!-- 整体进度 -->
-    <view class="overall-progress">
-      <view class="progress-header">
-        <text class="progress-label">总体进度</text>
-        <text class="progress-value">{{plan.overall_progress}}%</text>
-      </view>
-      <view class="progress-bar">
-        <view class="progress-fill" style="width: {{plan.overall_progress}}%;"></view>
-      </view>
-      <view class="progress-stats">
-        <view class="stat-item">
-          <text class="stat-value">{{plan.completed_scenarios}}/{{plan.total_scenarios}}</text>
-          <text class="stat-label">场景</text>
-        </view>
-        <view class="stat-item">
-          <text class="stat-value">{{plan.completed_dialogues}}/{{plan.total_dialogues}}</text>
-          <text class="stat-label">对话</text>
-        </view>
-      </view>
-    </view>
-  </view>
+      <view class="hero-content">
+        <text class="plan-kicker">{{planTitle}}</text>
+        <text class="plan-headline">{{planSubtitle}}</text>
 
-  <!-- 今日任务 -->
-  <view class="section">
-    <view class="section-header">
-      <text class="section-title">📅 今日任务</text>
-      <text class="section-subtitle">{{todayTasksCount}}个对话待学习</text>
-    </view>
-
-    <view class="today-tasks" wx:if="{{todayTasks.length > 0}}">
-      <view
-        wx:for="{{todayTasks}}"
-        wx:key="dialogue_id"
-        class="task-item {{item.is_completed ? 'completed' : ''}}"
-        bindtap="startDialogue"
-        data-dialogue-id="{{item.dialogue_id}}"
-      >
-        <view class="task-checkbox">
-          <text class="icon" wx:if="{{item.is_completed}}">✓</text>
-        </view>
-        <view class="task-content">
-          <text class="task-title">{{item.dialogue_title}}</text>
-          <text class="task-meta">{{item.estimated_minutes}}分钟 · {{item.vocabulary_count}}个词汇</text>
-        </view>
-        <view class="task-arrow">
-          <text class="icon">›</text>
-        </view>
-      </view>
-    </view>
-
-    <view class="empty-state" wx:else>
-      <text class="empty-icon">🎉</text>
-      <text class="empty-text">今日任务已完成！</text>
-    </view>
-  </view>
-
-  <!-- 场景目标 -->
-  <view class="section">
-    <view class="section-header">
-      <text class="section-title">🎯 场景目标</text>
-      <text class="section-subtitle">{{plan.total_scenarios}}个学习场景</text>
-    </view>
-
-    <view class="scenario-goals">
-      <view
-        wx:for="{{plan.scenario_goals}}"
-        wx:key="scenario_id"
-        class="scenario-card priority-{{item.priority}}"
-        bindtap="viewScenario"
-        data-scenario-id="{{item.scenario_id}}"
-      >
-        <view class="scenario-header">
-          <view class="scenario-title-row">
-            <text class="scenario-icon">{{item.icon}}</text>
-            <text class="scenario-name">{{item.scenario_name}}</text>
-          </view>
-          <view class="priority-badge {{item.priority}}">
-            {{item.priority === 'high' ? '高优先级' : item.priority === 'medium' ? '中优先级' : '低优先级'}}
-          </view>
-        </view>
-
-        <view class="scenario-reason">
-          <text class="reason-text">{{item.reason}}</text>
-        </view>
-
-        <view class="readiness-section">
-          <view class="readiness-header">
-            <text class="readiness-label">就绪度</text>
-            <text class="readiness-value">{{item.readinessPercent}}%</text>
-          </view>
-          <view class="readiness-bar">
-            <view class="readiness-fill" style="width: {{item.current_readiness * 100}}%;"></view>
-            <view class="readiness-target" style="left: {{item.target_readiness * 100}}%;"></view>
-          </view>
-          <view class="readiness-footer">
-            <text class="readiness-status">
-              {{item.current_readiness >= item.target_readiness ? '✓ 已达标' : '进行中'}}
-            </text>
-            <text class="estimated-days">预计{{item.estimated_days}}天</text>
-          </view>
-        </view>
-
-        <view class="key-vocabulary">
-          <text class="vocab-label">关键词汇:</text>
-          <view class="vocab-tags">
-            <text
-              wx:for="{{item.key_vocabulary}}"
-              wx:for-item="word"
-              wx:key="*this"
-              class="vocab-tag"
-            >
-              {{word}}
-            </text>
+        <view class="progress-row">
+          <text class="big-percent t-mono">{{plan.overall_progress}}%</text>
+          <view class="progress-main">
+            <view class="progress-meta">
+              <text>已完成 {{completedDays}} 天</text>
+              <text>剩余 {{remainingDays}} 天</text>
+            </view>
+            <view class="hero-progress">
+              <view class="hero-progress-fill" style="width: {{plan.overall_progress}}%;"></view>
+            </view>
           </view>
         </view>
       </view>
     </view>
-  </view>
 
-  <!-- 学习统计 -->
-  <view class="section">
-    <view class="section-header">
-      <text class="section-title">📊 学习统计</text>
+    <view class="plan-scroll">
+      <view class="week-card">
+        <view class="section-head">
+          <text class="section-title">本周 · 第 {{currentWeek}} 周</text>
+          <text class="section-meta">{{weekDoneCount}} / 7 天</text>
+        </view>
+        <view class="week-strip">
+          <view wx:for="{{weekDays}}" wx:key="day" class="week-day {{item.state}}">
+            <text class="week-label">{{item.label}}</text>
+            <text class="week-num">{{item.day}}</text>
+            <view class="week-state-dot"></view>
+          </view>
+        </view>
+      </view>
+
+      <view class="today-section">
+        <view class="section-head">
+          <view class="title-with-meta">
+            <text class="section-title">今日任务</text>
+            <text class="inline-meta">· {{todayDateLabel}}</text>
+          </view>
+          <text class="accent-meta">{{completedTaskCount}}/{{todayTasks.length}} · {{todayMinutesDone}} 分钟</text>
+        </view>
+
+        <view class="task-list" wx:if="{{taskViews.length > 0}}">
+          <view
+            wx:for="{{taskViews}}"
+            wx:key="dialogue_id"
+            class="plan-task {{item.statusClass}}"
+            bindtap="startDialogue"
+            data-dialogue-id="{{item.dialogue_id}}"
+          >
+            <view class="task-icon tone-{{item.tone}} icon-{{item.icon}}"></view>
+            <view class="task-copy">
+              <view class="task-tag-row">
+                <text class="task-tag tone-{{item.tone}}">{{item.tag}}</text>
+                <text class="task-extra" wx:if="{{item.extra}}">{{item.extra}}</text>
+              </view>
+              <text class="task-title">{{item.title}}</text>
+              <text class="task-meta">{{item.meta}}</text>
+              <view class="task-progress" wx:if="{{item.showProgress}}">
+                <view class="task-progress-fill" style="width: {{item.progressPercent}}%;"></view>
+              </view>
+            </view>
+            <view class="task-tail {{item.tailClass}}"></view>
+          </view>
+        </view>
+
+        <view class="empty-tasks" wx:else>
+          <text>今日任务已完成</text>
+        </view>
+      </view>
+
+      <view class="path-section">
+        <view class="section-head">
+          <text class="section-title">完整路径</text>
+          <view class="section-link" bindtap="adjustPlan">
+            <text>调整目标</text>
+            <view class="link-chevron"></view>
+          </view>
+        </view>
+
+        <view class="path-list">
+          <view
+            wx:for="{{pathWeeks}}"
+            wx:key="week"
+            class="path-item {{item.status}}"
+            bindtap="viewScenario"
+            data-scenario-id="{{item.scenario_id}}"
+          >
+            <view class="week-badge">
+              <text>WEEK</text>
+              <text>{{item.week}}</text>
+            </view>
+            <view class="path-copy">
+              <view class="path-title-row">
+                <text class="path-title">{{item.title}}</text>
+                <text class="path-chip {{item.chipClass}}" wx:if="{{item.showChip}}">{{item.chipText}}</text>
+                <view class="path-chevron" wx:if="{{item.showChevron}}"></view>
+              </view>
+              <text class="path-meta">{{item.range}} · {{item.summary}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <view class="goal-card">
+        <view class="goal-icon"></view>
+        <view class="goal-copy">
+          <text class="goal-title">每日目标 · {{plan.daily_minutes}} 分钟</text>
+          <text class="goal-text">今日已学 {{todayMinutesDone}} 分钟，再坚持 {{todayMinutesRemaining}} 分钟保持连击！</text>
+        </view>
+        <view class="goal-progress">
+          <view class="goal-progress-fill" style="width: {{dailyGoalPercent}}%;"></view>
+        </view>
+      </view>
+
+      <view class="actions">
+        <button class="primary-action" bindtap="continueStudy" disabled="{{continueDisabled}}">
+          {{continueLabel}}
+        </button>
+        <button class="secondary-action" bindtap="adjustPlan">调整计划</button>
+      </view>
+
+      <view class="bottom-spacer"></view>
     </view>
-
-    <view class="stats-grid">
-      <view class="stat-card">
-        <text class="stat-number">{{plan.daily_minutes}}</text>
-        <text class="stat-name">每日分钟</text>
-      </view>
-      <view class="stat-card">
-        <text class="stat-number">{{plan.available_days}}</text>
-        <text class="stat-name">总学习天数</text>
-      </view>
-      <view class="stat-card">
-        <text class="stat-number">{{plan.total_dialogues}}</text>
-        <text class="stat-name">对话总数</text>
-      </view>
-      <view class="stat-card">
-        <text class="stat-number">{{totalVocabulary}}</text>
-        <text class="stat-name">词汇总数</text>
-      </view>
-    </view>
-  </view>
-
-  <!-- 操作按钮 -->
-  <view class="actions">
-    <button
-      class="action-btn primary"
-      bindtap="continueStudy"
-      disabled="{{todayTasks.length === 0}}"
-    >
-      {{todayTasks.length > 0 ? '继续学习' : '今日已完成'}}
-    </button>
-    <button class="action-btn secondary" bindtap="adjustPlan">
-      调整计划
-    </button>
-  </view>
   </view>
 </view>

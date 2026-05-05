@@ -1,46 +1,52 @@
 <view class="assessment-intro">
-  <view class="header">
-    <image class="icon" src="/images/assessment-icon.png" mode="aspectFit"/>
-    <text class="title">快速评估您的语言水平</text>
-    <text class="subtitle">10道题 · 预计10分钟</text>
+  <view class="appbar">
+    <view class="close-btn" bindtap="skipAssessment"></view>
+    <text class="step-label">STEP 1 OF 3</text>
+    <view class="appbar-spacer"></view>
   </view>
 
-  <view class="features">
-    <view class="feature-item">
-      <view class="feature-icon">
-        <text class="icon-text">🎯</text>
+  <view class="intro-scroll">
+    <view class="hero-art">
+      <view class="art-deco deco-left"></view>
+      <view class="art-deco deco-right"></view>
+      <view class="target-mark">
+        <view class="target-ring"></view>
       </view>
-      <view class="feature-content">
-        <text class="feature-title">精准定位当前水平</text>
-        <text class="feature-desc">自适应测试,准确评估A1-C2等级</text>
+      <text class="algorithm-chip">IRT 自适应算法</text>
+    </view>
+
+    <view class="headline">
+      <text class="display-title">测一测\n你的英语水平</text>
+      <text class="subtitle">约 15 题，5 分钟完成\n根据答题表现智能调整难度</text>
+    </view>
+
+    <view class="level-card">
+      <text class="card-title">将定位到 CEFR 等级</text>
+      <view class="level-bars">
+        <view wx:for="{{levels}}" wx:key="*this" class="level-item item-{{index}}">
+          <text>{{item}}</text>
+          <view class="level-bar"></view>
+        </view>
+      </view>
+      <text class="level-desc">覆盖词汇、语法、阅读、听力四个维度</text>
+    </view>
+
+    <view class="feature-list">
+      <view class="feature-item">
+        <view class="feature-icon sparkle"></view>
+        <text>智能难度调整</text>
+      </view>
+      <view class="feature-item">
+        <view class="feature-icon clock"></view>
+        <text>随时可以暂停</text>
+      </view>
+      <view class="feature-item">
+        <view class="feature-icon flag"></view>
+        <text>生成个性化学习计划</text>
       </view>
     </view>
 
-    <view class="feature-item">
-      <view class="feature-icon">
-        <text class="icon-text">📊</text>
-      </view>
-      <view class="feature-content">
-        <text class="feature-title">识别薄弱环节</text>
-        <text class="feature-desc">分析听说读写各维度表现</text>
-      </view>
-    </view>
-
-    <view class="feature-item">
-      <view class="feature-icon">
-        <text class="icon-text">🎓</text>
-      </view>
-      <view class="feature-content">
-        <text class="feature-title">定制学习计划</text>
-        <text class="feature-desc">根据评估结果生成专属计划</text>
-      </view>
-    </view>
-  </view>
-
-  <view class="actions">
-    <button class="start-btn" type="primary" bindtap="startAssessment">
-      开始评估
-    </button>
-    <text class="skip-text" bindtap="skipAssessment">暂时跳过</text>
+    <button class="start-btn" bindtap="startAssessment">开始测评</button>
+    <view class="skip-line">已有账号？ <text bindtap="skipAssessment">跳过测评</text></view>
   </view>
 </view>

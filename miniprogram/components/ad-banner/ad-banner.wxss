@@ -1,1 +1,11 @@
-.ad-banner { padding: 12px; background: #f7f7f7; border-top: 1px solid #eee; text-align: center; color: #888; }
+.ad-banner {
+  margin: 24rpx 32rpx;
+  padding: 20rpx 24rpx;
+  background: var(--ink-100);
+  border: 2rpx solid var(--ink-200);
+  border-radius: var(--radius-md);
+  text-align: center;
+  color: var(--ink-500);
+  font-size: 24rpx;
+  font-weight: 800;
+}

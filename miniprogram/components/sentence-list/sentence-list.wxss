@@ -1,3 +1,21 @@
-.sentences { height: 60vh; background: #fff; border-radius: 8rpx; padding: 16rpx; }
-.sentence { padding: 12rpx 8rpx; color: #333; }
-.sentence.active { background: #eef7ff; }
+.sentences {
+  height: 60vh;
+  background: var(--paper);
+  border: 2rpx solid var(--ink-100);
+  border-radius: var(--radius-md);
+  padding: 16rpx;
+}
+
+.sentence {
+  padding: 16rpx 12rpx;
+  color: var(--ink-800);
+  font-size: 28rpx;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.sentence.active {
+  background: var(--brand-50);
+  color: var(--ink-900);
+  font-weight: 900;
+}

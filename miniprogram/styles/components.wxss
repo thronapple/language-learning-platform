@@ -1,0 +1,115 @@
+/**
+ * 共享组件类。对齐 docs/styles.css，补齐 design-tokens 之上缺位的语义层。
+ * 与 app.wxss 中已有的 .btn-* / .card / .badge-* 共存，逐页迁移。
+ */
+
+/* ========== 字体语义类 ========== */
+.h-display {
+  font-size: 60rpx;
+  font-weight: 900;
+  letter-spacing: -1.2rpx;
+  line-height: 1.1;
+}
+
+.h-title {
+  font-size: 44rpx;
+  font-weight: 800;
+  letter-spacing: -0.4rpx;
+  line-height: 1.2;
+}
+
+.h-section {
+  font-size: 32rpx;
+  font-weight: 800;
+  color: var(--ink-900);
+}
+
+.t-body {
+  font-size: 28rpx;
+  font-weight: 500;
+  line-height: 1.45;
+}
+
+.t-meta {
+  font-size: 24rpx;
+  font-weight: 600;
+  color: var(--ink-500);
+  letter-spacing: 0.2rpx;
+}
+
+.t-mono {
+  font-family: var(--font-mono);
+  font-feature-settings: "tnum";
+}
+
+/* ========== chip 系统（6 种语义色） ========== */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8rpx;
+  padding: 8rpx 20rpx;
+  border-radius: var(--radius-full);
+  font-size: 22rpx;
+  font-weight: 700;
+  letter-spacing: 0.4rpx;
+  line-height: 1;
+}
+
+.chip-brand  { background: var(--brand-100);  color: var(--brand-700); }
+.chip-indigo { background: var(--indigo-100); color: var(--indigo-700); }
+.chip-mint   { background: var(--mint-100);   color: var(--mint-700); }
+.chip-lemon  { background: var(--lemon-100);  color: #7a5b00; }
+.chip-coral  { background: var(--coral-100);  color: var(--coral-700); }
+.chip-ink    { background: var(--ink-200);    color: var(--ink-700); }
+
+/* ========== 卡片变体（与 app.wxss 的 .card 互补） ========== */
+.card-flat {
+  background: var(--paper);
+  border: 3rpx solid var(--ink-200);
+  border-radius: var(--radius-lg);
+  padding: 32rpx;
+}
+
+/* ========== 进度条 ========== */
+.progress-track {
+  width: 100%;
+  height: 16rpx;
+  background: var(--ink-200);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--brand-500);
+  border-radius: var(--radius-full);
+  transition: width var(--duration-base) var(--ease-out);
+}
+
+.progress-fill-indigo { background: var(--indigo-500); }
+.progress-fill-mint   { background: var(--mint-500); }
+
+/* ========== 英雄按钮：白底反相，专给彩色 hero 卡使用 ========== */
+button.btn-on-brand,
+.btn-on-brand {
+  background: #fff;
+  color: var(--brand-600);
+  border: none;
+  border-radius: var(--radius-full);
+  padding: 24rpx 40rpx;
+  font-size: 28rpx;
+  font-weight: 900;
+  box-shadow: 0 8rpx 0 rgba(196, 58, 7, 0.4), var(--shadow-sm);
+  transition: all var(--duration-fast) var(--ease-out);
+}
+
+button.btn-on-brand::after,
+.btn-on-brand::after {
+  border: none;
+}
+
+button.btn-on-brand:active,
+.btn-on-brand:active {
+  transform: translateY(6rpx) scale(0.98);
+  box-shadow: 0 2rpx 0 rgba(196, 58, 7, 0.4);
+}

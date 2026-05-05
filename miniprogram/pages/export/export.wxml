@@ -1,5 +1,8 @@
 <view class="page">
   <view class="header">
+    <view class="hero-deco deco-large"></view>
+    <view class="hero-deco deco-small"></view>
+    <view class="header-kicker">SHARE</view>
     <view class="header-title">学习成果分享</view>
     <view class="header-sub">生成学习成果长图，分享给好友</view>
   </view>
@@ -10,7 +13,7 @@
     </view>
 
     <view class="placeholder-card" wx:else>
-      <view class="placeholder-icon">🖼️</view>
+      <view class="placeholder-icon image-icon"></view>
       <view class="placeholder-text">点击下方按钮生成长图</view>
     </view>
 

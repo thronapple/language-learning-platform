@@ -1,3 +1,90 @@
-.container { padding: 16px; }
-.title { font-weight: 600; margin-bottom: 8px; }
-.text { color:#555; line-height: 1.6; }
+.page {
+  min-height: 100vh;
+  background: var(--ink-50);
+  color: var(--ink-900);
+}
+
+.doc-hero {
+  padding: 48rpx 40rpx 40rpx;
+  background: var(--paper);
+  border-bottom: 2rpx solid var(--ink-100);
+}
+
+.doc-icon {
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: var(--radius-md);
+  background: var(--brand-100);
+  position: relative;
+  margin-bottom: 24rpx;
+}
+
+.doc-icon::before {
+  content: '';
+  position: absolute;
+  left: 22rpx;
+  top: 22rpx;
+  width: 44rpx;
+  height: 44rpx;
+  background: var(--brand-700);
+  -webkit-mask: center / contain no-repeat;
+          mask: center / contain no-repeat;
+}
+
+.lock-mark::before {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='4' y='10' width='16' height='11' rx='2'/%3E%3Cpath d='M8 10V7a4 4 0 0 1 8 0v3'/%3E%3C/svg%3E");
+          mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='4' y='10' width='16' height='11' rx='2'/%3E%3Cpath d='M8 10V7a4 4 0 0 1 8 0v3'/%3E%3C/svg%3E");
+}
+
+.doc-title {
+  font-size: 44rpx;
+  line-height: 1.2;
+  font-weight: 900;
+}
+
+.doc-sub {
+  margin-top: 12rpx;
+  color: var(--ink-500);
+  font-size: 24rpx;
+  font-weight: 800;
+}
+
+.content {
+  padding: 32rpx;
+}
+
+.doc-card {
+  padding: 32rpx;
+  background: var(--paper);
+  border: 2rpx solid var(--ink-100);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.section {
+  padding: 28rpx 0;
+  border-bottom: 2rpx solid var(--ink-100);
+}
+
+.section:first-child {
+  padding-top: 0;
+}
+
+.section:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.section-title {
+  font-size: 30rpx;
+  font-weight: 900;
+  color: var(--ink-900);
+  margin-bottom: 12rpx;
+}
+
+.text {
+  color: var(--ink-600);
+  font-size: 28rpx;
+  font-weight: 700;
+  line-height: 1.7;
+}

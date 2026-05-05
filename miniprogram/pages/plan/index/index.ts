@@ -47,12 +47,63 @@ interface LearningPlan {
   today_tasks?: DailyTask[];
 }
 
+interface WeekDayView {
+  label: string;
+  day: number;
+  state: 'done' | 'today' | 'future';
+}
+
+interface TaskView {
+  dialogue_id: string;
+  icon: string;
+  tone: 'brand' | 'indigo' | 'mint' | 'lemon';
+  statusClass: 'done' | 'active' | 'pending';
+  tailClass: string;
+  tag: string;
+  title: string;
+  meta: string;
+  extra: string;
+  progressPercent: number;
+  completed: boolean;
+  showProgress: boolean;
+}
+
+interface PathWeekView {
+  week: number;
+  title: string;
+  range: string;
+  summary: string;
+  status: 'done' | 'active' | 'locked';
+  chipText: string;
+  chipClass: string;
+  showChip: boolean;
+  showChevron: boolean;
+  scenario_id: string;
+}
+
 Page({
   data: {
     plan: null as LearningPlan | null,
     todayTasks: [] as DailyTask[],
+    taskViews: [] as TaskView[],
+    pathWeeks: [] as PathWeekView[],
+    weekDays: [] as WeekDayView[],
     todayTasksCount: 0,
     totalVocabulary: 0,
+    planTitle: '30 天 A1 → B1 计划',
+    planSubtitle: '第 1 天 · 准备开始',
+    completedDays: 0,
+    remainingDays: 0,
+    currentWeek: 1,
+    weekDoneCount: 0,
+    todayDateLabel: '',
+    completedTaskCount: 0,
+    todayMinutesDone: 0,
+    todayMinutesRemaining: 0,
+    dailyGoalPercent: 0,
+    hasTodayTasks: false,
+    continueDisabled: true,
+    continueLabel: '今日已完成',
     loading: true,
     noPlan: false,
   },
@@ -87,13 +138,15 @@ Page({
         (sum, goal) => sum + goal.key_vocabulary.length,
         0
       );
+      const viewData = this.buildPlanView(plan, todayTasks);
 
       this.setData({
         plan,
         todayTasks,
         todayTasksCount: todayTasks.filter(t => !t.is_completed).length,
         totalVocabulary,
-        loading: false
+        loading: false,
+        ...viewData
       });
 
       wx.reportAnalytics('plan_view', {
@@ -111,6 +164,132 @@ Page({
         this.setData({ loading: false });
       }
     }
+  },
+
+  /** CEFR 阶梯：从当前等级跳两档作为合理近期目标 */
+  nextTargetLevel(current?: string): string {
+    const order = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
+    const idx = order.indexOf(current || '');
+    if (idx < 0) return 'B1';
+    return order[Math.min(idx + 2, order.length - 1)];
+  },
+
+  buildPlanView(plan: LearningPlan, todayTasks: DailyTask[]) {
+    const availableDays = plan.available_days || 30;
+    const remainingDays = typeof plan.days_remaining === 'number'
+      ? Math.max(0, plan.days_remaining)
+      : Math.max(0, availableDays - Math.round((plan.overall_progress || 0) / 100 * availableDays));
+    const completedDays = Math.max(0, availableDays - remainingDays);
+    const currentWeek = Math.max(1, Math.ceil(Math.max(1, completedDays || 1) / 7));
+    const weekStartDay = (currentWeek - 1) * 7 + 1;
+    const todayIndex = Math.min(6, Math.max(0, completedDays - weekStartDay + 1));
+    const weekDoneCount = Math.min(7, Math.max(0, completedDays - weekStartDay + 1));
+    const labels = ['一', '二', '三', '四', '五', '六', '日'];
+    const weekDays: WeekDayView[] = labels.map((label, index) => ({
+      label,
+      day: weekStartDay + index,
+      state: index < todayIndex ? 'done' : index === todayIndex ? 'today' : 'future',
+    }));
+
+    const todayMinutesDone = todayTasks
+      .filter(t => t.is_completed)
+      .reduce((sum, task) => sum + (task.estimated_minutes || 0), 0);
+    const dailyMinutes = plan.daily_minutes || 20;
+    const todayMinutesRemaining = Math.max(0, dailyMinutes - todayMinutesDone);
+    const dailyGoalPercent = Math.min(100, Math.round(todayMinutesDone / dailyMinutes * 100));
+
+    const taskViews: TaskView[] = todayTasks.map((task, index) => {
+      const completed = !!task.is_completed;
+      const isActive = !completed && todayTasks.findIndex(t => !t.is_completed) === index;
+      const tone: TaskView['tone'] = index === 0 ? 'mint' : index === 1 ? 'indigo' : 'lemon';
+      return {
+        dialogue_id: task.dialogue_id,
+        icon: index === 0 ? 'cards' : index === 1 ? 'chat' : 'headphones',
+        tone,
+        statusClass: completed ? 'done' : isActive ? 'active' : 'pending',
+        tailClass: completed ? 'checked' : '',
+        tag: index === 0 ? '词汇 · SRS' : index === 1 ? '对话 · 场景' : '听力 · 精听',
+        title: task.dialogue_title || '学习任务',
+        meta: `${task.estimated_minutes || 0} 分钟 · ${task.vocabulary_count || 0} 个词汇`,
+        extra: completed ? '+12 XP' : isActive ? '进行中' : '',
+        progressPercent: completed ? 100 : isActive ? 66 : 0,
+        completed,
+        showProgress: !completed && isActive,
+      };
+    });
+
+    const pathWeeks = this.buildPathWeeks(plan);
+    const month = new Date().getMonth() + 1;
+    const day = new Date().getDate();
+    const hasTodayTasks = todayTasks.length > 0;
+    const completedTaskCount = todayTasks.filter(t => t.is_completed).length;
+
+    return {
+      taskViews,
+      pathWeeks,
+      weekDays,
+      planTitle: `${availableDays} 天 ${plan.overall_level || 'A1'} → ${this.nextTargetLevel(plan.overall_level)} 计划`,
+      planSubtitle: `第 ${Math.max(1, completedDays)} 天 · ${plan.overall_progress >= 70 ? '接近目标' : plan.overall_progress >= 30 ? '进展顺利' : '稳步开始'}`,
+      completedDays,
+      remainingDays,
+      currentWeek,
+      weekDoneCount,
+      todayDateLabel: `${month} 月 ${day} 日`,
+      completedTaskCount,
+      todayMinutesDone,
+      todayMinutesRemaining,
+      dailyGoalPercent,
+      hasTodayTasks,
+      continueDisabled: !hasTodayTasks,
+      continueLabel: hasTodayTasks ? '继续学习' : '今日已完成',
+    };
+  },
+
+  goBack() {
+    if (getCurrentPages().length > 1) {
+      wx.navigateBack();
+      return;
+    }
+
+    wx.switchTab({
+      url: '/pages/index/index'
+    });
+  },
+
+  buildPathWeeks(plan: LearningPlan): PathWeekView[] {
+    const goals = plan.scenario_goals || [];
+    const totalWeeks = Math.max(4, Math.ceil((plan.available_days || 30) / 7));
+    let activeAssigned = false;
+
+    return Array.from({ length: Math.min(4, totalWeeks) }).map((_, index) => {
+      const goal = goals[index];
+      const done = goal ? goal.current_readiness >= goal.target_readiness : false;
+      const status: 'done' | 'active' | 'locked' = done
+        ? 'done'
+        : !activeAssigned
+          ? 'active'
+          : 'locked';
+      if (status === 'active') activeAssigned = true;
+
+      const week = index + 1;
+      const start = index * 7 + 1;
+      const end = week === 4 ? (plan.available_days || 30) : Math.min((plan.available_days || 30), start + 6);
+
+      return {
+        week,
+        title: goal?.scenario_name || ['基础巩固', '场景应用', '听力突破', '冲刺测评'][index] || `第 ${week} 周`,
+        range: `Day ${start}-${end}`,
+        summary: goal
+          ? `${goal.estimated_days || 7} 天 · ${goal.key_vocabulary?.length || 0} 个关键词`
+          : ['B1 核心词汇 · 200 词', '5 个生活场景对话', 'BBC + TED 精泛听', '模拟测试 · 升级到 B2'][index],
+        status,
+        chipText: status === 'done' ? '已完成' : status === 'active' ? '进行中' : '',
+        chipClass: status === 'done' ? 'done' : status === 'active' ? 'active' : '',
+        showChip: status !== 'locked',
+        showChevron: status === 'locked',
+        scenario_id: goal?.scenario_id || '',
+      };
+    });
   },
 
   /**

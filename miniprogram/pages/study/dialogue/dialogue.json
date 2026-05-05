@@ -1,7 +1,6 @@
 {
+  "navigationStyle": "custom",
   "navigationBarTitleText": "对话学习",
-  "navigationBarBackgroundColor": "#667eea",
-  "navigationBarTextStyle": "white",
   "usingComponents": {
     "skeleton": "../../../components/skeleton/skeleton"
   }

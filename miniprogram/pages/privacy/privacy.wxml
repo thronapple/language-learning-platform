@@ -1,9 +1,24 @@
-<scroll-view class="container" scroll-y="true">
-  <view class="section">
-    <view class="title">隐私政策（简版）</view>
-    <view class="text">
-      我们仅收集用于提供服务的必要信息（如 OpenID、学习进度与自愿提交的联系信息）。
-      数据仅用于个性化学习与统计分析，不会向第三方出售或共享。您可随时申请删除。
+<view class="page">
+  <view class="doc-hero">
+    <view class="doc-icon lock-mark"></view>
+    <view class="doc-title">隐私政策</view>
+    <view class="doc-sub">简版说明 · 最近更新以正式发布版本为准</view>
+  </view>
+
+  <view class="content">
+    <view class="doc-card">
+      <view class="section">
+        <view class="section-title">我们收集的信息</view>
+        <view class="text">仅收集用于提供服务的必要信息，如 OpenID、学习进度与您自愿提交的联系信息。</view>
+      </view>
+      <view class="section">
+        <view class="section-title">信息用途</view>
+        <view class="text">数据用于个性化学习、学习统计与服务改进，不会向第三方出售或共享。</view>
+      </view>
+      <view class="section">
+        <view class="section-title">删除与联系</view>
+        <view class="text">您可随时申请删除相关数据，或在“我的-反馈”中联系我们。</view>
+      </view>
     </view>
   </view>
-</scroll-view>
+</view>

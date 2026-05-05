@@ -1,32 +1,36 @@
 <view class="page">
-  <!-- 顶部信息栏 -->
   <view class="top-bar">
     <view class="sentence-counter">
       <text class="counter-current">{{activeIndex + 1}}</text>
       <text class="counter-sep">/</text>
       <text class="counter-total">{{sentences.length}}</text>
+      <text class="counter-label">句</text>
     </view>
-    <view class="timer-badge">⏱ {{secs}}s</view>
+    <view class="timer-badge">
+      <view class="timer-icon"></view>
+      <text>{{secs}}s</text>
+    </view>
   </view>
 
-  <!-- 音频播放控制 -->
   <view class="audio-card">
     <view class="audio-row">
       <button class="btn-play {{isPlaying ? 'playing' : ''}}" bindtap="togglePlay">
-        <text>{{isPlaying ? '⏸' : '▶️'}}</text>
+        <view class="play-state-icon {{isPlaying ? 'pause' : 'play'}}"></view>
         <text class="btn-play-label">{{isPlaying ? '暂停' : '播放'}}</text>
       </button>
       <button class="btn-speed" bindtap="cycleRate">{{audioRate}}x</button>
     </view>
     <view class="auto-next-row">
-      <text class="auto-label">自动下一句</text>
-      <switch checked="{{autoNext}}" bindchange="toggleAutoNext" color="#667eea" />
+      <view class="auto-copy">
+        <view class="auto-icon"></view>
+        <text class="auto-label">自动下一句</text>
+      </view>
+      <switch checked="{{autoNext}}" bindchange="toggleAutoNext" color="#ff6b1f" />
     </view>
   </view>
 
-  <!-- 句子列表 -->
   <view class="sentences-wrap">
-    <scroll-view class="sentences" scroll-y="true" scroll-into-view="{{activeAnchor}}">
+    <view class="sentences">
       <block wx:for="{{sentences}}" wx:key="index">
         <view
           id="sentence-{{index}}"
@@ -38,30 +42,33 @@
           <view class="sentence-text">{{item}}</view>
         </view>
       </block>
-    </scroll-view>
+    </view>
   </view>
 
-  <!-- 导航按钮 -->
   <view class="nav-area">
     <button
       class="nav-btn btn-prev"
       bindtap="prev"
       disabled="{{activeIndex === 0}}"
     >
-      ← 上一句
+      <view class="nav-icon prev-icon"></view>
+      <text>上一句</text>
     </button>
     <button
       class="nav-btn btn-next"
       bindtap="next"
       disabled="{{activeIndex === sentences.length - 1}}"
     >
-      下一句 →
+      <text>下一句</text>
+      <view class="nav-icon next-icon"></view>
     </button>
   </view>
 
-  <!-- 完成按钮 -->
   <view class="finish-area">
-    <button class="btn-finish" bindtap="finish">✅ 完成学习</button>
+    <button class="btn-finish" bindtap="finish">
+      <view class="finish-icon"></view>
+      <text>完成学习</text>
+    </button>
   </view>
 
   <ad-interstitial id="finishAd" slot="finish" daily="2" />

@@ -1,5 +1,4 @@
 {
-  "navigationBarTitleText": "水平评估",
-  "navigationBarBackgroundColor": "#667eea",
-  "navigationBarTextStyle": "white"
+  "navigationStyle": "custom",
+  "navigationBarTitleText": "水平评估"
 }

@@ -1,6 +1,5 @@
 {
+  "navigationStyle": "custom",
   "navigationBarTitleText": "评估结果",
-  "navigationBarBackgroundColor": "#667eea",
-  "navigationBarTextStyle": "white",
   "disableScroll": false
 }

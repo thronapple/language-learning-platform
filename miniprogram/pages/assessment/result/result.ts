@@ -40,7 +40,11 @@ Page({
     dimensionList: [] as DimensionInfo[],
     showBadge: false,
     showDimensionDetail: false,
+    dimensionSheetClass: '',
+    hasWeakAreas: false,
     selectedDimension: null as DimensionInfo | null,
+    primaryWeakArea: '',
+    scenarioTags: [] as Array<{ id: string; label: string }>,
   },
 
   onLoad(options: any) {
@@ -48,7 +52,30 @@ Page({
     if (options.data) {
       try {
         const result = JSON.parse(decodeURIComponent(options.data)) as AssessmentResult;
-        this.setData({ result });
+        const weakLabels: Record<string, string> = {
+          listening: '听力', reading: '阅读', vocabulary: '词汇', grammar: '语法',
+        };
+        const scenarioLabels: Record<string, string> = {
+          scenario_airport_checkin: '机场出行',
+          scenario_hotel_checkin: '酒店入住',
+          scenario_restaurant: '餐厅点餐',
+          scenario_cafe: '咖啡馆点单',
+          scenario_shopping: '购物消费',
+          scenario_greetings: '日常打招呼',
+          scenario_work_meeting: '商务会议',
+          scenario_school: '校园生活',
+        };
+        const rawWeak = result.weak_areas?.[0] || '';
+        const scenarioTags = (result.recommendations?.suggested_scenarios || []).map((id) => ({
+          id,
+          label: scenarioLabels[id] || id.replace(/^scenario_/, '').replace(/_/g, ' '),
+        }));
+        this.setData({
+          result,
+          hasWeakAreas: (result.weak_areas || []).length > 0,
+          primaryWeakArea: weakLabels[rawWeak] || rawWeak || '听力',
+          scenarioTags,
+        });
         this.processDimensions(result);
         this.initAnimations();
         this.drawRadarChart();
@@ -67,17 +94,17 @@ Page({
    */
   processDimensions(result: AssessmentResult) {
     const dimensionColors: Record<string, string> = {
-      listening: '#667eea',
-      reading: '#764ba2',
-      vocabulary: '#f093fb',
-      grammar: '#4facfe'
+      listening: '#5a5cf5',
+      reading: '#ff6b1f',
+      vocabulary: '#1abc6b',
+      grammar: '#f7b82c'
     };
 
     const dimensionLabels: Record<string, string> = {
-      listening: '听力理解',
-      reading: '阅读理解',
-      vocabulary: '词汇掌握',
-      grammar: '语法运用'
+      listening: '听力',
+      reading: '阅读',
+      vocabulary: '词汇',
+      grammar: '语法'
     };
 
     const dimensionDescriptions: Record<string, string> = {
@@ -172,7 +199,7 @@ Page({
           accuracyPercent: Math.round(data.accuracy * 100),
           ability: data.ability,
           abilityDisplay: data.ability.toFixed(1),
-          color: dimensionColors[name] || '#999',
+          color: dimensionColors[name] || '#8e8a82',
           description: dimensionDescriptions[name] || '',
           suggestions: dimensionSuggestions[name]?.[strength] || []
         };
@@ -262,7 +289,7 @@ Page({
     }
 
     // 绘制轴线
-    ctx.strokeStyle = '#ccc';
+    ctx.strokeStyle = '#d8d4cc';
     ctx.lineWidth = 1;
 
     dimensionList.forEach((_, index) => {
@@ -277,8 +304,8 @@ Page({
     });
 
     // 绘制数据区域
-    ctx.fillStyle = 'rgba(102, 126, 234, 0.2)';
-    ctx.strokeStyle = '#667eea';
+    ctx.fillStyle = 'rgba(255, 107, 31, 0.18)';
+    ctx.strokeStyle = '#ff6b1f';
     ctx.lineWidth = 2;
     ctx.beginPath();
 
@@ -309,7 +336,7 @@ Page({
     ctx.stroke();
 
     // 绘制维度标签
-    ctx.fillStyle = '#333';
+    ctx.fillStyle = '#1c1a17';
     ctx.font = '12px sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
@@ -329,17 +356,17 @@ Page({
    */
   getScenarioIcon(scenarioName: string): string {
     const iconMap: { [key: string]: string } = {
-      '机场场景': '✈️',
-      '酒店场景': '🏨',
-      '商务会议': '💼',
-      '餐厅用餐': '🍽️',
-      '购物场景': '🛍️',
-      '交通出行': '🚕',
-      '医疗急救': '🏥',
-      '社交场合': '🎉'
+      '机场场景': 'plane',
+      '酒店场景': 'hotel',
+      '商务会议': 'work',
+      '餐厅用餐': 'food',
+      '购物场景': 'shop',
+      '交通出行': 'traffic',
+      '医疗急救': 'medical',
+      '社交场合': 'social'
     };
 
-    return iconMap[scenarioName] || '📚';
+    return iconMap[scenarioName] || 'book';
   },
 
   /**
@@ -361,7 +388,8 @@ Page({
     if (dimension) {
       this.setData({
         selectedDimension: dimension,
-        showDimensionDetail: true
+        showDimensionDetail: true,
+        dimensionSheetClass: 'show'
       });
     }
   },
@@ -370,7 +398,14 @@ Page({
    * 关闭维度详情弹窗
    */
   closeDimensionDetail() {
-    this.setData({ showDimensionDetail: false });
+    this.setData({
+      showDimensionDetail: false,
+      dimensionSheetClass: ''
+    });
+  },
+
+  closeResult() {
+    wx.switchTab({ url: '/pages/index/index' });
   },
 
   /**

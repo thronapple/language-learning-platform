@@ -1,6 +1,8 @@
 <view class="page">
   <view class="header">
-    <view class="header-icon">⭐</view>
+    <view class="hero-deco deco-large"></view>
+    <view class="hero-deco deco-small"></view>
+    <view class="header-icon premium-mark"></view>
     <view class="header-title">升级 Pro</view>
     <view class="header-sub">解锁全部功能，提升学习效率</view>
   </view>
@@ -10,19 +12,19 @@
     <view class="benefits-card">
       <view class="benefits-title">Pro 会员权益</view>
       <view class="benefit-item">
-        <text class="benefit-icon">🚫</text>
+        <view class="benefit-icon no-ad-icon"></view>
         <text class="benefit-text">去除所有广告</text>
       </view>
       <view class="benefit-item">
-        <text class="benefit-icon">📚</text>
+        <view class="benefit-icon book-icon"></view>
         <text class="benefit-text">导入配额翻倍</text>
       </view>
       <view class="benefit-item">
-        <text class="benefit-icon">📊</text>
+        <view class="benefit-icon report-icon"></view>
         <text class="benefit-text">每周学习报告</text>
       </view>
       <view class="benefit-item">
-        <text class="benefit-icon">🤖</text>
+        <view class="benefit-icon ai-icon"></view>
         <text class="benefit-text">AI 口语评分（即将推出）</text>
       </view>
     </view>

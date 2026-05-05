@@ -1,63 +1,138 @@
-<view class="page">
-  <!-- 头部用户信息 -->
-  <view class="header">
-    <view class="avatar">👤</view>
-    <view class="user-info">
-      <view class="user-name">语言学习者</view>
-      <view class="user-motto">坚持每日学习</view>
+<view class="mine-page">
+  <view class="profile-hero">
+    <view class="hero-deco deco-large"></view>
+    <view class="hero-deco deco-small"></view>
+    <view class="profile-appbar">
+      <text>我的</text>
+      <view class="settings-icon" bindtap="openSettings"></view>
+    </view>
+    <view class="profile-row">
+      <view class="avatar">L</view>
+      <view class="profile-copy">
+        <text class="name">Lucia Chen</text>
+        <view class="profile-meta">
+          <text class="level-pill">B1 中级</text>
+          <text>· 加入 42 天</text>
+        </view>
+      </view>
     </view>
   </view>
 
-  <!-- 学习统计 -->
-  <view class="stats-card">
-    <view class="stat-item">
-      <view class="stat-value">{{secsToday >= 60 ? Math.floor(secsToday / 60) : secsToday}}</view>
-      <view class="stat-label">{{secsToday >= 60 ? '今日分钟' : '今日秒数'}}</view>
+  <view class="mine-scroll">
+    <view class="stats-card">
+      <view class="stat-item">
+        <view class="stat-value t-mono">{{streak}}<text>天</text></view>
+        <view class="stat-label">连续打卡</view>
+      </view>
+      <view class="stat-item">
+        <view class="stat-value t-mono">{{vocabCount}}</view>
+        <view class="stat-label">已掌握词汇</view>
+      </view>
+      <view class="stat-item">
+        <view class="stat-value t-mono">{{totalHours}}<text>h</text></view>
+        <view class="stat-label">累计学习</view>
+      </view>
     </view>
-    <view class="stat-divider"></view>
-    <view class="stat-item">
-      <view class="stat-value">{{streak}}</view>
-      <view class="stat-label">连续天数</view>
-    </view>
-  </view>
 
-  <!-- 功能菜单 -->
-  <view class="menu-section">
-    <view class="menu-card">
+    <view class="card calendar-card">
+      <view class="section-head">
+        <text class="section-title">学习日历</text>
+        <text class="section-meta">近 12 周</text>
+      </view>
+      <view class="calendar-grid">
+        <view wx:for="{{calendarCells}}" wx:key="index" class="calendar-cell level-{{item.level}}"></view>
+      </view>
+      <view class="calendar-legend">
+        <text>少</text>
+        <view class="legend-cell level-0"></view>
+        <view class="legend-cell level-1"></view>
+        <view class="legend-cell level-2"></view>
+        <view class="legend-cell level-3"></view>
+        <view class="legend-cell level-4"></view>
+        <text>多</text>
+      </view>
+    </view>
+
+    <view class="achievements">
+      <view class="section-head">
+        <text class="section-title">成就 · 5/24</text>
+        <view class="section-link">
+          <text>查看全部</text>
+          <view class="link-chevron"></view>
+        </view>
+      </view>
+      <scroll-view scroll-x class="achievement-scroll" show-scrollbar="{{false}}">
+        <view class="achievement-row">
+          <view
+            wx:for="{{achievements}}"
+            wx:key="name"
+            class="achievement {{item.stateClass}} tone-{{item.tone}}"
+          >
+            <view class="achievement-icon icon-{{item.icon}}"></view>
+            <text>{{item.name}}</text>
+          </view>
+        </view>
+      </scroll-view>
+    </view>
+
+    <view class="card menu-card">
       <view class="menu-item" bindtap="goImport">
-        <text class="menu-icon">📥</text>
-        <text class="menu-text">导入内容</text>
-        <text class="menu-arrow">›</text>
+        <view class="menu-icon upload-icon"></view>
+        <text class="menu-label">导入内容</text>
+        <text class="menu-meta">从文本/链接</text>
+        <view class="chevron"></view>
       </view>
-      <view class="menu-divider"></view>
-      <view class="menu-item" bindtap="goExport">
-        <text class="menu-icon">🖼️</text>
-        <text class="menu-text">成果分享</text>
-        <text class="menu-arrow">›</text>
+      <view class="menu-item">
+        <view class="menu-icon target-icon"></view>
+        <text class="menu-label">学习目标</text>
+        <text class="menu-meta">每日 20 分钟</text>
+        <view class="chevron"></view>
       </view>
-      <view class="menu-divider"></view>
+      <view class="menu-item">
+        <view class="menu-icon bell-menu-icon"></view>
+        <text class="menu-label">提醒设置</text>
+        <text class="menu-meta">19:00 每日</text>
+        <view class="chevron"></view>
+      </view>
       <view class="menu-item" bindtap="goUpgrade">
-        <text class="menu-icon">⭐</text>
-        <text class="menu-text">升级 Pro</text>
-        <text class="menu-arrow">›</text>
+        <view class="menu-icon premium-icon"></view>
+        <text class="menu-label">升级会员</text>
+        <text class="menu-meta premium">Premium</text>
+        <view class="chevron"></view>
       </view>
     </view>
 
-    <view class="menu-card">
+    <view class="card menu-card secondary">
+      <view class="menu-item" bindtap="goAssessment">
+        <view class="menu-icon target-icon"></view>
+        <text class="menu-label">水平测评</text>
+        <text class="menu-meta">重新评估等级</text>
+        <view class="chevron"></view>
+      </view>
+      <view class="menu-item" bindtap="goPlan">
+        <view class="menu-icon flag-icon"></view>
+        <text class="menu-label">学习计划</text>
+        <text class="menu-meta">查看进度</text>
+        <view class="chevron"></view>
+      </view>
+      <view class="menu-item" bindtap="goExport">
+        <view class="menu-icon share-icon"></view>
+        <text class="menu-label">成果分享</text>
+        <text class="menu-meta">生成图片</text>
+        <view class="chevron"></view>
+      </view>
       <view class="menu-item" bindtap="goPrivacy">
-        <text class="menu-icon">🔒</text>
-        <text class="menu-text">隐私政策</text>
-        <text class="menu-arrow">›</text>
+        <view class="menu-icon lock-icon"></view>
+        <text class="menu-label">隐私政策</text>
+        <view class="chevron"></view>
       </view>
-      <view class="menu-divider"></view>
       <view class="menu-item" bindtap="goTerms">
-        <text class="menu-icon">📄</text>
-        <text class="menu-text">用户协议</text>
-        <text class="menu-arrow">›</text>
+        <view class="menu-icon doc-icon"></view>
+        <text class="menu-label">用户协议</text>
+        <view class="chevron"></view>
       </view>
     </view>
-  </view>
 
-  <!-- 底部留白给 tabBar -->
-  <view style="height: calc(120rpx + env(safe-area-inset-bottom))"></view>
+    <view class="tab-spacer"></view>
+  </view>
 </view>

@@ -1,7 +1,7 @@
 // miniprogram/services/request.ts
 
 // Environment-based API URL configuration
-const CLOUD_URL = 'https://lang-learning-225978-7-1404758981.sh.run.tcloudbase.com';
+const CLOUD_URL = 'https://lang-learning-225978-4-1404758981.sh.run.tcloudbase.com';
 
 const ENV_URLS: Record<string, string> = {
   develop: CLOUD_URL,
